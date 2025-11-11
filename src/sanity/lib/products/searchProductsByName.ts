@@ -7,7 +7,7 @@ export const searchProductsByName = async (searchParam: string) => {
         _type == "product"
         && name match $searchParam
         ] | order(name asc)
-        `)
+            `)
 
     try {
         const products = await sanityFetch({
