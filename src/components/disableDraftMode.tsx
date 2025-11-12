@@ -12,7 +12,7 @@ export function DisableDraftMode() {
     return null;
   }
   const handleClick = async () => {
-    await fetch("/draft-mode/disablew");
+    await fetch("/draft-mode/disable");
     router.refresh();
   };
   return (
