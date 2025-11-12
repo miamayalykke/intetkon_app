@@ -7,6 +7,9 @@ import { PortableText } from "next-sanity";
 import { Button } from "@/components/ui/button";
 import AddToBasketButton from "@/components/AddToBasketButton";
 
+export const dynamic = "force-static";
+export const revalidate = 60;
+
 async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
