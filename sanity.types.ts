@@ -46,13 +46,13 @@ export type Order = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  orderNumber?: number;
+  orderNumber?: string;
   stripeCheckoutSessionId?: string;
   stripeCustomerId?: string;
   clerkUserId?: string;
   customerName?: string;
   email?: string;
-  stripePaymentIntentID?: string;
+  stripePaymentIntentId?: string;
   products?: Array<{
     product?: {
       _ref: string;

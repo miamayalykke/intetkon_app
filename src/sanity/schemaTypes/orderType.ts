@@ -10,7 +10,7 @@ export const orderType = defineType({
         defineField({
             name: "orderNumber",
             title: "Order Number",
-            type: "number",
+            type: "string",
             validation: (Rule) => Rule.required(),
         }),
         defineField({
@@ -43,7 +43,7 @@ export const orderType = defineType({
             validation: (Rule) => Rule.required().email(),
         }),
         defineField({
-            name: "stripePaymentIntentID",
+            name: "stripePaymentIntentId",
             title: "Stripe Payment Intent ID",
             type: "string",
             validation: (Rule) => Rule.required(),

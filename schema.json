@@ -192,7 +192,7 @@
       "orderNumber": {
         "type": "objectAttribute",
         "value": {
-          "type": "number"
+          "type": "string"
         },
         "optional": true
       },
@@ -231,7 +231,7 @@
         },
         "optional": true
       },
-      "stripePaymentIntentID": {
+      "stripePaymentIntentId": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
