@@ -53,6 +53,7 @@ const AboutSection = () => {
                 src={AboutMeImage}
                 alt="Intekøn - Project"
                 fill
+                priority
                 className="object-cover transition-transform duration-1000 hover:scale-110"
               />
             </div>
