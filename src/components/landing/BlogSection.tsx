@@ -113,6 +113,7 @@ const BlogSection = () => {
                     src={post.image}
                     alt={post.title}
                     fill
+                    priority
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <span className="absolute top-4 right-4 bg-secondary text-white px-5 py-2 rounded-full font-bold text-xs uppercase tracking-widest shadow-xl">
