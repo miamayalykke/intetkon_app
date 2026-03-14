@@ -58,7 +58,7 @@ const BlogSection = () => {
 
       {/* --- Marquee Ribbon --- */}
       <div className="relative mb-24 py-5 bg-orange-500 rotate-1 shadow-lg overflow-hidden border-y-2 border-orange-600">
-        <div className="flex whitespace-nowrap animate-marquee">
+        <div className="flex whitespace-nowrap animate-marquee-reverse">
           {[...Array(8)].map((_, i) => (
             <span
               key={i}
@@ -99,7 +99,7 @@ const BlogSection = () => {
             {featuredPosts.map((post, idx) => (
               <div
                 key={post.title}
-                className={`group relative flex flex-col gap-6 bg-card rounded-[2.5rem] p-6 shadow-xl border border-border transition-all hover:border-orange-200 hover:shadow-2xl ${
+                className={`group relative flex flex-col gap-6 bg-card rounded-[2.5rem] p-6 shadow-lg border border-border transition-all hover:border-orange-200 hover:shadow-xl ${
                   idx === 2 ? 'md:col-span-2 md:flex-row md:items-center' : ''
                 }`}
               >

@@ -103,10 +103,10 @@
 /* In your globals.css */
 @keyframes marquee {
   0% {
-    transform: translateX(0);
+    transform: translateX(-50%);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translateX(0);
   }
 }
 
@@ -128,4 +128,19 @@
 
 .animate-bounce-slow {
   animation: bounce-slow 4s ease-in-out infinite;
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee-reverse {
+  display: flex;
+  width: max-content;
+  animation: marquee-reverse 30s linear infinite;
 }
