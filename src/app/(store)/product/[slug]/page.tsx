@@ -25,7 +25,6 @@ const ProductPage = async ({
   return (
     <main className="w-full overflow-x-clip min-h-screen pt-4 pb-12 lg:pt-8">
       <div className="container mx-auto px-6">
-        {/* --- Back Navigation (Reduced Margin) --- */}
         <Link
           href="/shop"
           className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-orange-500 transition-colors mb-6 lg:mb-8 group"
@@ -35,7 +34,6 @@ const ProductPage = async ({
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start">
-          {/* --- Left Column: Optimized Image --- */}
           <div className="relative lg:sticky lg:top-24">
             <div className="absolute -top-4 -right-4 w-full h-full bg-orange-500/5 rounded-[3rem] rotate-2 border-2 border-dashed border-orange-500/20 -z-10" />
 
