@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@ui/button'
-import { ArrowRight, Heart, Sparkles, Users } from 'lucide-react'
+import { ArrowRight, FileText, Heart, Scissors, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 
 const CallToActionSection = () => {
@@ -67,20 +67,20 @@ const CallToActionSection = () => {
               <Heart className="w-6 h-6 text-orange-500 fill-orange-500/10" />
             </div>
           </div>
-
           <div className="space-y-4">
             <h2 className="text-4xl lg:text-6xl font-extrabold tracking-tighter text-foreground leading-tight">
-              Join our{' '}
+              Become a{' '}
               <span className="text-orange-500 italic font-serif">
-                sewing community
+                pattern tester
               </span>
             </h2>
             <p className="max-w-xl mx-auto text-lg text-muted-foreground leading-relaxed font-light">
-              Connect with like-minded individuals who value{' '}
+              Help us refine our latest drops. Join a dedicated group of makers
+              who value{' '}
               <span className="text-foreground font-medium">
-                creativity, equality, and conscious living
+                precision, inclusive fit, and garment craft
               </span>
-              . Access exclusive content and workshops.
+              . Shape the future of our atelier.
             </p>
           </div>
 
@@ -88,17 +88,17 @@ const CallToActionSection = () => {
           <div className="flex flex-wrap justify-center gap-3 mt-2">
             {[
               {
-                icon: <Sparkles className="w-3.5 h-3.5" />,
-                text: 'Exclusive Patterns',
+                icon: <Scissors className="w-3.5 h-3.5" />,
+                text: 'Early Access',
               },
               {
-                icon: <Users className="w-3.5 h-3.5" />,
-                text: 'Workshops',
+                icon: <FileText className="w-3.5 h-3.5" />,
+                text: 'Feedback Loop',
               },
             ].map((feature, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/50 backdrop-blur-sm text-xs font-bold"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-card/50 backdrop-blur-sm text-xs font-bold uppercase tracking-wider"
               >
                 {feature.icon}
                 {feature.text}
@@ -108,12 +108,12 @@ const CallToActionSection = () => {
 
           {/* Call To Action Button */}
           <div className="mt-4">
-            <Link href="/community">
+            <Link href="/pattern-testing">
               <Button
                 size="4xl"
                 className="rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold gap-3 group shadow-xl shadow-orange-500/30 transition-all hover:scale-105"
               >
-                Join our Community
+                Apply to Test
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

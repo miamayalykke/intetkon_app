@@ -15,12 +15,13 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
   const shopLinks = [
     { href: '/patterns', label: 'Patterns' },
     { href: '/workshops', label: 'Workshops' },
-    { href: '/shop', label: 'Shop All' },
+    { href: '/shop', label: 'Shop Uniques' },
   ]
 
   const infoLinks = [
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
+    { href: '/pattern-tester', label: 'Become Pattern Tester' },
   ]
 
   return (
@@ -48,9 +49,6 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
             </NavigationMenuLink>
           </NavigationMenuItem>
         ))}
-
-        {/* Separator Dot (Only visible on desktop) */}
-        <div className="hidden lg:flex items-center px-2 opacity-20">•</div>
 
         {/* Info Section */}
         {infoLinks.map((link) => (
