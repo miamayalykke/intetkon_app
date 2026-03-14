@@ -36,6 +36,7 @@
     "stripe": "^19.3.0",
     "styled-components": "^6.3.11",
     "tailwind-merge": "^3.5.0",
+    "resend": "^6.9.3",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
