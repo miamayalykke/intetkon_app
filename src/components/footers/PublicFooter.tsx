@@ -104,11 +104,11 @@ const PublicFooter = () => {
                   </li>
                   <li>
                     <Link
-                      href="/career"
+                      href="/careers"
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Career
+                      Careers
                     </Link>
                   </li>
                 </ul>
