@@ -2,135 +2,148 @@ import { auth } from '@clerk/nextjs/server'
 import { getMyOrders } from '@sanity/lib/orders/getMyOrders'
 import { formatCurrency } from '@src/lib/formatCurrency'
 import { imageUrl } from '@src/lib/imageUrl'
+import { Clock, Receipt, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
 async function Orders() {
   const { userId } = await auth()
 
-  if (!userId) {
-    return redirect('/')
-  }
+  if (!userId) return redirect('/')
 
   const orders = await getMyOrders(userId)
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="bg-white p-4 sm:p-8 rounded-xl shadow-lg w-full max-w-4xl">
-        <h1 className="text-4xl font-bold text-gray-900 tracking-tight mb-8">
-          My Orders
-        </h1>
+    <main className="w-full overflow-x-clip min-h-screen pb-20">
+      <div className="container mx-auto px-6 pt-24">
+        {/* --- Header Section --- */}
+        <header className="mb-16 relative">
+          <div className="bg-orange-500 text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg -rotate-2 border-2 border-white mb-8 w-fit">
+            Account Archive
+          </div>
+          <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none mb-6">
+            MY <span className="text-secondary italic font-serif">ORDERS</span>
+          </h1>
+          <p className="text-muted-foreground font-light italic uppercase tracking-[0.2em] text-[10px]">
+            History of your digital & physical acquisitions
+          </p>
+        </header>
+
         {orders.length === 0 ? (
-          <div className="text-center text-gray-600">
-            <p>You have not placed any orders yet.</p>
+          <div className="py-24 text-center border-2 border-dashed border-border rounded-[3rem]">
+            <p className="text-xl font-serif italic text-muted-foreground">
+              Your archive is currently empty...
+            </p>
           </div>
         ) : (
-          <div className="space-y-6 sm:space-y-8">
+          <div className="space-y-16">
             {orders.map((order) => (
-              <div
-                key={order.orderNumber}
-                className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
-              >
-                <div className="p-4 sm:p-6 border-b border-grey-200">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-4">
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1 font-bold">
-                        Order Number
-                      </p>
-                      <p className="font-mono text-sm text-green-600 break-all">
-                        {order.orderNumber}
-                      </p>
+              <div key={order.orderNumber} className="relative group">
+                {/* Asymmetric "Pattern Piece" Frame */}
+                <div className="absolute -top-4 -right-4 w-full h-full bg-orange-500/5 rounded-[3rem] rotate-1 border-2 border-dashed border-orange-500/10 -z-10 group-hover:rotate-2 transition-transform duration-500" />
+
+                <div className="bg-white border-2 border-border rounded-[3rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
+                  {/* --- Order Meta Header --- */}
+                  <div className="bg-card/50 p-6 lg:p-10 border-b-2 border-border flex flex-col lg:flex-row justify-between gap-8">
+                    <div className="space-y-4">
+                      <div className="flex flex-wrap gap-4">
+                        <span
+                          className={`px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border-2 ${
+                            order.status === 'paid'
+                              ? 'bg-secondary text-white border-white shadow-md'
+                              : 'bg-card border-border text-muted-foreground'
+                          }`}
+                        >
+                          {order.status}
+                        </span>
+                        <span className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                          <Clock className="w-3 h-3" />
+                          {order.orderDate
+                            ? new Date(order.orderDate).toLocaleDateString()
+                            : 'N/A'}
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-1">
+                          Log Reference
+                        </p>
+                        <p className="font-mono text-sm font-bold text-orange-500 tracking-tighter uppercase">
+                          {order.orderNumber}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-600 mb-1">Order Date</p>
-                      <p className="font-medium">
-                        {order.orderDate
-                          ? new Date(order.orderDate).toLocaleDateString()
-                          : 'N/A'}
+
+                    <div className="lg:text-right flex flex-col justify-end">
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground mb-1">
+                        Total Valuation
                       </p>
+                      <p className="text-4xl font-black tracking-tighter">
+                        {formatCurrency(order.totalPrice ?? 0, order.currency)}
+                      </p>
+                      {order.amountDiscount ? (
+                        <div className="inline-flex items-center lg:justify-end gap-2 text-secondary text-[10px] font-black uppercase mt-2">
+                          <Sparkles className="w-3 h-3" /> Discount Applied
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center">
-                    <div className="flex items-center">
-                      <span className="text-sm mr-2">Status:</span>
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm ${order.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
-                    <div className="sm:text-right">
-                      <p className="text-sm text-gray-600 mb-1">Total Amount</p>{' '}
-                      <p className="font-bold text-lg">
-                        {formatCurrency(order.totalPrice ?? 0, order.currency)}
-                      </p>
+                  {/* --- Items Grid --- */}
+                  <div className="p-6 lg:p-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {order.products?.map((item) => (
+                        <div
+                          key={item.product?._id}
+                          className="flex gap-6 items-center group/item"
+                        >
+                          {item.product?.image && (
+                            <div className="relative h-24 w-24 shrink-0 rounded-2xl overflow-hidden border border-border group-hover/item:rotate-3 transition-transform">
+                              <Image
+                                src={imageUrl(item.product.image).url()}
+                                alt={item.product?.name ?? ''}
+                                className="object-cover"
+                                fill
+                              />
+                            </div>
+                          )}
+                          <div className="space-y-1">
+                            <p className="text-sm font-black uppercase tracking-tight group-hover/item:text-orange-500 transition-colors">
+                              {item.product?.name}
+                            </p>
+                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                              Quantity: {item.quantity ?? '0'}
+                            </p>
+                            <p className="font-mono text-xs font-bold text-foreground/70">
+                              {item.product?.price && item.quantity
+                                ? formatCurrency(
+                                    item.product.price * item.quantity,
+                                    order.currency,
+                                  )
+                                : 'N/A'}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                  {order.amountDiscount ? (
-                    <div className="mt-4 p-3 sm:p-4 bg-red-50 rounded-lg">
-                      <p className="text-red-600 font-medium mb-1 text-sm sm:text-base">
-                        Discount Applied:{' '}
-                        {formatCurrency(order.amountDiscount, order.currency)}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        Original Subtotal:{' '}
-                        {formatCurrency(
-                          (order.totalPrice ?? 0) + order.amountDiscount,
-                          order.currency,
-                        )}
-                      </p>
-                    </div>
-                  ) : null}
-                </div>
-                <div className="px-4 py-3 sm:px-6 sm:py-4">
-                  <p className="text-sm font-semibold text-gray-600 mb-3 sm:mb-4">
-                    Order Items
-                  </p>
-                  {order.products?.map((product) => (
-                    <div
-                      key={product.product?._id}
-                      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-2 border-b last:border-b-0"
-                    >
-                      <div className="flex items-center gap-3 sm:gap-4">
-                        {product.product?.image && (
-                          <div className="relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-md overflow-hidden">
-                            <Image
-                              src={imageUrl(product.product.image).url()}
-                              alt={product.product?.name ?? ''}
-                              className="object-cover"
-                              fill
-                            />{' '}
-                          </div>
-                        )}
-                        <div>
-                          {' '}
-                          <p className="font-medium text-sm sm:text-base">
-                            {product.product?.name}
-                          </p>
-                          <p className="text-sm text-gray-600">
-                            Quantity: {product.quantity ?? 'N/A'}
-                          </p>
-                        </div>
-                      </div>
-                      <p className="font-medium text-right">
-                        {product.product?.price && product.quantity
-                          ? formatCurrency(
-                              product.product.price * product.quantity,
-                              order.currency,
-                            )
-                          : 'N/A'}
-                      </p>
-                    </div>
-                  ))}
-                  <div className="space-y-2 sm:space-y-4"></div>
+
+                  {/* --- Footer Tape --- */}
+                  <div className="bg-foreground py-3 px-10 flex justify-between items-center">
+                    <span className="text-white text-[9px] font-black uppercase tracking-[0.4em] flex items-center gap-2">
+                      <Receipt className="w-3 h-3 text-orange-500" /> Digital
+                      Receipt Generated
+                    </span>
+                    <span className="text-white/40 text-[9px] font-mono">
+                      INTETKØN STUDIO LOG v2.6
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </main>
   )
 }
 
