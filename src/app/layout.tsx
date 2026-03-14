@@ -6,11 +6,11 @@ import Header from '@src/components/headers/Header'
 import type { Metadata } from 'next'
 import { VisualEditing } from 'next-sanity/visual-editing'
 import { draftMode } from 'next/headers'
-import '../globals.css'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Intetkøn',
-  description: 'Official Intetkøn Webshop',
+  description: 'Official Intetkøn Webshop Home',
 }
 
 export default async function RootLayout({

@@ -1,4 +1,3 @@
-'use client'
 import AboutHero from '@public/hero.jpeg'
 import { Button } from '@ui/button'
 import {

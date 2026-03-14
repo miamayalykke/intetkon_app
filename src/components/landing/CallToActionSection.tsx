@@ -123,7 +123,7 @@ const CallToActionSection = () => {
 
       {/* The Green Banner (Marquee) */}
       <div className="absolute bottom-0 left-0 w-full py-4 bg-secondary shadow-[0_-10px_30px_rgba(34,197,94,0.1)]">
-        <div className="flex whitespace-nowrap animate-marquee">
+        <div className="flex whitespace-nowrap animate-marquee-reverse">
           {[...Array(8)].map((_, i) => (
             <span
               key={i}

@@ -3,7 +3,7 @@ import stripe from '@src/lib/stripe'
 import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
-import type { Metadata } from '../../../../actions/createCheckoutSession'
+import type { Metadata } from '../../../../../actions/createCheckoutSession'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
