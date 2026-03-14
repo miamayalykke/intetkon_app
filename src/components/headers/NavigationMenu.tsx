@@ -1,6 +1,6 @@
 'use client'
 
-import { cn } from '@src/lib/utils' // Assuming you have a cn utility
+import { cn } from '@src/lib/utils'
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -21,7 +21,6 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
   const infoLinks = [
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
-    { href: '/careers', label: 'Careers' },
   ]
 
   return (
@@ -40,7 +39,7 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
                   navigationMenuTriggerStyle(),
                   'font-bold text-foreground transition-all',
                   'hover:bg-primary/10 hover:text-primary',
-                  'lg:bg-transparent border border-primary lg:rounded-full lg:px-5 lg:mx-0.5',
+                  'lg:bg-transparent lg:rounded-full lg:px-5 lg:mx-0.5',
                   'data-[orientation=vertical]:w-full data-[orientation=vertical]:justify-start',
                 )}
               >

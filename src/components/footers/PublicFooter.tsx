@@ -133,7 +133,7 @@ const PublicFooter = () => {
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Terms
+                      Terms of Service
                     </Link>
                   </li>
                   <li>
