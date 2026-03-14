@@ -11133,6 +11133,7 @@ __metadata:
     radix-ui: "npm:^1.4.3"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
+    resend: "npm:^6.9.3"
     sanity: "npm:^4.10.2"
     stripe: "npm:^19.3.0"
     styled-components: "npm:^6.3.11"
@@ -11931,6 +11932,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"postal-mime@npm:2.7.3":
+  version: 2.7.3
+  resolution: "postal-mime@npm:2.7.3"
+  checksum: 10c0/f8f036b3947e506d3a4a9501501f7a05acd27c7c274fc207c093a0b28eb2c97a4fa295d0fbe55551f33d87c21684401562811767adaa60918adb99a9149d324b
+  languageName: node
+  linkType: hard
+
 "postcss-selector-parser@npm:6.0.10":
   version: 6.0.10
   resolution: "postcss-selector-parser@npm:6.0.10"
@@ -12633,6 +12641,21 @@ __metadata:
   version: 5.1.1
   resolution: "reselect@npm:5.1.1"
   checksum: 10c0/219c30da122980f61853db3aebd173524a2accd4b3baec770e3d51941426c87648a125ca08d8c57daa6b8b086f2fdd2703cb035dd6231db98cdbe1176a71f489
+  languageName: node
+  linkType: hard
+
+"resend@npm:^6.9.3":
+  version: 6.9.3
+  resolution: "resend@npm:6.9.3"
+  dependencies:
+    postal-mime: "npm:2.7.3"
+    svix: "npm:1.84.1"
+  peerDependencies:
+    "@react-email/render": "*"
+  peerDependenciesMeta:
+    "@react-email/render":
+      optional: true
+  checksum: 10c0/797bef578fb34906ec09213379131b5d24240071311180018745347fab0bd5e613aa1339b151239aeea6d9a06d5b3a19a47bfe5f9baf21e5abf50259c86b1b47
   languageName: node
   linkType: hard
 
@@ -13498,7 +13521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"standardwebhooks@npm:^1.0.0":
+"standardwebhooks@npm:1.0.0, standardwebhooks@npm:^1.0.0":
   version: 1.0.0
   resolution: "standardwebhooks@npm:1.0.0"
   dependencies:
@@ -13753,6 +13776,16 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 10c0/6c4032340701a9950865f7ae8ef38578d8d7053f5e10518076e6554a9381fa91bd9c6850193695c141f32b21f979c985db07265a758867bac95de05f7d8aeb39
+  languageName: node
+  linkType: hard
+
+"svix@npm:1.84.1":
+  version: 1.84.1
+  resolution: "svix@npm:1.84.1"
+  dependencies:
+    standardwebhooks: "npm:1.0.0"
+    uuid: "npm:^10.0.0"
+  checksum: 10c0/59b06741d37d1de271fcc1fe7f16e4180bb295fd3e8990be330bb6c31988d4ba2ca82548060374dba3d9ceb776c49136f70a485dd856a3dfb9a76728c429874e
   languageName: node
   linkType: hard
 
@@ -14345,6 +14378,15 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 10c0/41a5bdd214df2f6c3ecf8622745e4a366c4adced864bc3c833739791aeeeb1838119af7daed4ba36428114b5c67dcda034a79c882e97e43c03e66a4dd7389942
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "uuid@npm:10.0.0"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 10c0/eab18c27fe4ab9fb9709a5d5f40119b45f2ec8314f8d4cf12ce27e4c6f4ffa4a6321dc7db6c515068fa373c075b49691ba969f0010bf37f44c37ca40cd6bf7fe
   languageName: node
   linkType: hard
 

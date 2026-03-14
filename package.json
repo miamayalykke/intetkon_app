@@ -32,11 +32,11 @@
     "radix-ui": "^1.4.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "resend": "^6.9.3",
     "sanity": "^4.10.2",
     "stripe": "^19.3.0",
     "styled-components": "^6.3.11",
     "tailwind-merge": "^3.5.0",
-    "resend": "^6.9.3",
     "zustand": "^5.0.11"
   },
   "devDependencies": {
