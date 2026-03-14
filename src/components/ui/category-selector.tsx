@@ -10,11 +10,11 @@ import {
   CommandItem,
   CommandList,
 } from '@ui/command'
-import { Popover, PopoverContent, PopoverTrigger } from '@ui/popover'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import type { Category } from '../../../sanity.types'
+import { Popover, PopoverContent, PopoverTrigger } from './popover'
 
 interface CategorySelectorProps {
   categories: Category[]
