@@ -21,7 +21,7 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
   const infoLinks = [
     { href: '/about', label: 'About' },
     { href: '/contact', label: 'Contact' },
-    { href: '/pattern-tester', label: 'Become Pattern Tester' },
+    { href: '/pattern-testing', label: 'Become Pattern Tester' },
   ]
 
   return (
