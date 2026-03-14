@@ -1,9 +1,9 @@
 import { auth } from '@clerk/nextjs/server'
+import { getMyOrders } from '@sanity/lib/orders/getMyOrders'
+import { formatCurrency } from '@src/lib/formatCurrency'
+import { imageUrl } from '@src/lib/imageUrl'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
-import { formatCurrency } from '@/lib/formatCurrency'
-import { imageUrl } from '@/lib/imageUrl'
-import { getMyOrders } from '@/sanity/lib/orders/getMyOrders'
 
 async function Orders() {
   const { userId } = await auth()
@@ -94,7 +94,7 @@ async function Orders() {
                     >
                       <div className="flex items-center gap-3 sm:gap-4">
                         {product.product?.image && (
-                          <div className="relative h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 rounded-md overflow-hidden">
+                          <div className="relative h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-md overflow-hidden">
                             <Image
                               src={imageUrl(product.product.image).url()}
                               alt={product.product?.name ?? ''}

@@ -1,6 +1,6 @@
-import ProductsView from '@/components/ProductsView'
-import { getAllCategories } from '@/sanity/lib/products/getAllCategories'
-import { getProductByCategory } from '@/sanity/lib/products/getProductsByCategory'
+import { getAllCategories } from '@sanity/lib/products/getAllCategories'
+import { getProductByCategory } from '@sanity/lib/products/getProductsByCategory'
+import ProductsView from '@src/components/ProductsView'
 
 async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params

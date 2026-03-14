@@ -1,10 +1,10 @@
 import { ClerkProvider } from '@clerk/nextjs'
+import { SanityLive } from '@sanity/lib/live'
+import { DisableDraftMode } from '@src/components/disableDraftMode'
+import Header from '@src/components/Header'
 import type { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import { VisualEditing } from 'next-sanity/visual-editing'
-import { DisableDraftMode } from '@/components/disableDraftMode'
-import Header from '@/components/Header'
-import { SanityLive } from '@/sanity/lib/live'
+import { draftMode } from 'next/headers'
 import '../globals.css'
 
 export const metadata: Metadata = {

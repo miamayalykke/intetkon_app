@@ -1,7 +1,7 @@
 'use server'
 
-import { imageUrl } from '@/lib/imageUrl'
-import stripe from '@/lib/stripe'
+import { imageUrl } from '@src/lib/imageUrl'
+import stripe from '@src/lib/stripe'
 import 'server-only'
 import type { BasketItem } from '../store/store'
 

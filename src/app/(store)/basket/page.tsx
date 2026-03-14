@@ -1,14 +1,14 @@
 'use client'
 
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs'
+import AddToBasketButton from '@src/components/AddToBasketButton'
+import Loader from '@src/components/Loader'
+import { imageUrl } from '@src/lib/imageUrl'
+import { Button } from '@ui/button'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import AddToBasketButton from '@/components/AddToBasketButton'
-import Loader from '@/components/Loader'
-import { Button } from '@/components/ui/button'
-import { imageUrl } from '@/lib/imageUrl'
 import {
   createCheckoutSession,
   type Metadata,

@@ -1,6 +1,6 @@
+import { imageUrl } from '@src/lib/imageUrl'
 import Image from 'next/image'
 import Link from 'next/link'
-import { imageUrl } from '@/lib/imageUrl'
 import type { Product } from '../../sanity.types'
 
 function ProductThumb({ product }: { product: Product }) {

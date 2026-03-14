@@ -1,9 +1,9 @@
+import { getProductBySlug } from '@sanity/lib/products/getProductBySlug'
+import AddToBasketButton from '@src/components/AddToBasketButton'
+import { imageUrl } from '@src/lib/imageUrl'
+import { PortableText } from 'next-sanity'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
-import { PortableText } from 'next-sanity'
-import AddToBasketButton from '@/components/AddToBasketButton'
-import { imageUrl } from '@/lib/imageUrl'
-import { getProductBySlug } from '@/sanity/lib/products/getProductBySlug'
 
 export const dynamic = 'force-static'
 export const revalidate = 60

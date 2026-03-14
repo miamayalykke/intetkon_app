@@ -1,10 +1,10 @@
 'use client'
 
+import { Button } from '@ui/button'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import { Button } from '@/components/ui/button'
 import useBasketStore from '../../../../store/store'
 
 function SuccessPage() {

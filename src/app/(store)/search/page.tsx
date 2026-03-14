@@ -1,5 +1,5 @@
-import ProductGrid from '@/components/ProductGrid'
-import { searchProductsByName } from '@/sanity/lib/products/searchProductsByName'
+import { searchProductsByName } from '@sanity/lib/products/searchProductsByName'
+import ProductGrid from '@src/components/ProductGrid'
 
 async function SearchPage({
   searchParams,
