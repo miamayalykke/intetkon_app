@@ -1,8 +1,8 @@
-"use client";
-import { AnimatePresence } from "motion/react";
-import * as motion from "motion/react-client";
-import { Product } from "../../sanity.types";
-import ProductThumb from "./ProductThumb";
+'use client'
+import { AnimatePresence } from 'motion/react'
+import * as motion from 'motion/react-client'
+import type { Product } from '../../sanity.types'
+import ProductThumb from './ProductThumb'
 
 function ProductGrid({ products }: { products: Product[] }) {
   return (
@@ -20,10 +20,10 @@ function ProductGrid({ products }: { products: Product[] }) {
               <ProductThumb key={product._id} product={product} />
             </motion.div>
           </AnimatePresence>
-        );
+        )
       })}
     </div>
-  );
+  )
 }
 
-export default ProductGrid;
+export default ProductGrid

@@ -1,18 +1,17 @@
-"use client";
+'use client'
 
-import { useUser, ClerkLoaded, UserButton, SignInButton } from "@clerk/nextjs";
-import Link from "next/link";
-import Form from "next/form";
-import { ShoppingCartIcon, PackageIcon } from "lucide-react";
-import useBasketStore from "../../store/store";
+import { ClerkLoaded, SignInButton, UserButton, useUser } from '@clerk/nextjs'
+import { PackageIcon, ShoppingCartIcon } from 'lucide-react'
+import Form from 'next/form'
+import Link from 'next/link'
+import useBasketStore from '../../store/store'
 
 function Header() {
-  const { user } = useUser();
+  const { user } = useUser()
   const itemCount = useBasketStore((state) =>
-    state.items.reduce((total, item) => total + item.quantity, 0)
-  );
+    state.items.reduce((total, item) => total + item.quantity, 0),
+  )
 
-  console.log(user);
   return (
     <header className="flex flex-wrap justify-between items-center px-4 py-2">
       {/* Top Row */}
@@ -73,7 +72,7 @@ function Header() {
         </div>
       </div>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header

@@ -1,33 +1,35 @@
-"use client";
+'use client'
 
-import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
-import useBasketStore from "../../../../store/store";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import AddToBasketButton from "@/components/AddToBasketButton";
-import { imageUrl } from "@/lib/imageUrl";
-import Image from "next/image";
-import Loader from "@/components/Loader";
+import { SignInButton, useAuth, useUser } from '@clerk/nextjs'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import AddToBasketButton from '@/components/AddToBasketButton'
+import Loader from '@/components/Loader'
+import { Button } from '@/components/ui/button'
+import { imageUrl } from '@/lib/imageUrl'
 import {
   createCheckoutSession,
-  Metadata,
-} from "../../../../actions/createCheckoutSession";
+  type Metadata,
+} from '../../../../actions/createCheckoutSession'
+import useBasketStore from '../../../../store/store'
 
 function BasketPage() {
-  const groupedItems = useBasketStore((state) => state.getGroupedItems());
-  const { isSignedIn } = useAuth();
-  const { user } = useUser();
-  const router = useRouter();
+  const groupedItems = useBasketStore((state) => state.getGroupedItems())
+  const { isSignedIn } = useAuth()
+  const { user } = useUser()
+  const _router = useRouter()
 
-  const [isClient, setIsClient] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setIsClient(true)
+  }, [])
 
   if (!isClient) {
-    return <Loader />;
+    return <Loader />
   }
 
   if (groupedItems.length === 0) {
@@ -36,53 +38,51 @@ function BasketPage() {
         <h1 className="text-2xl font-bold mb-6 text-gray-800">Your Basket</h1>
         <p className="text-gray-600 text-lg">Your basket is empty.</p>
       </div>
-    );
+    )
   }
 
   const handleCheckout = async () => {
-    if (!isSignedIn) return;
-    setIsLoading(true);
+    if (!isSignedIn) return
+    setIsLoading(true)
     try {
       const metadata: Metadata = {
         orderNumber: crypto.randomUUID(),
-        customerName: user?.fullName ?? "Unknown",
-        customerEmail: user?.emailAddresses[0].emailAddress ?? "Unknown",
-        clerkUserId: user!.id,
-      };
+        customerName: user?.fullName ?? 'Unknown',
+        customerEmail: user?.emailAddresses[0].emailAddress ?? 'Unknown',
+        clerkUserId: user?.id ?? '',
+      }
 
-      const checkoutUrl = await createCheckoutSession(groupedItems, metadata);
+      const checkoutUrl = await createCheckoutSession(groupedItems, metadata)
 
       if (checkoutUrl) {
-        window.location.href = checkoutUrl;
+        window.location.href = checkoutUrl
       }
     } catch (error) {
-      console.error("Error creating checkout session:", error);
+      console.error('Error creating checkout session:', error)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="container mx-auto p-4 max-w-6xl">
       <h1 className="text-2xl font-bold mb-4">Your Basket</h1>
       <div className="flex flex-col lg:flex-row gap-8">
-        <div className="flex-grow">
+        <div className="grow">
           {groupedItems?.map((item) => (
             <div
               key={item.product._id}
               className="mb-4 p-4 border rounded flex items-center justify-between"
             >
-              <div
+              <Link
+                href={`/product/${item.product.slug?.current}`}
                 className="flex items-center cursor-pointer flex-1 min-w-0"
-                onClick={() =>
-                  router.push(`/product/${item.product.slug?.current}`)
-                }
               >
-                <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 mr-4">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 mr-4">
                   {item.product.image && (
                     <Image
                       src={imageUrl(item.product.image).url()}
-                      alt={item.product.name ?? "Product image"}
+                      alt={item.product.name ?? 'Product image'}
                       className="w-full h-full object-cover rounded"
                       width={96}
                       height={96}
@@ -98,8 +98,8 @@ function BasketPage() {
                     {((item.product.price ?? 0) * item.quantity).toFixed(2)}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center ml-4 flex-shrink-0">
+              </Link>
+              <div className="flex items-center ml-4 shrink-0">
                 <AddToBasketButton product={item.product} />
               </div>
             </div>
@@ -122,18 +122,18 @@ function BasketPage() {
             </p>
           </div>
           {isSignedIn ? (
-            <button
+            <Button
               onClick={handleCheckout}
               disabled={isLoading}
               className="mt-4 w-full bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 disabled:bg-gray-400"
             >
-              {isLoading ? "Processing..." : "Checkout"}
-            </button>
+              {isLoading ? 'Processing...' : 'Checkout'}
+            </Button>
           ) : (
             <SignInButton mode="modal">
-              <button className="mt-4 w-full bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
+              <Button className="mt-4 w-full bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600">
                 Sign in to Checkout
-              </button>
+              </Button>
             </SignInButton>
           )}
         </div>
@@ -142,7 +142,7 @@ function BasketPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default BasketPage;
+export default BasketPage

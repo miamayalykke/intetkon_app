@@ -3,30 +3,29 @@
  * and query draft content and preview the content as it will appear once everything is published
  */
 
-import {validatePreviewUrl} from "@sanity/preview-url-secret"
-import {client} from "@/sanity/lib/client"
-import {redirect} from "next/navigation"
-import {draftMode} from "next/headers"
+import { validatePreviewUrl } from '@sanity/preview-url-secret'
+import { draftMode } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { client } from '@/sanity/lib/client'
 
-
-const token = process.env.SANITY_API_READ_TOKEN;
+const token = process.env.SANITY_API_READ_TOKEN
 
 export async function GET(request: Request) {
   if (!token) {
-    return new Response("Missing token", { status: 401 });
+    return new Response('Missing token', { status: 401 })
   }
 
-  const { isValid, redirectTo = "/" } = await validatePreviewUrl(
+  const { isValid, redirectTo = '/' } = await validatePreviewUrl(
     client.withConfig({ token }),
-    request.url
-  );
+    request.url,
+  )
 
   if (!isValid) {
-    return new Response("Invalid secret", { status: 401 });
+    return new Response('Invalid secret', { status: 401 })
   }
 
-  const draft = await draftMode();
-  draft.enable();
+  const draft = await draftMode()
+  draft.enable()
 
-  redirect(redirectTo);
+  redirect(redirectTo)
 }

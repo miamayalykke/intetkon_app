@@ -1,0 +1,82 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!**/coverage",
+      "!**/node_modules",
+      "!**/build",
+      "!**/public",
+      "!**/specs",
+      "!**/prisma"
+    ]
+  },
+  "assist": {
+    "enabled": true
+  },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "linter": {
+    "domains": {
+      "next": "recommended"
+    },
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "off",
+        "noAsyncPromiseExecutor": "off",
+        "noUnknownAtRules": "off",
+        "noArrayIndexKey": "off",
+        "noConsole": {
+          "level": "warn",
+          "options": {
+            "allow": ["info", "debug", "warn", "error"]
+          }
+        }
+      },
+      "correctness": {
+        "useUniqueElementIds": "off",
+        "noUnusedImports": "error",
+        "noUnusedLabels": "error",
+        "noUnusedVariables": {
+          "level": "error",
+          "options": {
+            "ignoreRestSiblings": true
+          }
+        }
+      },
+      "complexity": {
+        "useLiteralKeys": {
+          "fix": "safe",
+          "level": "error"
+        }
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
+  "vcs": {
+    "enabled": true,
+    "useIgnoreFile": true,
+    "clientKind": "git",
+    "defaultBranch": "develop"
+  }
+}

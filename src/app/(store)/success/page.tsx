@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import useBasketStore from "../../../../store/store";
-import { Check } from "lucide-react";
+import { Check } from 'lucide-react'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { useEffect } from 'react'
+import { Button } from '@/components/ui/button'
+import useBasketStore from '../../../../store/store'
 
 function SuccessPage() {
-  const searchParams = useSearchParams();
-  const orderNumber = searchParams.get("orderNumber");
-  const clearBasket = useBasketStore((state) => state.clearBasket);
+  const searchParams = useSearchParams()
+  const orderNumber = searchParams.get('orderNumber')
+  const clearBasket = useBasketStore((state) => state.clearBasket)
 
   useEffect(() => {
     if (orderNumber) {
-      clearBasket();
+      clearBasket()
     }
-  }, [orderNumber, clearBasket]);
+  }, [orderNumber, clearBasket])
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
@@ -59,7 +59,7 @@ function SuccessPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SuccessPage;
+export default SuccessPage

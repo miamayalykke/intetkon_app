@@ -1,18 +1,18 @@
-import { formatCurrency } from "@/lib/formatCurrency";
-import { imageUrl } from "@/lib/imageUrl";
-import { getMyOrders } from "@/sanity/lib/orders/getMyOrders";
-import { auth } from "@clerk/nextjs/server";
-import Image from "next/image";
-import { redirect } from "next/navigation";
+import { auth } from '@clerk/nextjs/server'
+import Image from 'next/image'
+import { redirect } from 'next/navigation'
+import { formatCurrency } from '@/lib/formatCurrency'
+import { imageUrl } from '@/lib/imageUrl'
+import { getMyOrders } from '@/sanity/lib/orders/getMyOrders'
 
 async function Orders() {
-  const { userId } = await auth();
+  const { userId } = await auth()
 
   if (!userId) {
-    return redirect("/");
+    return redirect('/')
   }
 
-  const orders = await getMyOrders(userId);
+  const orders = await getMyOrders(userId)
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
@@ -46,7 +46,7 @@ async function Orders() {
                       <p className="font-medium">
                         {order.orderDate
                           ? new Date(order.orderDate).toLocaleDateString()
-                          : "N/A"}
+                          : 'N/A'}
                       </p>
                     </div>
                   </div>
@@ -55,13 +55,13 @@ async function Orders() {
                     <div className="flex items-center">
                       <span className="text-sm mr-2">Status:</span>
                       <span
-                        className={`px-3 py-1 rounded-full text-sm ${order.status === "paid" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}
+                        className={`px-3 py-1 rounded-full text-sm ${order.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}
                       >
                         {order.status}
                       </span>
                     </div>
                     <div className="sm:text-right">
-                      <p className="text-sm text-gray-600 mb-1">Total Amount</p>{" "}
+                      <p className="text-sm text-gray-600 mb-1">Total Amount</p>{' '}
                       <p className="font-bold text-lg">
                         {formatCurrency(order.totalPrice ?? 0, order.currency)}
                       </p>
@@ -70,14 +70,14 @@ async function Orders() {
                   {order.amountDiscount ? (
                     <div className="mt-4 p-3 sm:p-4 bg-red-50 rounded-lg">
                       <p className="text-red-600 font-medium mb-1 text-sm sm:text-base">
-                        Discount Applied:{" "}
+                        Discount Applied:{' '}
                         {formatCurrency(order.amountDiscount, order.currency)}
                       </p>
                       <p className="text-sm text-gray-600">
-                        Original Subtotal:{" "}
+                        Original Subtotal:{' '}
                         {formatCurrency(
                           (order.totalPrice ?? 0) + order.amountDiscount,
-                          order.currency
+                          order.currency,
                         )}
                       </p>
                     </div>
@@ -97,19 +97,19 @@ async function Orders() {
                           <div className="relative h-14 w-14 sm:h-16 sm:w-16 flex-shrink-0 rounded-md overflow-hidden">
                             <Image
                               src={imageUrl(product.product.image).url()}
-                              alt={product.product?.name ?? ""}
+                              alt={product.product?.name ?? ''}
                               className="object-cover"
                               fill
-                            />{" "}
+                            />{' '}
                           </div>
                         )}
                         <div>
-                          {" "}
+                          {' '}
                           <p className="font-medium text-sm sm:text-base">
                             {product.product?.name}
                           </p>
                           <p className="text-sm text-gray-600">
-                            Quantity: {product.quantity ?? "N/A"}
+                            Quantity: {product.quantity ?? 'N/A'}
                           </p>
                         </div>
                       </div>
@@ -117,9 +117,9 @@ async function Orders() {
                         {product.product?.price && product.quantity
                           ? formatCurrency(
                               product.product.price * product.quantity,
-                              order.currency
+                              order.currency,
                             )
-                          : "N/A"}
+                          : 'N/A'}
                       </p>
                     </div>
                   ))}
@@ -131,7 +131,7 @@ async function Orders() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default Orders;
+export default Orders
