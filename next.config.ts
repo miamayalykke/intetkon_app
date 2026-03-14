@@ -1,5 +1,3 @@
-/** @type {import('next').NextConfig} */
-
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
@@ -11,14 +9,10 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  reactCompiler: true,
-  cacheComponenst: true,
   pageExtensions: ['ts', 'tsx', 'js'],
   output: 'standalone',
-  experimental: {
-    turbo: {
-      root: '.',
-    },
+  turbopack: {
+    root: __dirname,
   },
 }
 
