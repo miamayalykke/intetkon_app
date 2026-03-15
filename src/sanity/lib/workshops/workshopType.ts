@@ -5,7 +5,7 @@ export interface Workshop {
   description: string
   date: string
   duration: string // e.g., "4 Hours"
-  price: number
+  price: number //In DKK
   location: string
   maxAllocation: number
   currentSignUps: number

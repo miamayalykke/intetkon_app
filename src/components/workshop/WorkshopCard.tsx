@@ -56,7 +56,7 @@ const WorkshopCard = ({ workshop }: { workshop: Workshop }) => {
         {/* --- Action Area --- */}
         <div className="flex flex-col items-center lg:items-end gap-4 min-w-50">
           <div className="text-3xl font-black tracking-tighter">
-            €{workshop.price.toFixed(2)}
+            {workshop.price.toFixed(2)} kr.
           </div>
 
           <Button

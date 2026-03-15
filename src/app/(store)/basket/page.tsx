@@ -125,7 +125,7 @@ const BasketPage = () => {
                     {item.product.name}
                   </h2>
                   <p className="text-sm text-muted-foreground font-light uppercase tracking-widest">
-                    €{item.product.price?.toFixed(2)} per unit
+                    {item.product.price?.toFixed(2)} kr. per unit
                   </p>
                 </div>
 
@@ -134,7 +134,7 @@ const BasketPage = () => {
                     <AddToBasketButton product={item.product} />
                   </div>
                   <p className="text-xl font-bold font-mono">
-                    €{((item.product.price ?? 0) * item.quantity).toFixed(2)}
+                    {((item.product.price ?? 0) * item.quantity).toFixed(2)} kr.
                   </p>
                 </div>
               </div>
@@ -168,7 +168,7 @@ const BasketPage = () => {
                   Total
                 </span>
                 <span className="text-4xl font-black text-orange-500 tracking-tighter">
-                  €{totalPrice}
+                  {totalPrice} kr.
                 </span>
               </div>
             </div>

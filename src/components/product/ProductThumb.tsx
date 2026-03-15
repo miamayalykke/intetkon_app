@@ -76,7 +76,7 @@ function ProductThumb({ product }: { product: Product }) {
             {product.name}
           </h2>
           <p className="text-lg font-mono font-bold tracking-tighter">
-            €{product.price?.toFixed(2)}
+            {product.price?.toFixed(2)} kr.
           </p>
         </div>
 

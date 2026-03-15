@@ -38,7 +38,7 @@ export const productType = defineType({
     }),
     defineField({
       name: 'price',
-      title: 'Price',
+      title: 'Price (DKK)',
       type: 'number',
       validation: (Rule) => Rule.required().min(0),
     }),
@@ -65,7 +65,7 @@ export const productType = defineType({
     prepare(select) {
       return {
         title: select.title,
-        subtitle: `$${select.price}`,
+        subtitle: `${select.price} kr`,
         media: select.media,
       }
     },
