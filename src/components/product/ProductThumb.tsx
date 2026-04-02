@@ -39,7 +39,7 @@ function ProductThumb({ product }: { product: Product }) {
           <div className="absolute top-6 left-6 flex flex-col gap-2">
             {product.categories?.slice(0, 1).map((cat: any) => (
               <span
-                key={cat._id}
+                key={cat._ref}
                 className="bg-white/90 backdrop-blur-md border border-border px-3 py-1 rounded-full flex items-center gap-2 shadow-sm scale-90 origin-left uppercase text-[8px] font-black tracking-widest"
               >
                 {isPattern ? (

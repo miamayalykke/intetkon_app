@@ -47,6 +47,7 @@ export const productType = defineType({
       title: 'Categories',
       type: 'array',
       of: [{ type: 'reference', to: [{ type: 'category' }] }],
+      validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
       name: 'stock',

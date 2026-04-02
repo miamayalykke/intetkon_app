@@ -1,5 +1,5 @@
 import { getProductBySlug } from '@sanity/lib/products/getProductBySlug'
-import AddToBasketButton from '@src/components/AddToBasketButton'
+import AddToCartButton from '@src/components/AddToCartButton'
 import { imageUrl } from '@src/lib/imageUrl'
 import { ArrowLeft, Info, Ruler, Scissors, Sparkles } from 'lucide-react'
 import Image from 'next/image'
@@ -93,7 +93,7 @@ const ProductPage = async ({
             <div className="pt-4 border-t border-border">
               <div className="flex flex-col gap-3">
                 <div className="origin-left">
-                  <AddToBasketButton
+                  <AddToCartButton
                     product={product}
                     disabled={isOutOfStock}
                   />
