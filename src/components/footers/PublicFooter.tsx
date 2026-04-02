@@ -2,9 +2,15 @@
 
 import Logo from '@public/logo.svg'
 import { Button } from '@ui/button'
-import { Facebook, Instagram, Linkedin, Mail, Youtube } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaTiktok,
+} from 'react-icons/fa'
 
 const PublicFooter = () => {
   return (
@@ -33,25 +39,30 @@ const PublicFooter = () => {
               <div className="flex items-center gap-3">
                 {[
                   {
-                    icon: <Facebook className="w-4 h-4" />,
+                    icon: <FaFacebookF className="w-4 h-4" />,
+                    label: 'Facebook',
                     href: 'https://www.facebook.com/profile.php?id=61569961322745',
                   },
                   {
-                    icon: <Instagram className="w-4 h-4" />,
+                    icon: <FaInstagram className="w-4 h-4" />,
+                    label: 'Instagram',
                     href: 'https://www.instagram.com/_intetkon_/',
                   },
                   {
-                    icon: <Youtube className="w-4 h-4" />,
+                    icon: <FaTiktok className="w-4 h-4" />,
+                    label: 'TikTok',
                     href: 'https://www.tiktok.com/@intetkon_',
                   },
                   {
-                    icon: <Linkedin className="w-4 h-4" />,
+                    icon: <FaLinkedinIn className="w-4 h-4" />,
+                    label: 'LinkedIn',
                     href: 'https://www.linkedin.com/company/intetk%C3%B8n/',
                   },
                 ].map((social, i) => (
                   <Link
                     key={i}
                     href={social.href}
+                    aria-label={social.label}
                     className="p-2 rounded-full bg-secondary/10 text-secondary hover:bg-secondary hover:text-white transition-all shadow-sm"
                   >
                     {social.icon}
