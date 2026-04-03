@@ -26,7 +26,15 @@ export const UserMenu = () => {
         </p>
         <p className="text-xs font-bold leading-tight">{user?.firstName}</p>
       </div>
-      <UserButton afterSignOutUrl="/" />
+      <UserButton afterSignOutUrl="/">
+        <UserButton.MenuItems>
+          <UserButton.Link
+            label="My Orders"
+            labelIcon={<span>📦</span>}
+            href="/app/orders"
+          />
+        </UserButton.MenuItems>
+      </UserButton>
     </div>
   )
 }

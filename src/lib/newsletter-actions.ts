@@ -1,11 +1,17 @@
 'use server'
-import { Resend } from 'resend'
+import {
+  CreateContactCommand,
+  GetContactCommand,
+  SendEmailCommand,
+  UpdateContactCommand,
+} from '@aws-sdk/client-sesv2'
+import { render } from '@react-email/render'
+import WelcomeEmail from '../../emails/welcome'
+import { CONTACT_LIST_NAME, FROM_EMAIL, sesv2 } from './ses-client'
 
 export type NewsletterState = {
   status: 'idle' | 'success' | 'conflict' | 'error' | 'no_selection'
 }
-
-const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function subscribe(
   _prevState: NewsletterState,
@@ -19,26 +25,69 @@ export async function subscribe(
     return { status: 'no_selection' }
   }
 
-  try {
-    // Add contact to Resend audience
-    await resend.contacts.create({
-      email,
-      unsubscribed: false,
+  const topicPreferences = []
+  if (isNewsletter) {
+    topicPreferences.push({
+      TopicName: 'newsletter',
+      SubscriptionStatus: 'OPT_IN' as const,
     })
+  }
+  if (isTester) {
+    topicPreferences.push({
+      TopicName: 'pattern-tester',
+      SubscriptionStatus: 'OPT_IN' as const,
+    })
+  }
 
-    // Add to relevant segments
-    if (isNewsletter && process.env.RESEND_REGULAR_NEWSLETTER_SEGMENT_ID) {
-      await resend.contacts.segments.add({
-        email,
-        segmentId: process.env.RESEND_REGULAR_NEWSLETTER_SEGMENT_ID,
-      })
+  try {
+    // Check if contact already exists
+    let isNewContact = true
+    try {
+      await sesv2.send(
+        new GetContactCommand({
+          ContactListName: CONTACT_LIST_NAME,
+          EmailAddress: email,
+        }),
+      )
+      isNewContact = false
+    } catch {
+      // Contact doesn't exist yet
     }
-    if (isTester && process.env.RESEND_PATTERN_TESTER_SEGMENT_ID) {
-      await resend.contacts.segments.add({
-        email,
-        segmentId: process.env.RESEND_PATTERN_TESTER_SEGMENT_ID,
-      })
+
+    if (!isNewContact) {
+      // Update topic preferences for existing contact
+      await sesv2.send(
+        new UpdateContactCommand({
+          ContactListName: CONTACT_LIST_NAME,
+          EmailAddress: email,
+          TopicPreferences: topicPreferences,
+        }),
+      )
+      return { status: 'conflict' }
     }
+
+    await sesv2.send(
+      new CreateContactCommand({
+        ContactListName: CONTACT_LIST_NAME,
+        EmailAddress: email,
+        TopicPreferences: topicPreferences,
+      }),
+    )
+
+    // Send welcome email
+    const html = await render(WelcomeEmail({ email }))
+    await sesv2.send(
+      new SendEmailCommand({
+        FromEmailAddress: FROM_EMAIL,
+        Destination: { ToAddresses: [email] },
+        Content: {
+          Simple: {
+            Subject: { Data: 'Welcome to Intetkøn!' },
+            Body: { Html: { Data: html } },
+          },
+        },
+      }),
+    )
 
     return { status: 'success' }
   } catch {

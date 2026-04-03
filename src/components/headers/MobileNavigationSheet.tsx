@@ -28,7 +28,7 @@ export const NavigationSheet = () => {
         <NavMenu
           className="mt-6 [&>div]:h-full"
           orientation="vertical"
-          onLinkClick={() => setOpen(false)}
+          onClick={() => setOpen(false)}
         />
       </SheetContent>
     </Sheet>
