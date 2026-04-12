@@ -7,6 +7,36 @@ import { CONTACT_LIST_NAME, FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
 
 export type Audience = 'newsletter' | 'pattern-tester' | 'all'
 
+interface SendTestEmailInput {
+  html: string
+  subject: string
+  toEmail: string
+}
+
+export async function sendTestEmail({
+  html,
+  subject,
+  toEmail,
+}: SendTestEmailInput): Promise<{ success: boolean; message: string }> {
+  try {
+    await sesv2.send(
+      new SendEmailCommand({
+        FromEmailAddress: FROM_EMAIL,
+        Destination: { ToAddresses: [toEmail] },
+        Content: {
+          Simple: {
+            Subject: { Data: `[TEST] ${subject}` },
+            Body: { Html: { Data: html } },
+          },
+        },
+      }),
+    )
+    return { success: true, message: `Test email sent to ${toEmail}.` }
+  } catch {
+    return { success: false, message: 'Failed to send test email.' }
+  }
+}
+
 interface SendCampaignInput {
   html: string
   subject: string
@@ -73,10 +103,12 @@ export async function sendCampaign({
       success: true,
       message: `Campaign sent to ${sent} of ${contacts.length} subscribers.`,
     }
-  } catch {
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[sendCampaign]', err)
     return {
       success: false,
-      message: 'Failed to send campaign. Check AWS credentials and configuration.',
+      message: `Failed to send campaign: ${msg}`,
     }
   }
 }

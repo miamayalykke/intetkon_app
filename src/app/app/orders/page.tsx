@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { getMyOrders } from '@sanity/lib/orders/getMyOrders'
 import { formatCurrency } from '@src/lib/formatCurrency'
 import { imageUrl } from '@src/lib/imageUrl'
-import { Clock, Receipt, Sparkles } from 'lucide-react'
+import { Clock, Download, MapPin, Receipt, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
@@ -121,6 +121,30 @@ async function Orders() {
                                   )
                                 : 'N/A'}
                             </p>
+                            {item.product?.productType === 'digital' && item.product?._id && (
+                              <a
+                                href={`/api/download/${item.product._id}`}
+                                className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors mt-1"
+                              >
+                                <Download className="w-3 h-3" />
+                                Download
+                              </a>
+                            )}
+                            {item.product?.productType === 'physical_course' && (
+                              <div className="mt-1 space-y-0.5">
+                                {item.product?.courseDate && (
+                                  <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                    {new Date(item.product.courseDate).toLocaleDateString('da-DK', { dateStyle: 'long' })}
+                                  </p>
+                                )}
+                                {item.product?.courseLocation && (
+                                  <p className="flex items-center gap-1 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                    <MapPin className="w-3 h-3 shrink-0" />
+                                    {item.product.courseLocation}
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}

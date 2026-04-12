@@ -13,3 +13,6 @@ export const CONTACT_LIST_NAME =
 
 export const FROM_EMAIL =
   process.env.AWS_SES_FROM_EMAIL || 'newsletter@intetkon.com'
+
+export const ORDER_FROM_EMAIL =
+  process.env.AWS_SES_ORDER_FROM_EMAIL || 'order@intetkon.com'

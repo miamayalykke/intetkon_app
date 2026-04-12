@@ -2,7 +2,7 @@
 import dynamic from 'next/dynamic'
 import { useRef, useState } from 'react'
 import type { EditorRef } from 'react-email-editor'
-import { type Audience, sendCampaign } from './campaign-actions'
+import { type Audience, sendCampaign, sendTestEmail } from './campaign-actions'
 
 const EmailEditor = dynamic(() => import('react-email-editor'), { ssr: false })
 
@@ -15,6 +15,33 @@ export default function EmailAdminPage() {
     success: boolean
     message: string
   } | null>(null)
+  const [testEmail, setTestEmail] = useState('')
+  const [sendingTest, setSendingTest] = useState(false)
+  const [testResult, setTestResult] = useState<{
+    success: boolean
+    message: string
+  } | null>(null)
+
+  const handleSendTest = () => {
+    if (!subject.trim()) {
+      setTestResult({ success: false, message: 'Please enter a subject line.' })
+      return
+    }
+    if (!testEmail.trim()) {
+      setTestResult({ success: false, message: 'Please enter a test email address.' })
+      return
+    }
+    editorRef.current?.editor?.exportHtml(async (data) => {
+      setSendingTest(true)
+      setTestResult(null)
+      try {
+        const res = await sendTestEmail({ html: data.html, subject, toEmail: testEmail })
+        setTestResult(res)
+      } finally {
+        setSendingTest(false)
+      }
+    })
+  }
 
   const handleSend = () => {
     if (!subject.trim()) {
@@ -79,6 +106,37 @@ export default function EmailAdminPage() {
         >
           {sending ? 'Sending…' : 'Send Campaign'}
         </button>
+      </div>
+
+      <div className="flex gap-3 items-end flex-wrap border rounded-lg p-3 bg-muted/40">
+        <div className="space-y-1 flex-1 min-w-60">
+          <label className="text-sm font-medium" htmlFor="test-email">
+            Send Test Email
+          </label>
+          <input
+            id="test-email"
+            type="email"
+            value={testEmail}
+            onChange={(e) => setTestEmail(e.target.value)}
+            placeholder="test@example.com"
+            className="w-full border rounded-lg px-3 py-2 text-sm bg-background"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={handleSendTest}
+          disabled={sendingTest}
+          className="border rounded-lg px-5 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50 transition-colors"
+        >
+          {sendingTest ? 'Sending…' : 'Send Test'}
+        </button>
+        {testResult && (
+          <p
+            className={`w-full text-sm ${testResult.success ? 'text-green-700' : 'text-red-700'}`}
+          >
+            {testResult.message}
+          </p>
+        )}
       </div>
 
       {result && (
