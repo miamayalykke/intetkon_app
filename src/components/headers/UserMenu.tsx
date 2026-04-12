@@ -18,6 +18,8 @@ export const UserMenu = () => {
     )
   }
 
+  const isAdmin = (user?.publicMetadata as { role?: string })?.role === 'admin'
+
   return (
     <div className="flex items-center gap-2">
       <div className="hidden xl:block text-right">
@@ -33,6 +35,13 @@ export const UserMenu = () => {
             labelIcon={<span>📦</span>}
             href="/app/orders"
           />
+          {isAdmin && (
+            <UserButton.Link
+              label="Admin"
+              labelIcon={<span>⚙️</span>}
+              href="/app"
+            />
+          )}
         </UserButton.MenuItems>
       </UserButton>
     </div>

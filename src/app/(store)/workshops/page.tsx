@@ -1,61 +1,6 @@
-import type { Workshop } from '@sanity/lib/workshops/workshopType'
-import WorkshopCard from '@src/components/workshop/WorkshopCard'
+import { getWorkshops } from '@sanity/lib/workshops/getWorkshops'
+import WorkshopList from '@src/components/workshop/WorkshopList'
 
-export async function getWorkshops(): Promise<Workshop[]> {
-  // Simulate network delay for realistic testing
-  await new Promise((resolve) => setTimeout(resolve, 800))
-
-  const mockWorkshops: Workshop[] = [
-    {
-      _id: 'w1',
-      title: 'Draping the Fluid Form',
-      slug: { current: 'draping-fluid-form' },
-      description:
-        'A deep dive into three-dimensional design. Learn to manipulate fabric directly on the mannequin to create silhouettes that ignore traditional gender lines.',
-      date: '2026-04-12T10:00:00Z',
-      duration: '5 Hours',
-      price: 85.0,
-      location: 'Copenhagen Studio',
-      maxAllocation: 10,
-      currentSignUps: 4,
-      level: 'Intermediate',
-    },
-    {
-      _id: 'w2',
-      title: 'Zero Waste Pattern Cutting',
-      slug: { current: 'zero-waste-cutting' },
-      description:
-        'Master the art of jigsaw-style pattern layout. We will teach you how to use every square inch of your fabric, leaving zero scraps behind.',
-      date: '2026-05-05T13:00:00Z',
-      duration: '4 Hours',
-      price: 65.0,
-      location: 'Berlin Atelier',
-      maxAllocation: 12,
-      currentSignUps: 12, // This one will show as "Sold Out"
-      level: 'Beginner',
-    },
-    {
-      _id: 'w3',
-      title: 'Digital Patterns & Projectors',
-      slug: { current: 'digital-patterns-workshop' },
-      description:
-        'Move your sewing practice into the future. Learn how to calibrate projectors for sewing and use layered PDF files for instant adjustments.',
-      date: '2026-06-20T09:00:00Z',
-      duration: '3 Hours',
-      price: 45.0,
-      location: 'Online / Zoom',
-      maxAllocation: 25,
-      currentSignUps: 18,
-      level: 'Advanced',
-    },
-  ]
-
-  // Filtering for today or the future and sorting by date
-  const now = new Date()
-  return mockWorkshops
-    .filter((w) => new Date(w.date) >= now)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-}
 const WorkshopPage = async () => {
   const workshops = await getWorkshops()
 
@@ -78,22 +23,7 @@ const WorkshopPage = async () => {
           </p>
         </header>
 
-        {/* --- Schedule View --- */}
-        <div className="space-y-6">
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-px grow bg-border" />
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">
-              Upcoming Schedule
-            </span>
-            <div className="h-px grow bg-border" />
-          </div>
-
-          <div className="grid grid-cols-1 gap-12">
-            {workshops.map((workshop) => (
-              <WorkshopCard key={workshop._id} workshop={workshop} />
-            ))}
-          </div>
-        </div>
+        <WorkshopList workshops={workshops} />
       </section>
     </main>
   )
