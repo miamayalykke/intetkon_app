@@ -2,10 +2,10 @@ import { getProductBySlug } from '@sanity/lib/products/getProductBySlug'
 import AddToBasketButton from '@src/components/AddToBasketButton'
 import { imageUrl } from '@src/lib/imageUrl'
 import { ArrowLeft, Info, Ruler, Scissors, Sparkles } from 'lucide-react'
-import { PortableText } from 'next-sanity'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { PortableText } from 'next-sanity'
 
 export const dynamic = 'force-static'
 export const revalidate = 60
@@ -78,7 +78,7 @@ const ProductPage = async ({
                 </span>
               </h1>
               <div className="text-3xl font-black tracking-tighter text-foreground/90">
-                €{product.price?.toFixed(2)}
+                {product.price?.toFixed(2)} DKK
               </div>
             </div>
 
