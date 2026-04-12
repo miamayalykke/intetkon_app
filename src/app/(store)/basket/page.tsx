@@ -1,7 +1,7 @@
 'use client'
 
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs'
-import AddToBasketButton from '@src/components/AddToBasketButton'
+import BasketItemControls from '@src/components/BasketItemControls'
 import Loader from '@src/components/Loader'
 import { imageUrl } from '@src/lib/imageUrl'
 import { Button } from '@ui/button'
@@ -131,7 +131,7 @@ const BasketPage = () => {
 
                 <div className="mt-4 flex items-center justify-between sm:justify-start gap-8">
                   <div className="scale-110">
-                    <AddToBasketButton product={item.product} />
+                    <BasketItemControls product={item.product} />
                   </div>
                   <p className="text-xl font-bold font-mono">
                     {((item.product.price ?? 0) * item.quantity).toFixed(2)} DKK

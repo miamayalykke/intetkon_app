@@ -1,6 +1,6 @@
 'use client'
 
-import { Minus, Plus } from 'lucide-react'
+import { Minus, Plus, ShoppingBag } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { Product } from '../../sanity.types'
 import useBasketStore from '../../store/store'
@@ -11,10 +11,9 @@ interface AddToBasketButtonProps {
 }
 
 const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
-  const itemCount = useBasketStore((state) => state.getItemCount(product._id))
   const addItem = useBasketStore((state) => state.addItem)
-  const removeItem = useBasketStore((state) => state.removeItem)
 
+  const [quantity, setQuantity] = useState(1)
   const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
@@ -22,36 +21,51 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
   }, [])
 
   if (!isClient) {
-    return <div className="w-32 h-10 animate-pulse bg-gray-100 rounded-full" />
+    return <div className="w-48 h-10 animate-pulse bg-gray-100 rounded-full" />
   }
 
-  // Stock logic
   const totalStock = product.stock ?? 0
-  const isAtMaxStock = totalStock > 0 && itemCount >= totalStock
+  const isAtMaxStock = totalStock > 0 && quantity >= totalStock
+
+  const handleAddToCart = () => {
+    for (let i = 0; i < quantity; i++) {
+      addItem(product)
+    }
+  }
 
   return (
-    <div className="flex items-center gap-4 bg-card border border-border p-1.5 pr-4 rounded-full shadow-sm w-fit">
-      <div className="flex items-center gap-2">
-        {/* --- Decrease Button --- */}
+    <div className="flex items-center gap-3">
+      {/* Quantity counter */}
+      <div className="flex items-center gap-2 bg-card border border-border p-1.5 rounded-full shadow-sm">
         <button
           type="button"
-          onClick={() => removeItem(product._id)}
-          className={`group w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 
+          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
             ${
-              itemCount === 0
+              quantity <= 1
                 ? 'opacity-30 cursor-not-allowed grayscale'
                 : 'bg-background hover:bg-orange-500 hover:text-white border border-border shadow-sm active:scale-90'
             }`}
-          disabled={itemCount === 0 || disabled}
+          disabled={quantity <= 1 || disabled}
         >
           <Minus className="w-3.5 h-3.5" />
         </button>
 
-        {/* --- Increase Button --- */}
+        <div className="flex flex-col items-center leading-none px-1">
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">
+            Qty
+          </span>
+          <div className="flex items-baseline gap-1 font-black tabular-nums tracking-tighter">
+            <span className="text-orange-500 text-sm">{quantity}</span>
+            <span className="text-muted-foreground/40 text-[10px]">/</span>
+            <span className="text-muted-foreground text-xs">{totalStock}</span>
+          </div>
+        </div>
+
         <button
           type="button"
-          onClick={() => addItem(product)}
-          className={`group w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 
+          onClick={() => setQuantity((q) => Math.min(totalStock, q + 1))}
+          className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
             ${
               disabled || isAtMaxStock
                 ? 'bg-gray-100 cursor-not-allowed opacity-50'
@@ -63,32 +77,21 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
         </button>
       </div>
 
-      {/* --- Fractional Counter --- */}
-      <div className="flex flex-col items-start leading-none">
-        <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">
-          Quantity
-        </span>
-        <div className="flex items-baseline gap-1 font-black tabular-nums tracking-tighter">
-          <span
-            className={
-              itemCount > 0
-                ? 'text-orange-500 text-sm'
-                : 'text-foreground text-sm'
-            }
-          >
-            {itemCount}
-          </span>
-          <span className="text-muted-foreground/40 text-[10px]">/</span>
-          <span className="text-muted-foreground text-xs">{totalStock}</span>
-        </div>
-      </div>
-
-      {/* Visual Indicator for max stock */}
-      {isAtMaxStock && (
-        <div className="hidden lg:block ml-2 px-2 py-0.5 bg-foreground text-white text-[8px] font-bold rounded uppercase tracking-tighter">
-          Max
-        </div>
-      )}
+      {/* Add to Cart button */}
+      <button
+        type="button"
+        onClick={handleAddToCart}
+        disabled={disabled}
+        className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-widest transition-all duration-200 shadow-sm
+          ${
+            disabled
+              ? 'bg-gray-100 text-muted-foreground cursor-not-allowed opacity-50'
+              : 'bg-orange-500 text-white hover:bg-orange-600 active:scale-95 shadow-orange-500/20 shadow-md'
+          }`}
+      >
+        <ShoppingBag className="w-3.5 h-3.5" />
+        Add to Cart
+      </button>
     </div>
   )
 }
