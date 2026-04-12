@@ -1,14 +1,18 @@
 'use client'
 
-import type { Workshop } from '@sanity/lib/workshops/workshopType'
 import { Button } from '@ui/button'
 import { format } from 'date-fns'
 import { ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
+import type { WORKSHOPS_QUERYResult } from '../../../sanity.types'
 
-const WorkshopCard = ({ workshop }: { workshop: Workshop }) => {
-  const isFull = workshop.currentSignUps >= workshop.maxAllocation
-  const spotsLeft = workshop.maxAllocation - workshop.currentSignUps
-  const eventDate = new Date(workshop.date)
+type WorkshopItem = WORKSHOPS_QUERYResult[number]
+
+const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
+  const signUps = workshop.currentSignUps ?? 0
+  const maxSpots = workshop.maxAllocation ?? 0
+  const isFull = signUps >= maxSpots
+  const spotsLeft = maxSpots - signUps
+  const eventDate = new Date(workshop.date ?? '')
 
   return (
     <div
@@ -56,7 +60,7 @@ const WorkshopCard = ({ workshop }: { workshop: Workshop }) => {
         {/* --- Action Area --- */}
         <div className="flex flex-col items-center lg:items-end gap-4 min-w-50">
           <div className="text-3xl font-black tracking-tighter">
-            {workshop.price.toFixed(2)} DKK
+            {(workshop.price ?? 0).toFixed(2)} DKK
           </div>
 
           <Button
