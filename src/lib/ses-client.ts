@@ -12,7 +12,7 @@ export const CONTACT_LIST_NAME =
   process.env.AWS_SES_CONTACT_LIST_NAME || 'intetkon'
 
 export const FROM_EMAIL =
-  process.env.AWS_SES_FROM_EMAIL || 'newsletter@intetkon.com'
+  process.env.AWS_SES_FROM_EMAIL || 'Intetkøn <newsletter@intetkon.com>'
 
 export const ORDER_FROM_EMAIL =
-  process.env.AWS_SES_ORDER_FROM_EMAIL || 'order@intetkon.com'
+  process.env.AWS_SES_ORDER_FROM_EMAIL || 'Intetkøn <order@intetkon.com>'

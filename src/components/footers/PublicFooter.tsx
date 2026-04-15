@@ -1,8 +1,8 @@
 'use client'
 
 import Logo from '@public/logo.svg'
-import { Button } from '@ui/button'
-import { Facebook, Instagram, Linkedin, Mail, Youtube } from 'lucide-react'
+import NewsletterForm from '@src/components/newsletter/NewsletterForm'
+import { Facebook, Instagram, Linkedin, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -158,19 +158,7 @@ const PublicFooter = () => {
                   Get inspired with gender-neutral DIY ideas and workshop news.
                 </p>
               </div>
-              <form className="relative" onSubmit={(e) => e.preventDefault()}>
-                <div className="relative flex items-center">
-                  <Mail className="absolute left-3.5 w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="w-full bg-background border border-border rounded-full py-3 pl-10 pr-24 focus:outline-none focus:ring-2 focus:ring-secondary/40 text-xs transition-all"
-                  />
-                  <Button className="absolute right-1 rounded-full bg-secondary hover:bg-secondary/90 text-white h-8.5 px-4 font-bold text-[10px] uppercase">
-                    Join
-                  </Button>
-                </div>
-              </form>
+              <NewsletterForm />
             </div>
           </div>
 
