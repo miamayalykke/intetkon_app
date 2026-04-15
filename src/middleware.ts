@@ -7,6 +7,18 @@ const AUTH_ROUTES = ['/app/orders']
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl
 
+  if (process.env.UNDER_CONSTRUCTION === 'true') {
+    const isAllowed =
+      pathname === '/' ||
+      pathname.startsWith('/contact') ||
+      pathname.startsWith('/about') ||
+      pathname.startsWith('/pattern-testing') ||
+      /\.\w+$/.test(pathname) // static assets
+    if (!isAllowed) {
+      return NextResponse.redirect(new URL('/', req.url))
+    }
+  }
+
   const isAdminRoute =
     !AUTH_ROUTES.some((p) => pathname.startsWith(p)) &&
     ADMIN_ROUTES.some((p) => pathname.startsWith(p))
