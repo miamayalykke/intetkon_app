@@ -1,5 +1,9 @@
 'use client'
 import TesterHero from '@public/hero.jpeg'
+import {
+  applyPatternTester,
+  type PatternTesterState,
+} from '@src/lib/newsletter-actions'
 import { Button } from '@ui/button'
 import { Input } from '@ui/input'
 import { Label } from '@ui/label'
@@ -20,14 +24,16 @@ import {
   Sparkles,
 } from 'lucide-react'
 import Image from 'next/image'
+import { useActionState, useState } from 'react'
+
+const initialState: PatternTesterState = { status: 'idle' }
 
 const PatternTesterPage = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // Placeholder for form logic
-    console.info('Pattern Tester Application Submitted')
-    alert('Thank you for applying! Check your console for the placeholder log.')
-  }
+  const [state, formAction, isPending] = useActionState(
+    applyPatternTester,
+    initialState,
+  )
+  const [sewingLevel, setSewingLevel] = useState('')
 
   return (
     <main className="w-full overflow-x-clip">
@@ -117,97 +123,127 @@ const PatternTesterPage = () => {
 
           {/* Right Side: The Form */}
           <div className="relative p-8 lg:p-12 bg-card border border-border rounded-[3rem] shadow-xl">
-            <div className="mb-10">
-              <h2 className="text-4xl font-black tracking-tighter mb-2">
-                APPLY NOW
-              </h2>
-              <p className="text-muted-foreground font-light italic">
-                Fill out the details below to join the tester pool.
-              </p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="name"
-                    className="text-[10px] uppercase font-black tracking-widest ml-1"
-                  >
-                    Full Name
-                  </Label>
-                  <Input
-                    id="name"
-                    placeholder="Emilie Kallager"
-                    className="rounded-xl border-border/50 bg-background h-12"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="email"
-                    className="text-[10px] uppercase font-black tracking-widest ml-1"
-                  >
-                    Email Address
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="info@intetkon.com"
-                    className="rounded-xl border-border/50 bg-background h-12"
-                    required
-                  />
-                </div>
+            {state.status === 'success' ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
+                <CheckCircle2 className="w-12 h-12 text-secondary" />
+                <h2 className="text-3xl font-black tracking-tighter">You're in the pool!</h2>
+                <p className="text-muted-foreground font-light italic max-w-xs">
+                  We'll reach out when a new pattern is ready for testing. Keep an eye on your inbox.
+                </p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label
-                    htmlFor="level"
-                    className="text-[10px] uppercase font-black tracking-widest ml-1"
-                  >
-                    Sewing Level
-                  </Label>
-                  <Select>
-                    <SelectTrigger className="rounded-xl border-border/50 bg-background h-12">
-                      <SelectValue placeholder="Select level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="beginner">Beginner</SelectItem>
-                      <SelectItem value="intermediate">Intermediate</SelectItem>
-                      <SelectItem value="advanced">Advanced</SelectItem>
-                    </SelectContent>
-                  </Select>
+            ) : (
+              <>
+                <div className="mb-10">
+                  <h2 className="text-4xl font-black tracking-tighter mb-2">
+                    APPLY NOW
+                  </h2>
+                  <p className="text-muted-foreground font-light italic">
+                    Fill out the details below to join the tester pool.
+                  </p>
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="message"
-                  className="text-[10px] uppercase font-black tracking-widest ml-1"
-                >
-                  Tell us about your style
-                </Label>
-                <Textarea
-                  id="message"
-                  placeholder="Tell us about the machines you use and your favorite fabrics..."
-                  className="rounded-2xl border-border/50 bg-background min-h-30"
-                />
-              </div>
+                <form action={formAction} className="space-y-6">
+                  {/* Hidden input so Select value reaches FormData */}
+                  <input type="hidden" name="sewingLevel" value={sewingLevel} />
 
-              <Button
-                type="submit"
-                size="2xl"
-                className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-16 text-lg transition-all group"
-              >
-                Submit Application
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="firstName"
+                        className="text-[10px] uppercase font-black tracking-widest ml-1"
+                      >
+                        First Name
+                      </Label>
+                      <Input
+                        id="firstName"
+                        name="firstName"
+                        placeholder="Emilie"
+                        className="rounded-xl border-border/50 bg-background h-12"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="email"
+                        className="text-[10px] uppercase font-black tracking-widest ml-1"
+                      >
+                        Email Address
+                      </Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="info@intetkon.com"
+                        className="rounded-xl border-border/50 bg-background h-12"
+                        required
+                      />
+                    </div>
+                  </div>
 
-              <p className="text-[10px] text-center text-muted-foreground font-medium uppercase tracking-tighter">
-                By applying, you agree to our privacy policy regarding data
-                handling.
-              </p>
-            </form>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label
+                        htmlFor="level"
+                        className="text-[10px] uppercase font-black tracking-widest ml-1"
+                      >
+                        Sewing Level
+                      </Label>
+                      <Select value={sewingLevel} onValueChange={setSewingLevel}>
+                        <SelectTrigger className="rounded-xl border-border/50 bg-background h-12">
+                          <SelectValue placeholder="Select level" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="beginner">Beginner</SelectItem>
+                          <SelectItem value="intermediate">Intermediate</SelectItem>
+                          <SelectItem value="advanced">Advanced</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="message"
+                      className="text-[10px] uppercase font-black tracking-widest ml-1"
+                    >
+                      Tell us about your style
+                    </Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      placeholder="Tell us about the machines you use and your favorite fabrics..."
+                      className="rounded-2xl border-border/50 bg-background min-h-30"
+                    />
+                  </div>
+
+                  {state.status === 'conflict' && (
+                    <p className="text-sm text-muted-foreground italic">
+                      You're already in our tester pool — we've updated your details.
+                    </p>
+                  )}
+                  {state.status === 'error' && (
+                    <p className="text-sm text-red-500">
+                      Something went wrong. Please try again.
+                    </p>
+                  )}
+
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    size="2xl"
+                    className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-16 text-lg transition-all group"
+                  >
+                    {isPending ? 'Submitting…' : 'Submit Application'}
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+
+                  <p className="text-[10px] text-center text-muted-foreground font-medium uppercase tracking-tighter">
+                    By applying, you agree to our privacy policy regarding data
+                    handling.
+                  </p>
+                </form>
+              </>
+            )}
           </div>
         </div>
       </section>

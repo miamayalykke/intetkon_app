@@ -55,7 +55,7 @@ export async function createCheckoutSession(
       line_items: items.map((item) => ({
         price_data: {
           currency: 'dkk',
-          unit_amount: Math.round((item.product.price ?? 1) * 100), //stripe defines this unit_amount in øre, since we define it in kroner, it should be timed by 100
+          unit_amount: Math.round((item.product.price ?? 1) * 100),
           product_data: {
             name: item.product.name || 'Unnamed Product',
             description: `Product ID: ${item.product._id}`,

@@ -1,16 +1,10 @@
 'use client'
 
 import Logo from '@public/logo.svg'
-import { Button } from '@ui/button'
-import { Mail } from 'lucide-react'
+import NewsletterForm from '@src/components/newsletter/NewsletterForm'
+import { Facebook, Instagram, Linkedin, Youtube } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import {
-  FaFacebookF,
-  FaInstagram,
-  FaLinkedinIn,
-  FaTiktok,
-} from 'react-icons/fa'
 
 const PublicFooter = () => {
   return (
@@ -39,30 +33,25 @@ const PublicFooter = () => {
               <div className="flex items-center gap-3">
                 {[
                   {
-                    icon: <FaFacebookF className="w-4 h-4" />,
-                    label: 'Facebook',
+                    icon: <Facebook className="w-4 h-4" />,
                     href: 'https://www.facebook.com/profile.php?id=61569961322745',
                   },
                   {
-                    icon: <FaInstagram className="w-4 h-4" />,
-                    label: 'Instagram',
+                    icon: <Instagram className="w-4 h-4" />,
                     href: 'https://www.instagram.com/_intetkon_/',
                   },
                   {
-                    icon: <FaTiktok className="w-4 h-4" />,
-                    label: 'TikTok',
+                    icon: <Youtube className="w-4 h-4" />,
                     href: 'https://www.tiktok.com/@intetkon_',
                   },
                   {
-                    icon: <FaLinkedinIn className="w-4 h-4" />,
-                    label: 'LinkedIn',
+                    icon: <Linkedin className="w-4 h-4" />,
                     href: 'https://www.linkedin.com/company/intetk%C3%B8n/',
                   },
                 ].map((social, i) => (
                   <Link
                     key={i}
                     href={social.href}
-                    aria-label={social.label}
                     className="p-2 rounded-full bg-secondary/10 text-secondary hover:bg-secondary hover:text-white transition-all shadow-sm"
                   >
                     {social.icon}
@@ -169,19 +158,7 @@ const PublicFooter = () => {
                   Get inspired with gender-neutral DIY ideas and workshop news.
                 </p>
               </div>
-              <form className="relative" onSubmit={(e) => e.preventDefault()}>
-                <div className="relative flex items-center">
-                  <Mail className="absolute left-3.5 w-4 h-4 text-muted-foreground" />
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="w-full bg-background border border-border rounded-full py-3 pl-10 pr-24 focus:outline-none focus:ring-2 focus:ring-secondary/40 text-xs transition-all"
-                  />
-                  <Button className="absolute right-1 rounded-full bg-secondary hover:bg-secondary/90 text-white h-8.5 px-4 font-bold text-[10px] uppercase">
-                    Join
-                  </Button>
-                </div>
-              </form>
+              <NewsletterForm />
             </div>
           </div>
 

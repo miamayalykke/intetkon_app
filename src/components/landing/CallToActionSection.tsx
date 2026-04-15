@@ -57,9 +57,15 @@ const CallToActionSection = () => {
                   d="M 50, 50 m -35, 0 a 35,35 0 1,1 70,0 a 35,35 0 1,1 -70,0"
                 />
               </defs>
-              <text className="text-[11px] uppercase font-black tracking-[0.2em] fill-orange-500">
+              <text
+                fontSize="8.5"
+                fontWeight="900"
+                letterSpacing="2.5"
+                fill="#f97316"
+                style={{ textTransform: 'uppercase' }}
+              >
                 <textPath xlinkHref="#circlePath">
-                  Join the Circle • Intetkøn Atelier •
+                  Join the Circle • Intetkøn •
                 </textPath>
               </text>
             </svg>

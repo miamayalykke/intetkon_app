@@ -18,6 +18,8 @@ export const UserMenu = () => {
     )
   }
 
+  const isAdmin = (user?.publicMetadata as { role?: string })?.role === 'admin'
+
   return (
     <div className="flex items-center gap-2">
       <div className="hidden xl:block text-right">
@@ -26,7 +28,22 @@ export const UserMenu = () => {
         </p>
         <p className="text-xs font-bold leading-tight">{user?.firstName}</p>
       </div>
-      <UserButton afterSignOutUrl="/" />
+      <UserButton afterSignOutUrl="/">
+        <UserButton.MenuItems>
+          <UserButton.Link
+            label="My Orders"
+            labelIcon={<span>📦</span>}
+            href="/app/orders"
+          />
+          {isAdmin && (
+            <UserButton.Link
+              label="Admin"
+              labelIcon={<span>⚙️</span>}
+              href="/app"
+            />
+          )}
+        </UserButton.MenuItems>
+      </UserButton>
     </div>
   )
 }
