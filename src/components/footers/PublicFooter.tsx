@@ -2,8 +2,8 @@
 
 import Logo from '@public/logo.svg'
 import NewsletterForm from '@src/components/newsletter/NewsletterForm'
-import { Facebook, Instagram, Linkedin, Youtube } from 'lucide-react'
 import Image from 'next/image'
+import { FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa'
 import Link from 'next/link'
 
 const PublicFooter = () => {
@@ -33,19 +33,19 @@ const PublicFooter = () => {
               <div className="flex items-center gap-3">
                 {[
                   {
-                    icon: <Facebook className="w-4 h-4" />,
+                    icon: <FaFacebook className="w-4 h-4" />,
                     href: 'https://www.facebook.com/profile.php?id=61569961322745',
                   },
                   {
-                    icon: <Instagram className="w-4 h-4" />,
+                    icon: <FaInstagram className="w-4 h-4" />,
                     href: 'https://www.instagram.com/_intetkon_/',
                   },
                   {
-                    icon: <Youtube className="w-4 h-4" />,
+                    icon: <FaTiktok className="w-4 h-4" />,
                     href: 'https://www.tiktok.com/@intetkon_',
                   },
                   {
-                    icon: <Linkedin className="w-4 h-4" />,
+                    icon: <FaLinkedin className="w-4 h-4" />,
                     href: 'https://www.linkedin.com/company/intetk%C3%B8n/',
                   },
                 ].map((social, i) => (
