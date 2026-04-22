@@ -1,5 +1,5 @@
 import { defineQuery } from 'next-sanity'
-import { sanityFetch } from '../live'
+import { client } from '../client'
 
 const WORKSHOPS_QUERY = defineQuery(`
   *[_type == "workshop" && date >= $now] | order(date asc) {
@@ -20,6 +20,6 @@ const WORKSHOPS_QUERY = defineQuery(`
 
 export async function getWorkshops() {
   const now = new Date().toISOString()
-  const { data } = await sanityFetch({ query: WORKSHOPS_QUERY, params: { now } })
+  const data = await client.fetch(WORKSHOPS_QUERY, { now })
   return data ?? []
 }
