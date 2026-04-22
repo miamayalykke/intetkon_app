@@ -75,7 +75,7 @@ export default function OrderConfirmationEmail({
               // biome-ignore lint/suspicious/noArrayIndexKey: email template
               <Section key={i} style={productRow}>
                 <Text style={productName}>
-                  {item.name} × {item.quantity}
+                  {item.name} x {item.quantity}
                 </Text>
 
                 {item.productType === 'digital' && item.downloadUrl && (
