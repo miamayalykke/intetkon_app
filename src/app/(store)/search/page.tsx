@@ -4,9 +4,7 @@ import ProductGrid from '@src/components/product/ProductGrid'
 async function SearchPage({
   searchParams,
 }: {
-  searchParams: {
-    query: string
-  }
+  searchParams: Promise<{ query: string }>
 }) {
   const { query } = await searchParams
   const products = await searchProductsByName(query)
