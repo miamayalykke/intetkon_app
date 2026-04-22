@@ -1,5 +1,5 @@
 import { defineQuery } from 'next-sanity'
-import { sanityFetch } from '../live'
+import { client } from '../client'
 
 export const getProductBySlug = async (slug: string) => {
   const PRODUCT_BY_ID_QUERY = defineQuery(`
@@ -9,13 +9,8 @@ export const getProductBySlug = async (slug: string) => {
             `)
 
   try {
-    const product = await sanityFetch({
-      query: PRODUCT_BY_ID_QUERY,
-      params: {
-        slug,
-      },
-    })
-    return product.data || null
+    const product = await client.fetch(PRODUCT_BY_ID_QUERY, { slug })
+    return product || null
   } catch (error) {
     console.error('Error fetching product by ID:', error)
     return null

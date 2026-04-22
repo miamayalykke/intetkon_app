@@ -1,5 +1,5 @@
 import { defineQuery } from 'next-sanity'
-import { sanityFetch } from '../live'
+import { client } from '../client'
 import type { CouponCode } from './couponCodes'
 
 export const getActiveSaleByCouponCode = async (couponCode: CouponCode) => {
@@ -12,13 +12,8 @@ export const getActiveSaleByCouponCode = async (couponCode: CouponCode) => {
          `)
 
   try {
-    const activeSale = await sanityFetch({
-      query: ACTIVE_SALE_BY_COUPON_QUERY,
-      params: {
-        couponCode,
-      },
-    })
-    return activeSale ? activeSale.data : null
+    const activeSale = await client.fetch(ACTIVE_SALE_BY_COUPON_QUERY, { couponCode })
+    return activeSale ?? null
   } catch (error) {
     console.error('Error fetching active sale by coupon code:', error)
     return null
