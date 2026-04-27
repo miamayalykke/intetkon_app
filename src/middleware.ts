@@ -8,7 +8,9 @@ export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl
 
   if (process.env.UNDER_CONSTRUCTION === 'true') {
+    const isAdminPath = ADMIN_ROUTES.some((p) => pathname.startsWith(p))
     const isAllowed =
+      isAdminPath ||
       pathname === '/' ||
       pathname.startsWith('/contact') ||
       pathname.startsWith('/about') ||
