@@ -73,14 +73,21 @@ export const workshopType = defineType({
     }),
     defineField({
       name: 'description',
-      title: 'Description',
+      title: 'Short Description',
+      description: 'Brief summary shown on the workshop listing card',
       type: 'text',
       rows: 4,
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'body',
+      title: 'Full Description',
+      description: 'Rich content shown on the workshop detail page (sections, bullet points, etc.)',
+      type: 'blockContent',
+    }),
+    defineField({
       name: 'image',
-      title: 'Image',
+      title: 'Main Image',
       type: 'image',
       options: { hotspot: true },
     }),

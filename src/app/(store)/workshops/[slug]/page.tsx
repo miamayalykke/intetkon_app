@@ -1,17 +1,27 @@
+import { getWorkshopBySlug } from '@sanity/lib/workshops/getWorkshopBySlug'
 import { imageUrl } from '@src/lib/imageUrl'
-import { getWorkshopBySlug } from '@src/sanity/lib/workshops/getWorkshopBySlug'
+import { Button } from '@ui/button'
 import { format } from 'date-fns'
-import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import BookWorkshopButton from './BookWorkshopButton'
+import { PortableText } from 'next-sanity'
 
-interface Props {
-  params: Promise<{ slug: string }>
+export const dynamic = 'force-static'
+export const revalidate = 60
+
+const LEVEL_COLORS: Record<string, string> = {
+  Beginner: 'bg-green-100 text-green-700 border-green-200',
+  Intermediate: 'bg-orange-100 text-orange-700 border-orange-200',
+  Advanced: 'bg-red-100 text-red-700 border-red-200',
 }
 
-export default async function WorkshopDetailPage({ params }: Props) {
+const WorkshopDetailPage = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) => {
   const { slug } = await params
   const workshop = await getWorkshopBySlug(slug)
 
@@ -22,105 +32,132 @@ export default async function WorkshopDetailPage({ params }: Props) {
   const isFull = signUps >= maxSpots
   const spotsLeft = maxSpots - signUps
   const eventDate = new Date(workshop.date ?? '')
+  const levelColor = LEVEL_COLORS[workshop.level ?? ''] ?? 'bg-gray-100 text-gray-700 border-gray-200'
 
   return (
-    <main className="container mx-auto px-6 pt-24 pb-32 max-w-5xl">
-      {/* Back link */}
-      <Link
-        href="/workshops"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-orange-500 transition-colors mb-12 font-bold uppercase tracking-widest"
-      >
-        <ArrowLeft className="w-4 h-4" /> All Workshops
-      </Link>
+    <main className="min-h-screen bg-background pb-32">
+      <div className="container mx-auto px-6 pt-8">
+        <Link
+          href="/workshops"
+          className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-orange-500 transition-colors mb-8 group"
+        >
+          <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+          Back to Studio Sessions
+        </Link>
 
-      <div className="grid lg:grid-cols-2 gap-16 items-start">
-        {/* Left: Image */}
-        <div className="relative aspect-[4/5] rounded-4xl overflow-hidden border border-border shadow-2xl">
-          {workshop.image ? (
-            <Image
-              src={imageUrl(workshop.image).url()}
-              alt={workshop.title ?? 'Workshop'}
-              fill
-              className="object-cover"
-              priority
-            />
-          ) : (
-            <div className="w-full h-full bg-secondary/10 flex items-center justify-center">
-              <Scissors className="w-24 h-24 text-secondary opacity-20" />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          {/* --- Left: Image --- */}
+          <div className="relative lg:sticky lg:top-24">
+            <div className="absolute -top-4 -right-4 w-full h-full bg-orange-500/5 rounded-[3rem] rotate-2 border-2 border-dashed border-orange-500/20 -z-10" />
+            <div className="relative aspect-square overflow-hidden rounded-[2.5rem] shadow-xl border-4 lg:border-8 border-white bg-card">
+              {workshop.image ? (
+                <Image
+                  src={imageUrl(workshop.image).url()}
+                  alt={workshop.title ?? 'Workshop image'}
+                  fill
+                  priority
+                  className="object-cover transition-transform duration-700 hover:scale-105"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-card">
+                  <Scissors className="w-24 h-24 text-border" />
+                </div>
+              )}
+
+              {/* Level badge */}
+              {workshop.level && (
+                <div className={`absolute top-4 right-4 px-4 py-1.5 rounded-full font-bold text-[9px] uppercase tracking-widest border-2 shadow-lg -rotate-3 ${levelColor}`}>
+                  {workshop.level}
+                </div>
+              )}
             </div>
-          )}
 
-          {/* Date badge */}
-          <div className="absolute top-6 left-6 bg-white/95 backdrop-blur-sm rounded-3xl px-5 py-4 text-center shadow-xl">
-            <p className="text-[10px] font-black uppercase tracking-widest text-orange-500">
-              {format(eventDate, 'MMM')}
-            </p>
-            <p className="text-4xl font-black tracking-tighter leading-none">
-              {format(eventDate, 'dd')}
-            </p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-              {format(eventDate, 'yyyy')}
-            </p>
-          </div>
-        </div>
-
-        {/* Right: Info */}
-        <div className="flex flex-col gap-8 py-4">
-          {/* Level badge */}
-          <div className="inline-flex">
-            <span className="bg-orange-500 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">
-              {workshop.level}
-            </span>
           </div>
 
-          <h1 className="text-5xl lg:text-6xl font-black tracking-tighter leading-none uppercase">
-            {workshop.title}
-          </h1>
+          {/* --- Right: Details --- */}
+          <div className="flex flex-col gap-8">
+            {/* Date badge */}
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col items-center justify-center bg-card border-2 border-border rounded-3xl p-4 w-20 shrink-0">
+                <span className="text-[9px] font-black uppercase tracking-widest text-orange-500">
+                  {format(eventDate, 'MMM')}
+                </span>
+                <span className="text-4xl font-black tracking-tighter leading-none">
+                  {format(eventDate, 'dd')}
+                </span>
+                <span className="text-[9px] font-black uppercase tracking-widest text-muted-foreground">
+                  {format(eventDate, 'yyyy')}
+                </span>
+              </div>
+              <div>
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-orange-500 mb-1">
+                  Studio Session
+                </p>
+                <h1 className="text-4xl lg:text-6xl font-black tracking-tighter leading-[0.9] uppercase">
+                  {workshop.title}
+                </h1>
+              </div>
+            </div>
 
-          {/* Meta */}
-          <div className="flex flex-wrap gap-6">
-            <span className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground">
-              <Clock className="w-4 h-4 text-secondary" /> {workshop.duration}
-            </span>
-            <span className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-muted-foreground">
-              <MapPin className="w-4 h-4 text-secondary" /> {workshop.location}
-            </span>
-            <span
-              className={`flex items-center gap-2 text-sm font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}
-            >
-              <Users className="w-4 h-4" />
-              {isFull ? 'Sold Out' : `${spotsLeft} Spots Remaining`}
-            </span>
-          </div>
-
-          {/* Time */}
-          <p className="text-sm text-muted-foreground font-light uppercase tracking-widest">
-            {format(eventDate, 'EEEE, d MMMM yyyy')} at{' '}
-            {format(eventDate, 'HH:mm')}
-          </p>
-
-          {/* Description */}
-          <p className="text-base text-muted-foreground font-light leading-relaxed italic border-l-2 border-orange-500 pl-4">
-            {workshop.description}
-          </p>
-
-          {/* Price + Book */}
-          <div className="pt-4 border-t border-border">
-            <div className="flex items-baseline gap-2 mb-6">
-              <span className="text-5xl font-black tracking-tighter">
-                {(workshop.price ?? 0).toFixed(2)}
+            {/* Meta row */}
+            <div className="flex flex-wrap gap-4">
+              <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <Clock className="w-3 h-3 text-secondary" /> {workshop.duration}
               </span>
-              <span className="text-lg font-bold text-muted-foreground">
-                DKK
+              <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                <MapPin className="w-3 h-3 text-secondary" /> {workshop.location}
+              </span>
+              <span className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}>
+                <Users className="w-3 h-3" />
+                {isFull ? 'Sold Out' : `${spotsLeft} Spots Remaining`}
               </span>
             </div>
-            <p className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest mb-4">
-              Materials Included in Price
+
+            {/* Short description */}
+            <p className="text-base text-muted-foreground font-light leading-relaxed italic border-l-2 border-orange-500/30 pl-4">
+              {workshop.description}
             </p>
-            <BookWorkshopButton workshop={workshop} isFull={isFull} />
+
+            {/* Rich body content */}
+            {Array.isArray(workshop.body) && workshop.body.length > 0 && (
+              <div className="prose prose-sm prose-orange max-w-none text-foreground leading-relaxed">
+                <PortableText value={workshop.body} />
+              </div>
+            )}
+
+            {/* Booking action */}
+            <div className="pt-6 border-t border-border flex flex-col gap-4">
+              <div className="text-4xl font-black tracking-tighter">
+                {(workshop.price ?? 0).toFixed(2)} DKK
+              </div>
+
+              <Button
+                disabled={isFull}
+                size="2xl"
+                className={`w-full h-16 rounded-full font-black uppercase tracking-widest transition-all
+                  ${isFull
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-orange-500 text-white hover:bg-black hover:scale-105 shadow-lg shadow-orange-500/20'
+                  }`}
+              >
+                {isFull ? 'At Capacity' : 'Book Session'}
+                {!isFull && <ArrowRight className="ml-2 w-4 h-4" />}
+              </Button>
+
+              <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
+                Materials Included in Price
+              </p>
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Background decor */}
+      <div className="absolute top-1/2 right-0 -z-10 opacity-5 pointer-events-none translate-x-1/2">
+        <Scissors className="w-80 h-80 -rotate-12 text-secondary" />
       </div>
     </main>
   )
 }
+
+export default WorkshopDetailPage

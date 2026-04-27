@@ -3,6 +3,7 @@
 import { Button } from '@ui/button'
 import { format } from 'date-fns'
 import { ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
+import Link from 'next/link'
 import type { WORKSHOPS_QUERYResult } from '../../../sanity.types'
 
 type WorkshopItem = WORKSHOPS_QUERYResult[number]
@@ -63,19 +64,21 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
             {(workshop.price ?? 0).toFixed(2)} DKK
           </div>
 
-          <Button
-            disabled={isFull}
-            size="2xl"
-            className={`w-full h-16 rounded-full font-black uppercase tracking-widest transition-all 
-              ${
-                isFull
-                  ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                  : 'bg-orange-500 text-white hover:bg-black hover:scale-105 shadow-lg shadow-orange-500/20'
-              }`}
-          >
-            {isFull ? 'At Capacity' : 'Book Session'}
-            {!isFull && <ArrowRight className="ml-2 w-4 h-4" />}
-          </Button>
+          <Link href={`/workshops/${workshop.slug?.current}`} className="w-full">
+            <Button
+              disabled={isFull}
+              size="2xl"
+              className={`w-full h-16 rounded-full font-black uppercase tracking-widest transition-all
+                ${
+                  isFull
+                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                    : 'bg-orange-500 text-white hover:bg-black hover:scale-105 shadow-lg shadow-orange-500/20'
+                }`}
+            >
+              {isFull ? 'At Capacity' : 'View Details'}
+              {!isFull && <ArrowRight className="ml-2 w-4 h-4" />}
+            </Button>
+          </Link>
 
           <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
             Materials Included in Price

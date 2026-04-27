@@ -14,6 +14,7 @@ const WORKSHOP_BY_SLUG_QUERY = defineQuery(`
     maxAllocation,
     currentSignUps,
     description,
+    body,
     image
   }
 `)
