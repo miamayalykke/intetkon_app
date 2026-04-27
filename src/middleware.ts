@@ -30,8 +30,6 @@ export default clerkMiddleware(async (auth, req) => {
   if (isAdminRoute) {
     const { userId, sessionClaims } = await auth()
     const role = (sessionClaims?.metadata as { role?: string })?.role
-    // eslint-disable-next-line no-console
-    console.log('[middleware] admin route hit:', pathname, { userId, role, sessionClaims })
     if (!userId || role !== 'admin') {
       return NextResponse.redirect(new URL('/', req.url))
     }
