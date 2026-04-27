@@ -8,16 +8,22 @@ export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl
 
   if (process.env.UNDER_CONSTRUCTION === 'true') {
-    const isAdminPath = ADMIN_ROUTES.some((p) => pathname.startsWith(p))
-    const isAllowed =
-      isAdminPath ||
-      pathname === '/' ||
-      pathname.startsWith('/contact') ||
-      pathname.startsWith('/about') ||
-      pathname.startsWith('/pattern-testing') ||
-      /\.\w+$/.test(pathname) // static assets
-    if (!isAllowed) {
-      return NextResponse.redirect(new URL('/', req.url))
+    const { sessionClaims } = await auth()
+    const role = (sessionClaims?.metadata as { role?: string })?.role
+    const isAdmin = role === 'admin'
+
+    if (!isAdmin) {
+      const isAdminPath = ADMIN_ROUTES.some((p) => pathname.startsWith(p))
+      const isAllowed =
+        isAdminPath ||
+        pathname === '/' ||
+        pathname.startsWith('/contact') ||
+        pathname.startsWith('/about') ||
+        pathname.startsWith('/pattern-testing') ||
+        /\.\w+$/.test(pathname) // static assets
+      if (!isAllowed) {
+        return NextResponse.redirect(new URL('/', req.url))
+      }
     }
   }
 
