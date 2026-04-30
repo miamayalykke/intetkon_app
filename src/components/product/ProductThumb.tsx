@@ -6,9 +6,7 @@ import type { Product } from 'sanity.types'
 
 function ProductThumb({ product }: { product: Product }) {
   const isOutOfStock = product.stock != null && product.stock <= 0
-  const isPattern = product.categories?.some((c) =>
-    (c as any).title?.toLowerCase().includes('pattern'),
-  )
+  const isPattern = product.productType === 'digital'
 
   return (
     <Link

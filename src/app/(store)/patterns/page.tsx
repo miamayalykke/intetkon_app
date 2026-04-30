@@ -1,5 +1,5 @@
 import { getAllCategories } from '@sanity/lib/products/getAllCategories'
-import { getAllProducts } from '@sanity/lib/products/getAllProducts'
+import { getDigitalProducts } from '@sanity/lib/products/getDigitalProducts'
 
 import DiscountBanner from '@src/components/product/DiscountBanner'
 import ProductsView from '@src/components/product/ProductsView'
@@ -9,9 +9,7 @@ export const dynamic = 'force-static'
 export const revalidate = 60
 
 const PatternsShopPage = async () => {
-  // Assuming you have a way to filter for digital products/patterns
-  // If not, you can filter the array here or via a custom Sanity query
-  const allProducts = await getAllProducts()
+  const products = await getDigitalProducts()
   const categories = await getAllCategories()
 
   return (
@@ -43,7 +41,7 @@ const PatternsShopPage = async () => {
           </div>
         </header>
 
-        <ProductsView products={allProducts} categories={categories} />
+        <ProductsView products={products} categories={categories} />
       </div>
     </main>
   )

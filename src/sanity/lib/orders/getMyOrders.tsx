@@ -12,6 +12,10 @@ export async function getMyOrders(userId: string): Promise<MY_ORDERS_QUERYResult
             products[] {
                 ...,
                 product->
+            },
+            workshopBookings[] {
+                ...,
+                workshop->
             }
         }
     `)

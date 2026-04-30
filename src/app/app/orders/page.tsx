@@ -37,7 +37,7 @@ async function Orders() {
           </div>
         ) : (
           <div className="space-y-16">
-            {orders.map((order) => (
+            {orders.map((order: Record<string, any>) => (
               <div key={order.orderNumber} className="relative group">
                 {/* Asymmetric "Pattern Piece" Frame */}
                 <div className="absolute -top-4 -right-4 w-full h-full bg-orange-500/5 rounded-[3rem] rotate-1 border-2 border-dashed border-orange-500/10 -z-10 group-hover:rotate-2 transition-transform duration-500" />
@@ -91,7 +91,7 @@ async function Orders() {
                   {/* --- Items Grid --- */}
                   <div className="p-6 lg:p-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {order.products?.map((item) => (
+                      {order.products?.map((item: Record<string, any>) => (
                         <div
                           key={item.product?._id}
                           className="flex gap-6 items-center group/item"

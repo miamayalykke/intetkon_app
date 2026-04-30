@@ -19,6 +19,7 @@ export interface OrderProduct {
   downloadUrl?: string
   courseDate?: string
   courseLocation?: string
+  courseDuration?: string
 }
 
 interface OrderConfirmationEmailProps {
@@ -91,12 +92,36 @@ export default function OrderConfirmationEmail({
                 )}
 
                 {item.productType === 'physical_course' && (
-                  <Text style={note}>
-                    {item.courseDate
-                      ? `📅 ${new Date(item.courseDate).toLocaleDateString('da-DK', { dateStyle: 'long', timeStyle: 'short' } as Intl.DateTimeFormatOptions)}`
-                      : ''}
-                    {item.courseLocation ? `\n📍 ${item.courseLocation}` : ''}
-                  </Text>
+                  <Section style={workshopBox}>
+                    <Text style={workshopLabel}>Your session details</Text>
+                    {item.courseDate && (
+                      <>
+                        <Text style={workshopDetail}>
+                          📅 {new Date(item.courseDate).toLocaleDateString('da-DK', {
+                            weekday: 'long',
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                          })}
+                        </Text>
+                        <Text style={workshopDetail}>
+                          🕐 {new Date(item.courseDate).toLocaleTimeString('da-DK', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </Text>
+                      </>
+                    )}
+                    {item.courseLocation && (
+                      <Text style={workshopDetail}>📍 {item.courseLocation}</Text>
+                    )}
+                    {item.courseDuration && (
+                      <Text style={workshopDetail}>⏱ {item.courseDuration}</Text>
+                    )}
+                    <Text style={workshopNote}>
+                      Materials are included in the price. Please arrive 10 minutes before the session starts.
+                    </Text>
+                  </Section>
                 )}
 
                 {item.productType === 'physical' && (
@@ -221,4 +246,36 @@ const footer = {
   fontSize: '11px',
   textAlign: 'center' as const,
   marginTop: '8px',
+}
+
+const workshopBox = {
+  backgroundColor: '#fff7ed',
+  borderRadius: '8px',
+  border: '1px solid #fed7aa',
+  padding: '16px 20px',
+  marginTop: '8px',
+}
+
+const workshopLabel = {
+  fontSize: '10px',
+  fontWeight: 'bold' as const,
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.15em',
+  color: '#f97316',
+  margin: '0 0 10px',
+}
+
+const workshopDetail = {
+  fontSize: '14px',
+  color: '#1a1a1a',
+  lineHeight: '22px',
+  margin: '2px 0',
+}
+
+const workshopNote = {
+  fontSize: '12px',
+  color: '#888',
+  lineHeight: '18px',
+  marginTop: '12px',
+  fontStyle: 'italic' as const,
 }
