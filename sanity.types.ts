@@ -86,10 +86,27 @@ export type Sale = {
     _type: "image";
   };
   discountAmount?: number;
+  discountType?: "percentage" | "fixed";
   couponCode?: string;
+  maxRedemptions?: number;
   validFrom?: string;
   validTo?: string;
   isActive?: boolean;
+  redemptionCount?: number;
+  excludedProducts?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "product";
+  }>;
+  excludedCategories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "category";
+  }>;
 };
 
 export type Order = {
@@ -164,9 +181,11 @@ export type Product = {
   }>;
   stock?: number;
   productType?: "digital" | "physical_course" | "physical";
+  sizes?: Array<"XS" | "S" | "M" | "L" | "XL">;
   s3Key?: string;
   courseDate?: string;
   courseLocation?: string;
+  stripeProductId?: string;
 };
 
 export type BlockContent = Array<{
@@ -350,6 +369,7 @@ export type MY_ORDERS_QUERYResult = Array<{
       s3Key?: string;
       courseDate?: string;
       courseLocation?: string;
+      stripeProductId?: string;
     } | null;
     quantity?: number;
     _key: string;
@@ -409,9 +429,97 @@ export type ALL_PRODUCTS_QUERYResult = Array<{
   }>;
   stock?: number;
   productType?: "digital" | "physical_course" | "physical";
+  sizes?: Array<"XS" | "S" | "M" | "L" | "XL">;
   s3Key?: string;
   courseDate?: string;
   courseLocation?: string;
+  stripeProductId?: string;
+}>;
+
+// Source: ./src/sanity/lib/products/getDigitalProducts.ts
+// Variable: DIGITAL_PRODUCTS_QUERY
+// Query: *[            _type == "product" && productType == "digital"        ] | order(name asc) {            ...,            categories[]->        }
+export type DIGITAL_PRODUCTS_QUERYResult = Array<{
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  description?: BlockContent;
+  price?: number;
+  categories: Array<{
+    _id: string;
+    _type: "category";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    title?: string;
+    slug?: Slug;
+    description?: string;
+  }> | null;
+  stock?: number;
+  productType: "digital";
+  s3Key?: string;
+  courseDate?: string;
+  courseLocation?: string;
+  stripeProductId?: string;
+}>;
+
+// Source: ./src/sanity/lib/products/getPhysicalProducts.ts
+// Variable: PHYSICAL_PRODUCTS_QUERY
+// Query: *[            _type == "product" && productType == "physical"        ] | order(name asc) {            ...,            categories[]->        }
+export type PHYSICAL_PRODUCTS_QUERYResult = Array<{
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  name?: string;
+  slug?: Slug;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  };
+  description?: BlockContent;
+  price?: number;
+  categories: Array<{
+    _id: string;
+    _type: "category";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    title?: string;
+    slug?: Slug;
+    description?: string;
+  }> | null;
+  stock?: number;
+  productType: "physical";
+  s3Key?: string;
+  courseDate?: string;
+  courseLocation?: string;
+  stripeProductId?: string;
 }>;
 
 // Source: ./src/sanity/lib/products/getProductBySlug.ts
@@ -448,9 +556,11 @@ export type PRODUCT_BY_ID_QUERYResult = {
   }>;
   stock?: number;
   productType?: "digital" | "physical_course" | "physical";
+  sizes?: Array<"XS" | "S" | "M" | "L" | "XL">;
   s3Key?: string;
   courseDate?: string;
   courseLocation?: string;
+  stripeProductId?: string;
 } | null;
 
 // Source: ./src/sanity/lib/products/getProductsByCategory.ts
@@ -487,9 +597,11 @@ export type PRODUCTS_BY_CATEGORY_QUERYResult = Array<{
   }>;
   stock?: number;
   productType?: "digital" | "physical_course" | "physical";
+  sizes?: Array<"XS" | "S" | "M" | "L" | "XL">;
   s3Key?: string;
   courseDate?: string;
   courseLocation?: string;
+  stripeProductId?: string;
 }>;
 
 // Source: ./src/sanity/lib/products/searchProductsByName.ts
@@ -526,9 +638,11 @@ export type PRODUCT_SEARCH_QUERYResult = Array<{
   }>;
   stock?: number;
   productType?: "digital" | "physical_course" | "physical";
+  sizes?: Array<"XS" | "S" | "M" | "L" | "XL">;
   s3Key?: string;
   courseDate?: string;
   courseLocation?: string;
+  stripeProductId?: string;
 }>;
 
 // Source: ./src/sanity/lib/sales/getActiveSaleByCouponCode.ts
@@ -555,10 +669,56 @@ export type ACTIVE_SALE_BY_COUPON_QUERYResult = {
     _type: "image";
   };
   discountAmount?: number;
+  discountType?: "fixed" | "percentage";
   couponCode?: string;
+  maxRedemptions?: number;
   validFrom?: string;
   validTo?: string;
   isActive?: boolean;
+  redemptionCount?: number;
+  excludedProducts?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "product";
+  }>;
+  excludedCategories?: Array<{
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    _key: string;
+    [internalGroqTypeReferenceTo]?: "category";
+  }>;
+} | null;
+
+// Source: ./src/sanity/lib/workshops/getWorkshopBySlug.ts
+// Variable: WORKSHOP_BY_SLUG_QUERY
+// Query: *[_type == "workshop" && slug.current == $slug][0] {    _id,    title,    slug,    date,    duration,    location,    level,    price,    maxAllocation,    currentSignUps,    description,    image  }
+export type WORKSHOP_BY_SLUG_QUERYResult = {
+  _id: string;
+  title: string | null;
+  slug: Slug | null;
+  date: string | null;
+  duration: string | null;
+  location: string | null;
+  level: "Advanced" | "Beginner" | "Intermediate" | null;
+  price: number | null;
+  maxAllocation: number | null;
+  currentSignUps: number | null;
+  description: string | null;
+  image: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    _type: "image";
+  } | null;
 } | null;
 
 // Source: ./src/sanity/lib/workshops/getWorkshops.ts
@@ -594,13 +754,16 @@ export type WORKSHOPS_QUERYResult = Array<{
 import "@sanity/client";
 declare module "@sanity/client" {
   interface SanityQueries {
-    "\n        *[_type == \"order\" && clerkUserId == $userId] | order(orderDate desc) {\n            ...,\n            products[] {\n                ...,\n                product->\n            }\n        } \n    ": MY_ORDERS_QUERYResult;
+    "\n        *[_type == \"order\" && clerkUserId == $userId] | order(orderDate desc) {\n            ...,\n            products[] {\n                ...,\n                product->\n            }\n        }\n    ": MY_ORDERS_QUERYResult;
     "\n        *[\n            _type == \"category\"\n        ] | order(name asc)\n    ": ALL_CATEGORIES_QUERYResult;
     "\n        *[\n            _type == \"product\"\n        ] | order(name asc)\n    ": ALL_PRODUCTS_QUERYResult;
+    "\n        *[\n            _type == \"product\" && productType == \"digital\"\n        ] | order(name asc) {\n            ...,\n            categories[]->\n        }\n    ": DIGITAL_PRODUCTS_QUERYResult;
+    "\n        *[\n            _type == \"product\" && productType == \"physical\"\n        ] | order(name asc) {\n            ...,\n            categories[]->\n        }\n    ": PHYSICAL_PRODUCTS_QUERYResult;
     "\n        *[\n            _type== \"product\" &&slug.current == $slug\n        ] | order(name asc)[0]\n            ": PRODUCT_BY_ID_QUERYResult;
     "\n        *[\n        _type == \"product\"\n        && references(*[_type == \"category\" && slug.current == $categorySlug]._id)\n        ] | order(name asc)\n        ": PRODUCTS_BY_CATEGORY_QUERYResult;
     "\n        *[\n        _type == \"product\"\n        && name match $searchParam\n        ] | order(name asc)\n            ": PRODUCT_SEARCH_QUERYResult;
     "\n        *[\n        _type == \"sale\"\n        && isActive == true\n        && couponCode == $couponCode\n        ] | order(validFrom desc)[0]\n         ": ACTIVE_SALE_BY_COUPON_QUERYResult;
+    "\n  *[_type == \"workshop\" && slug.current == $slug][0] {\n    _id,\n    title,\n    slug,\n    date,\n    duration,\n    location,\n    level,\n    price,\n    maxAllocation,\n    currentSignUps,\n    description,\n    image\n  }\n": WORKSHOP_BY_SLUG_QUERYResult;
     "\n  *[_type == \"workshop\" && date >= $now] | order(date asc) {\n    _id,\n    title,\n    slug,\n    date,\n    duration,\n    location,\n    level,\n    price,\n    maxAllocation,\n    currentSignUps,\n    description,\n    image\n  }\n": WORKSHOPS_QUERYResult;
   }
 }
