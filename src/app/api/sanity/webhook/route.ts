@@ -11,6 +11,7 @@ import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import type { Metadata } from '../../../../../actions/createCheckoutSession'
+import type { WorkshopCheckoutMetadata } from '../../../../../actions/createWorkshopCheckoutSession'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -43,10 +44,21 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
+    const isWorkshop = (session.metadata as { checkoutType?: string })?.checkoutType === 'workshop'
     try {
-      const order = await createOrderInSanity(session)
-      console.info('Order created in Sanity:', order)
-      await sendOrderConfirmationEmail(session, order.sanityProductIds)
+      if (isWorkshop) {
+        const order = await createWorkshopOrderInSanity(session)
+        console.info('Workshop order created in Sanity:', order)
+        await sendWorkshopConfirmationEmail(session)
+      } else {
+        const order = await createOrderInSanity(session)
+        console.info('Order created in Sanity:', order)
+        await Promise.all([
+          sendOrderConfirmationEmail(session, order.sanityProductIds),
+          incrementCouponRedemption(session),
+          recordPromotionRedemptions(session, order._id),
+        ])
+      }
     } catch (err) {
       console.error('Error processing order:', err)
       return NextResponse.json(
@@ -112,6 +124,173 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
       .map((p) => ({ id: p.product._ref, quantity: p.quantity }))
       .filter((p) => p.id),
   }
+}
+
+async function incrementCouponRedemption(session: Stripe.Checkout.Session) {
+  const { couponCode } = (session.metadata as Metadata) ?? {}
+  if (!couponCode) return
+
+  const sale = await backendClient.fetch<{ _id: string } | null>(
+    `*[_type == "sale" && couponCode == $couponCode][0]{ _id }`,
+    { couponCode },
+  )
+  if (!sale) return
+
+  await backendClient.patch(sale._id).inc({ redemptionCount: 1 }).commit()
+}
+
+async function recordPromotionRedemptions(
+  session: Stripe.Checkout.Session,
+  orderId: string,
+) {
+  const { appliedPromotionIds, clerkUserId } = (session.metadata as Metadata) ?? {}
+  if (!appliedPromotionIds || !clerkUserId) return
+
+  let promotionIds: string[]
+  try {
+    promotionIds = JSON.parse(appliedPromotionIds) as string[]
+  } catch {
+    console.error('[recordPromotionRedemptions] Failed to parse appliedPromotionIds')
+    return
+  }
+
+  await Promise.all(
+    promotionIds.map(async (promotionId) => {
+      // 1. Increment the global redemption counter on the promotion document
+      await backendClient.patch(promotionId).inc({ redemptionCount: 1 }).commit()
+
+      // 2. Increment usedCount on any cond_coupon_code condition inside this promotion
+      //    Fetch the promotion to find the condition _key, then patch by array item key
+      const promo = await backendClient.fetch<{
+        conditions?: Array<{ _type: string; _key: string }>
+      } | null>(
+        `*[_type == "promotion" && _id == $id][0]{ "conditions": conditions[]{ _type, _key } }`,
+        { id: promotionId },
+      )
+      if (promo?.conditions) {
+        for (const cond of promo.conditions) {
+          if (cond._type === 'cond_coupon_code') {
+            await backendClient
+              .patch(promotionId)
+              .inc({ [`conditions[_key == "${cond._key}"].usedCount`]: 1 })
+              .commit()
+          }
+        }
+      }
+
+      // 3. Create a promotionRedemption document for per-customer limit queries
+      await backendClient.create({
+        _type: 'promotionRedemption',
+        promotionId,
+        customerId: clerkUserId,
+        orderId,
+        redeemedAt: new Date().toISOString(),
+      })
+    }),
+  )
+}
+
+async function createWorkshopOrderInSanity(session: Stripe.Checkout.Session) {
+  const { id, amount_total, currency, metadata, payment_intent, customer } = session
+  const {
+    orderNumber,
+    customerName,
+    customerEmail,
+    clerkUserId,
+    workshopId,
+    workshopTitle,
+    workshopDate,
+    workshopLocation,
+    workshopDuration,
+  } = metadata as WorkshopCheckoutMetadata
+
+  const order = await backendClient.create({
+    _type: 'order',
+    orderNumber,
+    stripeCheckoutSessionId: id,
+    stripePaymentIntentId: payment_intent,
+    customerName,
+    stripeCustomerId: customer,
+    clerkUserId,
+    email: customerEmail,
+    currency,
+    amountDiscount: 0,
+    products: [],
+    workshopBookings: [
+      {
+        _key: crypto.randomUUID(),
+        workshop: { _type: 'reference', _ref: workshopId },
+        title: workshopTitle,
+        date: workshopDate,
+        location: workshopLocation,
+        duration: workshopDuration,
+        price: amount_total ? amount_total / 100 : 0,
+      },
+    ],
+    totalPrice: amount_total ? amount_total / 100 : 0,
+    status: 'paid',
+    orderDate: new Date().toISOString(),
+  })
+
+  // Increment the workshop sign-up counter
+  await backendClient.patch(workshopId).inc({ currentSignUps: 1 }).commit()
+
+  return order
+}
+
+async function sendWorkshopConfirmationEmail(session: Stripe.Checkout.Session) {
+  const { metadata, amount_total, currency } = session
+  const {
+    orderNumber,
+    customerName,
+    customerEmail,
+    workshopTitle,
+    workshopDate,
+    workshopLocation,
+    workshopDuration,
+  } = metadata as WorkshopCheckoutMetadata
+
+  const baseUrl =
+    process.env.NODE_ENV === 'production'
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_BASE_URL
+
+  const products: OrderProduct[] = [
+    {
+      name: workshopTitle,
+      quantity: 1,
+      price: amount_total ? amount_total / 100 : 0,
+      productType: 'physical_course',
+      courseDate: workshopDate,
+      courseLocation: workshopLocation,
+      courseDuration: workshopDuration,
+    },
+  ]
+
+  const html = await render(
+    OrderConfirmationEmail({
+      customerName,
+      orderNumber,
+      orderDate: new Date().toISOString(),
+      totalPrice: amount_total ? amount_total / 100 : 0,
+      currency: currency ?? 'dkk',
+      products,
+      ordersPageUrl: `${baseUrl}/app/orders`,
+    }),
+  )
+
+  await sesv2.send(
+    new SendEmailCommand({
+      FromEmailAddress: ORDER_FROM_EMAIL,
+      Destination: { ToAddresses: [customerEmail] },
+      Content: {
+        Simple: {
+          Subject: { Data: `Studio session confirmed — ${orderNumber}` },
+          Body: { Html: { Data: html } },
+        },
+      },
+    }),
+  )
 }
 
 async function sendOrderConfirmationEmail(

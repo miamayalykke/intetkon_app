@@ -2,7 +2,7 @@ import { auth } from '@clerk/nextjs/server'
 import { getMyOrders } from '@sanity/lib/orders/getMyOrders'
 import { formatCurrency } from '@src/lib/formatCurrency'
 import { imageUrl } from '@src/lib/imageUrl'
-import { Clock, Download, MapPin, Receipt, Sparkles } from 'lucide-react'
+import { Calendar, Clock, Download, MapPin, Receipt, Scissors, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
@@ -144,6 +144,49 @@ async function Orders() {
                                   </p>
                                 )}
                               </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* --- Workshop Bookings --- */}
+                      {(order as { workshopBookings?: { _key: string; title?: string; date?: string; location?: string; duration?: string; price?: number; workshop?: { image?: unknown } }[] }).workshopBookings?.map((booking) => (
+                        <div key={booking._key} className="flex gap-6 items-center group/item">
+                          <div className="relative h-24 w-24 shrink-0 rounded-2xl overflow-hidden border border-orange-500/30 bg-orange-500/5 flex items-center justify-center group-hover/item:rotate-3 transition-transform">
+                            {booking.workshop?.image ? (
+                              <Image
+                                src={imageUrl(booking.workshop.image as Parameters<typeof imageUrl>[0]).url()}
+                                alt={booking.title ?? 'Workshop'}
+                                className="object-cover"
+                                fill
+                              />
+                            ) : (
+                              <Scissors className="w-8 h-8 text-orange-500/40" />
+                            )}
+                          </div>
+                          <div className="space-y-1">
+                            <p className="text-[9px] font-black uppercase tracking-widest text-orange-500">
+                              Studio Session
+                            </p>
+                            <p className="text-sm font-black uppercase tracking-tight group-hover/item:text-orange-500 transition-colors">
+                              {booking.title}
+                            </p>
+                            {booking.date && (
+                              <p className="flex items-center gap-1 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                <Calendar className="w-3 h-3 shrink-0" />
+                                {new Date(booking.date).toLocaleDateString('da-DK', { dateStyle: 'long' })}
+                              </p>
+                            )}
+                            {booking.location && (
+                              <p className="flex items-center gap-1 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                <MapPin className="w-3 h-3 shrink-0" />
+                                {booking.location}
+                              </p>
+                            )}
+                            {booking.price != null && (
+                              <p className="font-mono text-xs font-bold text-foreground/70">
+                                {formatCurrency(booking.price, order.currency)}
+                              </p>
                             )}
                           </div>
                         </div>

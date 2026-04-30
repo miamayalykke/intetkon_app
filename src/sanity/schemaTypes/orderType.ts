@@ -49,6 +49,38 @@ export const orderType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'workshopBookings',
+      title: 'Workshop Bookings',
+      type: 'array',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'workshop',
+              title: 'Workshop',
+              type: 'reference',
+              to: [{ type: 'workshop' }],
+            }),
+            defineField({ name: 'title', title: 'Title', type: 'string' }),
+            defineField({ name: 'date', title: 'Date', type: 'datetime' }),
+            defineField({ name: 'location', title: 'Location', type: 'string' }),
+            defineField({ name: 'duration', title: 'Duration', type: 'string' }),
+            defineField({ name: 'price', title: 'Price', type: 'number' }),
+          ],
+          preview: {
+            select: { title: 'title', date: 'date' },
+            prepare({ title, date }) {
+              return {
+                title: title ?? 'Workshop',
+                subtitle: date ? new Date(date).toLocaleDateString('da-DK') : '',
+              }
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: 'products',
       title: 'Products',
       type: 'array',
