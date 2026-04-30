@@ -1,5 +1,5 @@
 import { getAllCategories } from '@sanity/lib/products/getAllCategories'
-import { getAllProducts } from '@sanity/lib/products/getAllProducts'
+import { getPhysicalProducts } from '@sanity/lib/products/getPhysicalProducts'
 import DiscountBanner from '@src/components/product/DiscountBanner'
 import ProductsView from '@src/components/product/ProductsView'
 
@@ -7,7 +7,7 @@ export const dynamic = 'force-static'
 export const revalidate = 60
 
 const ShopPage = async () => {
-  const products = await getAllProducts()
+  const products = await getPhysicalProducts()
   const categories = await getAllCategories()
 
   return (

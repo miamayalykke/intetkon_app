@@ -1,5 +1,6 @@
 import { PackageIcon } from 'lucide-react'
 import { defineField, defineType } from 'sanity'
+import { S3FileUpload } from '../components/S3FileUpload'
 
 export const productType = defineType({
   name: 'product',
@@ -53,6 +54,7 @@ export const productType = defineType({
       title: 'Stock',
       type: 'number',
       validation: (Rule) => Rule.min(0),
+      hidden: ({ document }) => document?.productType === 'digital',
     }),
     defineField({
       name: 'productType',
@@ -70,10 +72,29 @@ export const productType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'sizes',
+      title: 'Available Sizes',
+      description: 'Select which sizes are available for this product',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'XS', value: 'XS' },
+          { title: 'S', value: 'S' },
+          { title: 'M', value: 'M' },
+          { title: 'L', value: 'L' },
+          { title: 'XL', value: 'XL' },
+        ],
+        layout: 'grid',
+      },
+      hidden: ({ document }) => document?.productType !== 'physical',
+    }),
+    defineField({
       name: 's3Key',
       title: 'S3 File Key',
       description: 'The S3 object key for the downloadable file (digital products only)',
       type: 'string',
+      components: { input: S3FileUpload },
       hidden: ({ document }) => document?.productType !== 'digital',
     }),
     defineField({
@@ -88,6 +109,13 @@ export const productType = defineType({
       description: 'Physical address or online link',
       type: 'string',
       hidden: ({ document }) => document?.productType !== 'physical_course',
+    }),
+    defineField({
+      name: 'stripeProductId',
+      title: 'Stripe Product ID',
+      type: 'string',
+      hidden: true,
+      readOnly: true,
     }),
   ],
 

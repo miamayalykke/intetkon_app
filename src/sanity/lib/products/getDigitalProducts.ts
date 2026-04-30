@@ -5,10 +5,7 @@ export const getDigitalProducts = async () => {
   const DIGITAL_PRODUCTS_QUERY = defineQuery(`
         *[
             _type == "product" && productType == "digital"
-        ] | order(name asc) {
-            ...,
-            categories[]->
-        }
+        ] | order(name asc)
     `)
   try {
     const products = await client.fetch(DIGITAL_PRODUCTS_QUERY)

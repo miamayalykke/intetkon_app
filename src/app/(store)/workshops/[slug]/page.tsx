@@ -1,8 +1,8 @@
 import { getWorkshopBySlug } from '@sanity/lib/workshops/getWorkshopBySlug'
+import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
-import { Button } from '@ui/button'
 import { format } from 'date-fns'
-import { ArrowLeft, ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
+import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -105,7 +105,7 @@ const WorkshopDetailPage = async ({
                 <Clock className="w-3 h-3 text-secondary" /> {workshop.duration}
               </span>
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                <MapPin className="w-3 h-3 text-secondary" /> {workshop.location}
+                <MapPin className="w-3 h-3 text-secondary" /> Bentzonzvej 50b, 2000 Frederiksberg
               </span>
               <span className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}>
                 <Users className="w-3 h-3" />
@@ -131,18 +131,19 @@ const WorkshopDetailPage = async ({
                 {(workshop.price ?? 0).toFixed(2)} DKK
               </div>
 
-              <Button
-                disabled={isFull}
-                size="2xl"
-                className={`w-full h-16 rounded-full font-black uppercase tracking-widest transition-all
-                  ${isFull
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-orange-500 text-white hover:bg-black hover:scale-105 shadow-lg shadow-orange-500/20'
-                  }`}
-              >
-                {isFull ? 'At Capacity' : 'Book Session'}
-                {!isFull && <ArrowRight className="ml-2 w-4 h-4" />}
-              </Button>
+              <BookWorkshopButton
+                workshop={{
+                  _id: workshop._id,
+                  title: workshop.title ?? null,
+                  price: workshop.price ?? null,
+                  slug: workshop.slug ?? null,
+                  image: workshop.image ?? undefined,
+                  date: workshop.date ?? null,
+                  location: 'Bentzonzvej 50b, 2000 Frederiksberg',
+                  duration: workshop.duration ?? null,
+                }}
+                isFull={isFull}
+              />
 
               <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
                 Materials Included in Price
