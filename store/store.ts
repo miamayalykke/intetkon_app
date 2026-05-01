@@ -63,7 +63,10 @@ const useBasketStore = create<BasketState>()(
           }
 
           return {
-            items: [...state.items, { itemType: 'product', data: product, quantity: 1 }],
+            items: [
+              ...state.items,
+              { itemType: 'product', data: product, quantity: 1 },
+            ],
           }
         }),
 
@@ -86,7 +89,10 @@ const useBasketStore = create<BasketState>()(
           }
 
           return {
-            items: [...state.items, { itemType: 'workshop', data: workshop, quantity: 1 }],
+            items: [
+              ...state.items,
+              { itemType: 'workshop', data: workshop, quantity: 1 },
+            ],
           }
         }),
 
@@ -108,7 +114,7 @@ const useBasketStore = create<BasketState>()(
 
       getTotalPrice: () =>
         get().items.reduce(
-          (total, item) => total + (item.data.price ?? 0) * item.quantity,
+          (total, item) => total + (item.data?.price ?? 0) * item.quantity,
           0,
         ),
 
@@ -121,6 +127,28 @@ const useBasketStore = create<BasketState>()(
     }),
     {
       name: 'basket-store',
+      version: 1,
+      migrate: (persistedState: unknown, version: number) => {
+        const state = persistedState as { items?: unknown[] }
+        if (version === 0 && Array.isArray(state.items)) {
+          // Migrate old BasketItem format { product, quantity } to CartItem format { itemType, data, quantity }
+          state.items = state.items
+            .map((item: unknown) => {
+              const i = item as Record<string, unknown>
+              if (i.data) return i // Already in new format
+              if (i.product) {
+                return {
+                  itemType: 'product',
+                  data: i.product,
+                  quantity: i.quantity,
+                }
+              }
+              return null
+            })
+            .filter(Boolean)
+        }
+        return state
+      },
       onRehydrateStorage: () => (_state) => {
         console.info('Basket Store Hydrated')
       },
