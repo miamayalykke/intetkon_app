@@ -108,7 +108,7 @@ async function Orders() {
                           )}
                           <div className="space-y-1">
                             <p className="text-sm font-black uppercase tracking-tight group-hover/item:text-orange-500 transition-colors">
-                              {item.product?.name}
+                              {item.product?.name ?? item.product?.title}
                             </p>
                             <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                               Quantity: {item.quantity ?? '0'}
@@ -121,26 +121,36 @@ async function Orders() {
                                   )
                                 : 'N/A'}
                             </p>
-                            {item.product?.productType === 'digital' && item.product?._id && (
-                              <a
-                                href={`/api/download/${item.product._id}`}
-                                className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors mt-1"
-                              >
-                                <Download className="w-3 h-3" />
-                                Download
-                              </a>
-                            )}
-                            {item.product?.productType === 'physical_course' && (
+                            {item.product?.productType === 'digital' &&
+                              item.product?._id && (
+                                <a
+                                  href={`/api/download/${item.product._id}`}
+                                  className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors mt-1"
+                                >
+                                  <Download className="w-3 h-3" />
+                                  Download
+                                </a>
+                              )}
+                            {(item.product?.productType === 'physical_course' ||
+                              item.product?._type === 'workshop') && (
                               <div className="mt-1 space-y-0.5">
-                                {item.product?.courseDate && (
+                                {(item.product?.courseDate ??
+                                  item.product?.date) && (
                                   <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                                    {new Date(item.product.courseDate).toLocaleDateString('da-DK', { dateStyle: 'long' })}
+                                    {new Date(
+                                      item.product?.courseDate ??
+                                        item.product?.date,
+                                    ).toLocaleDateString('da-DK', {
+                                      dateStyle: 'long',
+                                    })}
                                   </p>
                                 )}
-                                {item.product?.courseLocation && (
+                                {(item.product?.courseLocation ??
+                                  item.product?.location) && (
                                   <p className="flex items-center gap-1 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                                     <MapPin className="w-3 h-3 shrink-0" />
-                                    {item.product.courseLocation}
+                                    {item.product?.courseLocation ??
+                                      item.product?.location}
                                   </p>
                                 )}
                               </div>

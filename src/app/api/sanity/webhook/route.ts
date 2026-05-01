@@ -170,48 +170,52 @@ async function sendOrderConfirmationEmail(
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
-  // Fetch full product details from Sanity
-  const productDetails = await backendClient.fetch<
+  // Fetch both products and workshops — no _type filter
+  const details = await backendClient.fetch<
     {
       _id: string
       _type: string
-      name: string
+      name?: string
+      title?: string
       price: number
-      productType: 'digital' | 'physical_course' | 'physical'
+      productType?: 'digital' | 'physical_course' | 'physical'
       s3Key?: string
       courseDate?: string
       courseLocation?: string
+      date?: string
+      location?: string
+      duration?: string
     }[]
   >(
-    `*[_id in $ids]{ _id, _type, name, price, productType, s3Key, courseDate, courseLocation }`,
+    `*[_id in $ids]{ _id, _type, name, title, price, productType, s3Key, courseDate, courseLocation, date, location, duration }`,
     { ids: sanityProductIds.map((p) => p.id) },
   )
 
-  // TEMPORARY DEBUG LOG
-  console.info(
-    'product fetch ids:',
-    sanityProductIds.map((p) => p.id),
-  )
-  console.info('product fetch results:', JSON.stringify(productDetails))
-
   const products: OrderProduct[] = []
   for (const { id, quantity } of sanityProductIds) {
-    const detail = productDetails.find((p) => p._id === id)
+    const detail = details.find((p) => p._id === id)
     if (!detail) continue
 
+    const isWorkshop = detail._type === 'workshop'
+
     let downloadUrl: string | undefined
-    if (detail.productType === 'digital' && detail.s3Key) {
+    if (!isWorkshop && detail.productType === 'digital' && detail.s3Key) {
       downloadUrl = await getPresignedDownloadUrl(detail.s3Key)
     }
 
     products.push({
-      name: detail.name,
+      name: isWorkshop
+        ? (detail.title ?? 'Workshop')
+        : (detail.name ?? 'Product'),
       quantity,
       price: detail.price,
-      productType: detail.productType ?? 'physical',
+      productType: isWorkshop
+        ? 'physical_course'
+        : (detail.productType ?? 'physical'),
       downloadUrl,
-      courseDate: detail.courseDate,
-      courseLocation: detail.courseLocation,
+      courseDate: isWorkshop ? detail.date : detail.courseDate,
+      courseLocation: isWorkshop ? detail.location : detail.courseLocation,
+      courseDuration: isWorkshop ? detail.duration : undefined,
     })
   }
 
