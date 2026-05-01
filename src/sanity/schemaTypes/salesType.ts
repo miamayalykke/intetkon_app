@@ -18,21 +18,34 @@ export const salesType = defineType({
       title: 'Sale Description',
     }),
     defineField({
-      name: 'image',
-      type: 'image',
-      title: 'Sale Image',
-    }),
-    defineField({
       name: 'discountAmount',
       type: 'number',
       title: 'Discount Amount',
-      description:
-        'The amount of discount to be applied to the product in percentage or fixed value',
+      description: 'The amount to discount — percentage (e.g. 20 = 20%) or fixed DKK value depending on Discount Type',
+    }),
+    defineField({
+      name: 'discountType',
+      type: 'string',
+      title: 'Discount Type',
+      options: {
+        list: [
+          { title: 'Percentage (%)', value: 'percentage' },
+          { title: 'Fixed amount (DKK)', value: 'fixed' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'percentage',
     }),
     defineField({
       name: 'couponCode',
       type: 'string',
       title: 'Coupon Code',
+    }),
+    defineField({
+      name: 'maxRedemptions',
+      type: 'number',
+      title: 'Max Redemptions',
+      description: 'Leave blank for unlimited uses',
     }),
     defineField({
       name: 'validFrom',
@@ -51,20 +64,36 @@ export const salesType = defineType({
       description: 'Toggle to activate/deactivate the sale',
       initialValue: true,
     }),
+    defineField({
+      name: 'excludedProducts',
+      type: 'array',
+      title: 'Excluded Products',
+      description: 'Products this coupon cannot be used for',
+      of: [{ type: 'reference', to: [{ type: 'product' }] }],
+    }),
+    defineField({
+      name: 'excludedCategories',
+      type: 'array',
+      title: 'Excluded Categories',
+      description: 'Categories this coupon cannot be used for',
+      of: [{ type: 'reference', to: [{ type: 'category' }] }],
+    }),
   ],
   preview: {
     select: {
       title: 'title',
       discountAmount: 'discountAmount',
+      discountType: 'discountType',
       couponCode: 'couponCode',
       isActive: 'isActive',
     },
     prepare(selection) {
-      const { title, discountAmount, couponCode, isActive } = selection
+      const { title, discountAmount, discountType, couponCode, isActive } = selection
       const status = isActive ? 'Active' : 'Inactive'
+      const suffix = discountType === 'fixed' ? ' DKK' : '%'
       return {
         title,
-        subtitle: `${discountAmount}% off - code ${couponCode} - ${status}`,
+        subtitle: `${discountAmount}${suffix} off — code: ${couponCode} — ${status}`,
       }
     },
   },

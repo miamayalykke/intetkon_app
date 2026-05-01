@@ -1,16 +1,16 @@
-import { backendClient } from '@sanity/lib/backendClient'
-import { render } from '@react-email/render'
 import { SendEmailCommand } from '@aws-sdk/client-sesv2'
-import { ORDER_FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
+import { render } from '@react-email/render'
+import { backendClient } from '@sanity/lib/backendClient'
 import { getPresignedDownloadUrl } from '@src/lib/s3-client'
-import OrderConfirmationEmail, {
-  type OrderProduct,
-} from '../../../../../emails/order-confirmation'
+import { ORDER_FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
 import stripe from '@src/lib/stripe'
 import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import type { Metadata } from '../../../../../actions/createCheckoutSession'
+import OrderConfirmationEmail, {
+  type OrderProduct,
+} from '../../../../../emails/order-confirmation'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -43,19 +43,40 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-    try {
-      const order = await createOrderInSanity(session)
-      console.info('Order created in Sanity:', order)
-      await sendOrderConfirmationEmail(session, order.sanityProductIds)
-    } catch (err) {
-      console.error('Error processing order:', err)
-      return NextResponse.json(
-        { error: 'Error processing order' },
-        { status: 500 },
-      )
+    const meta = session.metadata ?? {}
+
+    if (meta.checkoutType === 'workshop') {
+      // Increment spot counter in Sanity
+      try {
+        await backendClient
+          .patch(meta.workshopId)
+          .inc({ currentSignUps: 1 })
+          .commit()
+        console.info(
+          'Incremented currentSignUps for workshop:',
+          meta.workshopId,
+        )
+      } catch (err) {
+        console.error('Error incrementing workshop sign-ups:', err)
+        return NextResponse.json(
+          { error: 'Error updating workshop sign-ups' },
+          { status: 500 },
+        )
+      }
+    } else {
+      try {
+        const order = await createOrderInSanity(session)
+        console.info('Order created in Sanity:', order)
+        await sendOrderConfirmationEmail(session, order.sanityProductIds)
+      } catch (err) {
+        console.error('Error processing order:', err)
+        return NextResponse.json(
+          { error: 'Error processing order' },
+          { status: 500 },
+        )
+      }
     }
   }
-
   return NextResponse.json({ recieved: true })
 }
 

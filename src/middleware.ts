@@ -7,7 +7,10 @@ const AUTH_ROUTES = ['/app/orders']
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl
 
-  if (process.env.UNDER_CONSTRUCTION === 'true') {
+  if (
+    process.env.UNDER_CONSTRUCTION === 'true' &&
+    process.env.UNDER_CONSTRUCTION_ON_LOCALHOST !== 'false'
+  ) {
     const { sessionClaims } = await auth()
     const role = (sessionClaims?.metadata as { role?: string })?.role
     const isAdmin = role === 'admin'

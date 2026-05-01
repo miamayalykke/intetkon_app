@@ -1,58 +1,26 @@
 'use client'
 
-import { SignInButton, useAuth, useUser } from '@clerk/nextjs'
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import { SignInButton, useAuth } from '@clerk/nextjs'
 import { Button } from '@ui/button'
-import { ArrowRight } from 'lucide-react'
-import { useState } from 'react'
-import {
-  createWorkshopCheckoutSession,
-  type WorkshopCheckoutMetadata,
-} from '../../actions/createWorkshopCheckoutSession'
+import { ArrowRight, ShoppingBag } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import type { WorkshopCartData } from '../../store/store'
+import useBasketStore from '../../store/store'
 
 type Props = {
-  workshop: {
-    _id: string
-    title: string | null
-    price: number | null
-    slug: { current: string } | null
-    image?: SanityImageSource
-    date?: string | null
-    location?: string | null
-    duration?: string | null
-  }
+  workshop: WorkshopCartData
   isFull: boolean
 }
 
 export function BookWorkshopButton({ workshop, isFull }: Props) {
   const { isSignedIn } = useAuth()
-  const { user } = useUser()
-  const [isLoading, setIsLoading] = useState(false)
+  const addWorkshop = useBasketStore((state) => state.addWorkshop)
+  const router = useRouter()
 
-  const handleBooking = async () => {
+  const handleAddToCart = () => {
     if (!isSignedIn || isFull) return
-    setIsLoading(true)
-    try {
-      const metadata: WorkshopCheckoutMetadata = {
-        checkoutType: 'workshop',
-        orderNumber: crypto.randomUUID(),
-        customerName: user?.fullName ?? 'Unknown',
-        customerEmail: user?.emailAddresses[0].emailAddress ?? 'Unknown',
-        clerkUserId: user?.id ?? '',
-        workshopId: workshop._id,
-        workshopTitle: workshop.title ?? 'Workshop',
-        workshopDate: workshop.date ?? '',
-        workshopLocation: workshop.location ?? '',
-        workshopDuration: workshop.duration ?? '',
-        workshopSlug: workshop.slug?.current ?? '',
-      }
-      const checkoutUrl = await createWorkshopCheckoutSession(workshop, metadata)
-      if (checkoutUrl) window.location.href = checkoutUrl
-    } catch (error) {
-      console.error('Error creating workshop checkout session:', error)
-    } finally {
-      setIsLoading(false)
-    }
+    addWorkshop(workshop)
+    router.push('/basket')
   }
 
   const buttonClass = `w-full h-16 rounded-full font-black uppercase tracking-widest transition-all ${
@@ -74,13 +42,13 @@ export function BookWorkshopButton({ workshop, isFull }: Props) {
 
   return (
     <Button
-      onClick={handleBooking}
-      disabled={isFull || isLoading}
+      onClick={handleAddToCart}
+      disabled={isFull}
       size="2xl"
       className={buttonClass}
     >
-      {isLoading ? 'Processing...' : isFull ? 'At Capacity' : 'Book Session'}
-      {!isFull && !isLoading && <ArrowRight className="ml-2 w-4 h-4" />}
+      {isFull ? 'At Capacity' : 'Add to Basket'}
+      {!isFull && <ShoppingBag className="ml-2 w-4 h-4" />}
     </Button>
   )
 }

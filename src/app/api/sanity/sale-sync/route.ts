@@ -45,7 +45,7 @@ async function fetchSaleFromSanity(
   sanityId: string,
 ): Promise<SaleDocument | null> {
   return backendClient.fetch<SaleDocument | null>(
-    `*[_type == "sale" && _id == $id][0]{
+    `*[_type in ["sale", "promotion"] && _id == $id][0]{
       _id,
       title,
       discountAmount,
@@ -241,8 +241,8 @@ export async function POST(req: NextRequest) {
     payload._type,
   )
 
-  if (payload._type !== 'sale') {
-    return NextResponse.json({ ok: true, skipped: 'not a sale document' })
+  if (!['sale', 'promotion'].includes(payload._type)) {
+    return NextResponse.json({ ok: true, skipped: 'not a sale or promotion document' })
   }
 
   try {
@@ -263,7 +263,7 @@ export async function POST(req: NextRequest) {
       )
       await deactivateInStripe(payload.couponCode)
     } else {
-      console.log('[sale-sync] Syncing sale:', doc._id, doc.couponCode)
+      console.log('[sale-sync] Syncing document:', doc._id, doc.couponCode)
       await syncToStripe(doc)
     }
   } catch (error) {

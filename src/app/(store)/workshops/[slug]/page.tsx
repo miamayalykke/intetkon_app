@@ -131,19 +131,7 @@ const WorkshopDetailPage = async ({
                 {(workshop.price ?? 0).toFixed(2)} DKK
               </div>
 
-              <BookWorkshopButton
-                workshop={{
-                  _id: workshop._id,
-                  title: workshop.title ?? null,
-                  price: workshop.price ?? null,
-                  slug: workshop.slug ?? null,
-                  image: workshop.image ?? undefined,
-                  date: workshop.date ?? null,
-                  location: 'Bentzonzvej 50b, 2000 Frederiksberg',
-                  duration: workshop.duration ?? null,
-                }}
-                isFull={isFull}
-              />
+              <BookWorkshopButton workshop={workshop} isFull={isFull} />
 
               <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
                 Materials Included in Price

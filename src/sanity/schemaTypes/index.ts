@@ -5,6 +5,7 @@ import { orderType } from './orderType'
 import {
   condCartContainsAll,
   condCartContainsAny,
+  condCartContainsOneFromEachGroup,
   condCartSubtotal,
   condCategoryCount,
   condCouponCode,
@@ -30,6 +31,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     promotionRedemptionType,
     condCartContainsAll,
     condCartContainsAny,
+    condCartContainsOneFromEachGroup,
     condCouponCode,
     condCartSubtotal,
     condProductCount,

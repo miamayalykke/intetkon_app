@@ -3,7 +3,7 @@
 import { imageUrl } from '@src/lib/imageUrl'
 import stripe from '@src/lib/stripe'
 import 'server-only'
-import type { BasketItem } from '../store/store'
+import type { CartItem } from '../store/store'
 
 export type Metadata = {
   orderNumber: string
@@ -12,20 +12,12 @@ export type Metadata = {
   clerkUserId: string
 }
 
-export type GroupedBasketItem = {
-  product: BasketItem['product']
-  quantity: number
-}
-
 export async function createCheckoutSession(
-  items: GroupedBasketItem[],
+  items: CartItem[],
   metadata: Metadata,
+  promoCodeId?: string,
 ) {
   try {
-    const itemsWithoutPrice = items.filter((item) => !item.product.price)
-    if (itemsWithoutPrice.length > 0) {
-      throw new Error('Some items do not have a price')
-    }
     const customers = await stripe.customers.list({
       email: metadata.customerEmail,
       limit: 1,
@@ -41,34 +33,43 @@ export async function createCheckoutSession(
         ? `https://${process.env.VERCEL_URL}`
         : `${process.env.NEXT_PUBLIC_BASE_URL}`
 
-    const successUrl = `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`
-    const cancelUrl = `${baseUrl}/basket`
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_creation: customerId ? undefined : 'always',
       customer_email: !customerId ? metadata.customerEmail : undefined,
       metadata,
       mode: 'payment',
-      allow_promotion_codes: true,
-      success_url: successUrl,
-      cancel_url: cancelUrl,
-      line_items: items.map((item) => ({
-        price_data: {
-          currency: 'dkk',
-          unit_amount: Math.round((item.product.price ?? 1) * 100),
-          product_data: {
-            name: item.product.name || 'Unnamed Product',
-            description: `Product ID: ${item.product._id}`,
-            metadata: {
-              id: item.product._id,
+      ...(promoCodeId
+        ? { discounts: [{ promotion_code: promoCodeId }] }
+        : { allow_promotion_codes: true }),
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
+      cancel_url: `${baseUrl}/basket`,
+      line_items: items.map((item) => {
+        const name =
+          item.itemType === 'product'
+            ? (item.data.name ?? 'Unnamed Product')
+            : (item.data.title ?? 'Workshop')
+        const description =
+          item.itemType === 'product'
+            ? `Product ID: ${item.data._id}`
+            : `Workshop — ${item.data.date ? new Date(item.data.date).toLocaleDateString('da-DK') : ''}`
+
+        return {
+          price_data: {
+            currency: 'dkk',
+            unit_amount: Math.round((item.data.price ?? 1) * 100),
+            product_data: {
+              name,
+              description,
+              metadata: { id: item.data._id },
+              images: item.data.image
+                ? [imageUrl(item.data.image).url()]
+                : undefined,
             },
-            images: item.product.image
-              ? [imageUrl(item.product.image).url()]
-              : undefined,
           },
-        },
-        quantity: item.quantity,
-      })),
+          quantity: item.quantity,
+        }
+      }),
     })
     return session.url
   } catch (error) {

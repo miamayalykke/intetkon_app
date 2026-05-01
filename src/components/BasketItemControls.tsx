@@ -2,16 +2,17 @@
 
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { Product } from '../../sanity.types'
+import type { CartItem } from '../../store/store'
 import useBasketStore from '../../store/store'
 
 interface BasketItemControlsProps {
-  product: Product
+  item: CartItem
 }
 
-const BasketItemControls = ({ product }: BasketItemControlsProps) => {
-  const itemCount = useBasketStore((state) => state.getItemCount(product._id))
+const BasketItemControls = ({ item }: BasketItemControlsProps) => {
+  const itemCount = useBasketStore((state) => state.getItemCount(item.data._id))
   const addItem = useBasketStore((state) => state.addItem)
+  const addWorkshop = useBasketStore((state) => state.addWorkshop)
   const removeItem = useBasketStore((state) => state.removeItem)
 
   const [isClient, setIsClient] = useState(false)
@@ -24,9 +25,18 @@ const BasketItemControls = ({ product }: BasketItemControlsProps) => {
     return <div className="w-32 h-10 animate-pulse bg-gray-100 rounded-full" />
   }
 
-  const isDigital = product.productType === 'digital'
-  const totalStock = product.stock ?? 0
-  const isAtMaxStock = totalStock > 0 && itemCount >= totalStock
+  const isDigital =
+    item.itemType === 'product' && item.data.productType === 'digital'
+
+  const isAtMax =
+    item.itemType === 'product'
+      ? (item.data.stock ?? 0) > 0 && itemCount >= (item.data.stock ?? 0)
+      : itemCount >= (item.data.maxAllocation ?? 0) - (item.data.currentSignUps ?? 0)
+
+  const handleAdd = () => {
+    if (item.itemType === 'product') addItem(item.data)
+    else addWorkshop(item.data)
+  }
 
   return (
     <div className="flex items-center gap-3">
@@ -34,7 +44,7 @@ const BasketItemControls = ({ product }: BasketItemControlsProps) => {
         <div className="flex items-center gap-2 bg-card border border-border p-1.5 rounded-full shadow-sm">
           <button
             type="button"
-            onClick={() => removeItem(product._id)}
+            onClick={() => removeItem(item.data._id)}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
               ${
                 itemCount === 0
@@ -52,14 +62,14 @@ const BasketItemControls = ({ product }: BasketItemControlsProps) => {
 
           <button
             type="button"
-            onClick={() => addItem(product)}
+            onClick={handleAdd}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
               ${
-                isAtMaxStock
+                isAtMax
                   ? 'bg-gray-100 cursor-not-allowed opacity-50'
                   : 'bg-orange-500 text-white shadow-md shadow-orange-500/20 hover:bg-orange-600 active:scale-95'
               }`}
-            disabled={isAtMaxStock}
+            disabled={isAtMax}
           >
             <Plus className="w-3.5 h-3.5" />
           </button>
@@ -70,7 +80,7 @@ const BasketItemControls = ({ product }: BasketItemControlsProps) => {
         type="button"
         onClick={() => {
           for (let i = 0; i < itemCount; i++) {
-            removeItem(product._id)
+            removeItem(item.data._id)
           }
         }}
         className="w-8 h-8 rounded-full flex items-center justify-center border border-border bg-background hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-200 active:scale-90"

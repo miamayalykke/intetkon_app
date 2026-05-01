@@ -4,6 +4,10 @@ import { client } from '../client'
 const WORKSHOP_BY_SLUG_QUERY = defineQuery(`
   *[_type == "workshop" && slug.current == $slug][0] {
     _id,
+    _type,
+    _createdAt,
+    _updatedAt,
+    _rev,
     title,
     slug,
     date,

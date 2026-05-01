@@ -5,14 +5,26 @@ import BasketItemControls from '@src/components/BasketItemControls'
 import Loader from '@src/components/Loader'
 import { imageUrl } from '@src/lib/imageUrl'
 import { Button } from '@ui/button'
-import { ArrowRight, Lock, ShoppingBag } from 'lucide-react'
+import {
+  ArrowRight,
+  CheckCircle,
+  Lock,
+  ShoppingBag,
+  Tag,
+  X,
+} from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   createCheckoutSession,
   type Metadata,
 } from '../../../../actions/createCheckoutSession'
+import {
+  type ItemForValidation,
+  type PromoValidationResult,
+  validatePromoCode,
+} from '../../../../actions/validatePromoCode'
 import useBasketStore from '../../../../store/store'
 
 const BasketPage = () => {
@@ -23,21 +35,64 @@ const BasketPage = () => {
 
   const [isClient, setIsClient] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [promoInput, setPromoInput] = useState('')
+  const [promoLoading, setPromoLoading] = useState(false)
+  const [promoError, setPromoError] = useState<string | null>(null)
+  const [appliedPromo, setAppliedPromo] = useState<Extract<
+    PromoValidationResult,
+    { valid: true }
+  > | null>(null)
+  const appliedPromoCodeRef = useRef<string | null>(null)
 
   useEffect(() => {
     setIsClient(true)
   }, [])
 
-  const { totalItems, totalPrice } = useMemo(
-    () => ({
+  // Re-validate the applied promo whenever the cart changes
+  useEffect(() => {
+    if (!appliedPromoCodeRef.current) return
+
+    const code = appliedPromoCodeRef.current
+    const items: ItemForValidation[] = groupedItems.map((item) => ({
+      id: item.data._id,
+      itemType: item.itemType,
+      quantity: item.quantity,
+      price: item.data.price ?? 0,
+      categoryIds:
+        item.itemType === 'product'
+          ? (item.data.categories ?? [])
+              .map((c) => ('_ref' in c ? c._ref : ''))
+              .filter(Boolean)
+          : [],
+    }))
+
+    validatePromoCode(code, items).then((result) => {
+      if (!result.valid) {
+        setAppliedPromo(null)
+        appliedPromoCodeRef.current = null
+        setPromoError(result.message)
+      }
+    })
+  }, [groupedItems])
+
+  const { totalItems, totalPrice, discountedTotal } = useMemo(() => {
+    const subtotal = getTotalPrice
+    let discounted = subtotal
+    if (appliedPromo) {
+      discounted =
+        appliedPromo.discountType === 'fixed'
+          ? Math.max(0, subtotal - appliedPromo.discountAmount)
+          : subtotal * (1 - appliedPromo.discountAmount / 100)
+    }
+    return {
       totalItems: groupedItems.reduce(
         (total, item) => total + item.quantity,
         0,
       ),
-      totalPrice: getTotalPrice.toFixed(2),
-    }),
-    [groupedItems, getTotalPrice],
-  )
+      totalPrice: subtotal.toFixed(2),
+      discountedTotal: discounted.toFixed(2),
+    }
+  }, [groupedItems, getTotalPrice, appliedPromo])
 
   if (!isClient) return <Loader />
 
@@ -66,6 +121,36 @@ const BasketPage = () => {
     )
   }
 
+  const handleApplyPromo = async () => {
+    if (!promoInput.trim()) return
+    setPromoLoading(true)
+    setPromoError(null)
+    setAppliedPromo(null)
+
+    const items: ItemForValidation[] = groupedItems.map((item) => ({
+      id: item.data._id,
+      itemType: item.itemType,
+      quantity: item.quantity,
+      price: item.data.price ?? 0,
+      categoryIds:
+        item.itemType === 'product'
+          ? (item.data.categories ?? [])
+              .map((c) => ('_ref' in c ? c._ref : ''))
+              .filter(Boolean)
+          : [],
+    }))
+
+    const result = await validatePromoCode(promoInput.trim(), items)
+
+    if (result.valid) {
+      setAppliedPromo(result)
+      appliedPromoCodeRef.current = promoInput.trim()
+    } else {
+      setPromoError(result.message)
+    }
+    setPromoLoading(false)
+  }
+
   const handleCheckout = async () => {
     if (!isSignedIn) return
     setIsLoading(true)
@@ -76,7 +161,11 @@ const BasketPage = () => {
         customerEmail: user?.emailAddresses[0].emailAddress ?? 'Unknown',
         clerkUserId: user?.id ?? '',
       }
-      const checkoutUrl = await createCheckoutSession(groupedItems, metadata)
+      const checkoutUrl = await createCheckoutSession(
+        groupedItems,
+        metadata,
+        appliedPromo?.stripePromoCodeId,
+      )
       if (checkoutUrl) window.location.href = checkoutUrl
     } catch (error) {
       console.error('Error creating checkout session:', error)
@@ -100,52 +189,71 @@ const BasketPage = () => {
       <div className="flex flex-col lg:flex-row gap-16 items-start">
         {/* --- Product List --- */}
         <section className="grow w-full space-y-8">
-          {groupedItems.map((item) => (
-            <div
-              key={item.product._id}
-              className="group relative flex flex-col sm:flex-row items-center gap-6 pb-8 border-b border-border"
-            >
-              <Link
-                href={`/product/${item.product.slug?.current}`}
-                className="relative w-full sm:w-40 aspect-square shrink-0 overflow-hidden rounded-4xl border border-border bg-muted transition-all group-hover:border-orange-500/50"
+          {groupedItems.map((item) => {
+            const id = item.data._id
+            const name =
+              item.itemType === 'product'
+                ? (item.data.name ?? 'Unnamed Product')
+                : (item.data.title ?? 'Workshop')
+            const price = item.data.price ?? 0
+            const image = item.data.image
+            const href =
+              item.itemType === 'product'
+                ? `/product/${item.data.slug?.current}`
+                : `/workshops/${item.data.slug?.current}`
+            const tag = item.itemType === 'workshop' ? 'Studio Session' : null
+
+            return (
+              <div
+                key={id}
+                className="group relative flex flex-col sm:flex-row items-center gap-6 pb-8 border-b border-border"
               >
-                {item.product.image && (
-                  <Image
-                    src={imageUrl(item.product.image).url()}
-                    alt={item.product.name ?? 'Product'}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                )}
-              </Link>
+                <Link
+                  href={href}
+                  className="relative w-full sm:w-40 aspect-square shrink-0 overflow-hidden rounded-4xl border border-border bg-muted transition-all group-hover:border-orange-500/50"
+                >
+                  {image && (
+                    <Image
+                      src={imageUrl(image).url()}
+                      alt={name}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  )}
+                </Link>
 
-              <div className="flex-1 flex flex-col justify-between h-full py-2">
-                <div className="space-y-1">
-                  <h2 className="text-2xl font-black tracking-tighter group-hover:text-orange-500 transition-colors">
-                    {item.product.name}
-                  </h2>
-                  <p className="text-sm text-muted-foreground font-light uppercase tracking-widest">
-                    {item.product.price?.toFixed(2)} DKK per unit
-                  </p>
-                </div>
-
-                <div className="mt-4 flex items-center justify-between sm:justify-start gap-8">
-                  <div className="scale-110">
-                    <BasketItemControls product={item.product} />
+                <div className="flex-1 flex flex-col justify-between h-full py-2">
+                  <div className="space-y-1">
+                    {tag && (
+                      <p className="text-[9px] font-black uppercase tracking-widest text-orange-500">
+                        {tag}
+                      </p>
+                    )}
+                    <h2 className="text-2xl font-black tracking-tighter group-hover:text-orange-500 transition-colors">
+                      {name}
+                    </h2>
+                    <p className="text-sm text-muted-foreground font-light uppercase tracking-widest">
+                      {price.toFixed(2)} DKK per unit
+                    </p>
                   </div>
-                  <p className="text-xl font-bold font-mono">
-                    {((item.product.price ?? 0) * item.quantity).toFixed(2)} DKK
-                  </p>
+
+                  <div className="mt-4 flex items-center justify-between sm:justify-start gap-8">
+                    <div className="scale-110">
+                      <BasketItemControls item={item} />
+                    </div>
+                    <p className="text-xl font-bold font-mono">
+                      {(price * item.quantity).toFixed(2)} DKK
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </section>
 
         {/* --- Order Summary --- */}
         <aside className="w-full lg:w-100 lg:sticky lg:top-24">
           <div className="relative p-10 bg-card border border-border rounded-[3rem] shadow-2xl overflow-hidden">
-            {/* Background Decorative Element */}
             <div className="absolute -top-10 -right-10 text-secondary/5 -rotate-12 pointer-events-none">
               <ShoppingBag className="w-48 h-48" />
             </div>
@@ -154,21 +262,98 @@ const BasketPage = () => {
               <Lock className="w-4 h-4 text-orange-500" /> Checkout Summary
             </h3>
 
+            {/* --- Promo Code Input --- */}
+            <div className="mb-6">
+              {appliedPromo ? (
+                <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-2xl px-4 py-3">
+                  <div className="flex items-center gap-2 text-green-700">
+                    <CheckCircle className="w-4 h-4 shrink-0" />
+                    <span className="text-sm font-bold">
+                      {appliedPromo.label} applied
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAppliedPromo(null)
+                      appliedPromoCodeRef.current = null
+                      setPromoInput('')
+                    }}
+                    className="text-green-600 hover:text-green-800 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                    <input
+                      type="text"
+                      value={promoInput}
+                      onChange={(e) => {
+                        setPromoInput(e.target.value)
+                        setPromoError(null)
+                      }}
+                      onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
+                      placeholder="Promo code"
+                      className="w-full pl-9 pr-3 py-2.5 text-sm font-bold tracking-widest border border-border rounded-2xl bg-background focus:outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
+                  <Button
+                    onClick={handleApplyPromo}
+                    disabled={promoLoading || !promoInput.trim()}
+                    size="sm"
+                    className="rounded-2xl bg-foreground hover:bg-orange-500 text-white font-bold px-4 transition-all"
+                  >
+                    {promoLoading ? '...' : 'Apply'}
+                  </Button>
+                </div>
+              )}
+              {promoError && (
+                <p className="mt-2 text-xs text-red-500 font-bold">
+                  {promoError}
+                </p>
+              )}
+            </div>
+
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-muted-foreground font-light">
                 <span>Total Items</span>
                 <span className="font-bold text-foreground">{totalItems}</span>
               </div>
-              <div className="flex justify-between text-muted-foreground font-light">
-                <span>Shipping</span>
-                <span className="italic">Calculated at next step</span>
-              </div>
+              {appliedPromo && (
+                <>
+                  <div className="flex justify-between text-muted-foreground font-light">
+                    <span>Subtotal</span>
+                    <span className="font-bold text-foreground">
+                      {totalPrice} DKK
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-green-600 font-bold">
+                    <span>Discount ({appliedPromo.label})</span>
+                    <span>
+                      -
+                      {(Number(totalPrice) - Number(discountedTotal)).toFixed(
+                        2,
+                      )}{' '}
+                      DKK
+                    </span>
+                  </div>
+                </>
+              )}
+              {!appliedPromo && (
+                <div className="flex justify-between text-muted-foreground font-light">
+                  <span>Shipping</span>
+                  <span className="italic">Calculated at next step</span>
+                </div>
+              )}
               <div className="pt-6 border-t border-dashed border-border flex justify-between items-baseline">
                 <span className="text-lg font-black uppercase tracking-tighter">
                   Total
                 </span>
                 <span className="text-4xl font-black text-orange-500 tracking-tighter">
-                  {totalPrice} DKK
+                  {appliedPromo ? discountedTotal : totalPrice} DKK
                 </span>
               </div>
             </div>

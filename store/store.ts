@@ -1,20 +1,38 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { Product } from '../sanity.types'
+import type { Product, WORKSHOP_BY_SLUG_QUERYResult } from '../sanity.types'
 
+export type WorkshopCartData = NonNullable<WORKSHOP_BY_SLUG_QUERYResult>
+
+export type CartProductItem = {
+  itemType: 'product'
+  data: Product
+  quantity: number
+}
+
+export type CartWorkshopItem = {
+  itemType: 'workshop'
+  data: WorkshopCartData
+  quantity: number
+}
+
+export type CartItem = CartProductItem | CartWorkshopItem
+
+// Kept for backwards compat
 export interface BasketItem {
   product: Product
   quantity: number
 }
 
 interface BasketState {
-  items: BasketItem[]
+  items: CartItem[]
   addItem: (product: Product) => void
-  removeItem: (productId: string) => void
+  addWorkshop: (workshop: WorkshopCartData) => void
+  removeItem: (id: string) => void
   clearBasket: () => void
   getTotalPrice: () => number
-  getItemCount: (productId: string) => number
-  getGroupedItems: () => BasketItem[]
+  getItemCount: (id: string) => number
+  getGroupedItems: () => CartItem[]
 }
 
 const useBasketStore = create<BasketState>()(
@@ -24,57 +42,78 @@ const useBasketStore = create<BasketState>()(
 
       addItem: (product) =>
         set((state) => {
-          const existingItemIndex = state.items.findIndex(
-            (item) => item.product._id === product._id,
+          const existingIndex = state.items.findIndex(
+            (item) => item.data._id === product._id,
           )
 
-          if (existingItemIndex > -1) {
-            const currentQuantity = state.items[existingItemIndex].quantity
-            // Guard: Check if we have stock information and if we've reached the limit
+          if (existingIndex > -1) {
+            const existing = state.items[existingIndex]
+            if (existing.itemType !== 'product') return state
+            const currentQty = existing.quantity
             if (
               product.stock !== null &&
               product.stock !== undefined &&
-              currentQuantity >= product.stock
+              currentQty >= product.stock
             ) {
-              return state // Do nothing if stock limit is reached
+              return state
             }
-
             const newItems = [...state.items]
-            newItems[existingItemIndex] = {
-              ...newItems[existingItemIndex],
-              quantity: currentQuantity + 1,
-            }
+            newItems[existingIndex] = { ...existing, quantity: currentQty + 1 }
             return { items: newItems }
           }
 
-          return { items: [...state.items, { product, quantity: 1 }] }
+          return {
+            items: [...state.items, { itemType: 'product', data: product, quantity: 1 }],
+          }
         }),
 
-      removeItem: (productId) =>
+      addWorkshop: (workshop) =>
+        set((state) => {
+          const existingIndex = state.items.findIndex(
+            (item) => item.data._id === workshop._id,
+          )
+
+          if (existingIndex > -1) {
+            const existing = state.items[existingIndex]
+            if (existing.itemType !== 'workshop') return state
+            const currentQty = existing.quantity
+            const spotsLeft =
+              (workshop.maxAllocation ?? 0) - (workshop.currentSignUps ?? 0)
+            if (currentQty >= spotsLeft) return state
+            const newItems = [...state.items]
+            newItems[existingIndex] = { ...existing, quantity: currentQty + 1 }
+            return { items: newItems }
+          }
+
+          return {
+            items: [...state.items, { itemType: 'workshop', data: workshop, quantity: 1 }],
+          }
+        }),
+
+      removeItem: (id) =>
         set((state) => ({
           items: state.items.reduce((acc, item) => {
-            if (item.product._id === productId) {
+            if (item.data._id === id) {
               if (item.quantity > 1) {
                 acc.push({ ...item, quantity: item.quantity - 1 })
               }
-              // If quantity is 1 and we remove, it doesn't get pushed to acc (removed)
             } else {
               acc.push(item)
             }
             return acc
-          }, [] as BasketItem[]),
+          }, [] as CartItem[]),
         })),
 
       clearBasket: () => set({ items: [] }),
 
       getTotalPrice: () =>
         get().items.reduce(
-          (total, item) => total + (item.product.price ?? 0) * item.quantity,
+          (total, item) => total + (item.data.price ?? 0) * item.quantity,
           0,
         ),
 
-      getItemCount: (productId) => {
-        const item = get().items.find((item) => item.product._id === productId)
+      getItemCount: (id) => {
+        const item = get().items.find((i) => i.data._id === id)
         return item ? item.quantity : 0
       },
 
