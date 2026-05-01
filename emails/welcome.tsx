@@ -101,7 +101,7 @@ export default function WelcomeEmail({
                   In the meantime, have a look around the shop. No pressure.
                   Just presence.
                 </Text>
-                <Button style={button} href="https://intetkon.dk/shop">
+                <Button style={button} href="https://intetkon.com/shop">
                   Explore Our Shop
                 </Button>
               </>
