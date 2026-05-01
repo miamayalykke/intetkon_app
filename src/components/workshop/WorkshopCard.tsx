@@ -17,10 +17,10 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
 
   return (
     <div
-      className={`relative flex flex-col lg:flex-row group ${isFull ? 'opacity-60' : ''}`}
+      className={`relative flex flex-col lg:flex-row group w-full ${isFull ? 'opacity-60' : ''}`}
     >
       {/* --- Date Block (The "Ticket Stub") --- */}
-      <div className="flex flex-col items-center justify-center bg-card border-2 border-border p-8 rounded-4xl lg:rounded-r-none lg:w-48 transition-colors group-hover:border-orange-500/50">
+      <div className="flex flex-col items-center justify-center bg-card border-2 border-border p-8 rounded-4xl lg:rounded-r-none w-full lg:w-48 shrink-0 transition-colors group-hover:border-orange-500/50">
         <span className="text-[10px] font-black uppercase tracking-widest text-orange-500 mb-2">
           {format(eventDate, 'MMM')}
         </span>
@@ -64,7 +64,10 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
             {(workshop.price ?? 0).toFixed(2)} DKK
           </div>
 
-          <Link href={`/workshops/${workshop.slug?.current}`} className="w-full">
+          <Link
+            href={`/workshops/${workshop.slug?.current}`}
+            className="w-full"
+          >
             <Button
               disabled={isFull}
               size="2xl"
