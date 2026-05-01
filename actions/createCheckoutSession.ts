@@ -1,159 +1,79 @@
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import type { Product, WORKSHOP_BY_SLUG_QUERYResult } from '../sanity.types'
+'use server'
 
-export type WorkshopCartData = NonNullable<WORKSHOP_BY_SLUG_QUERYResult>
+import { imageUrl } from '@src/lib/imageUrl'
+import stripe from '@src/lib/stripe'
+import 'server-only'
+import type { CartItem } from '../store/store'
 
-export type CartProductItem = {
-  itemType: 'product'
-  data: Product
-  quantity: number
+export type Metadata = {
+  orderNumber: string
+  customerName: string
+  customerEmail: string
+  clerkUserId: string
 }
 
-export type CartWorkshopItem = {
-  itemType: 'workshop'
-  data: WorkshopCartData
-  quantity: number
-}
+export async function createCheckoutSession(
+  items: CartItem[],
+  metadata: Metadata,
+  promoCodeId?: string,
+) {
+  try {
+    const customers = await stripe.customers.list({
+      email: metadata.customerEmail,
+      limit: 1,
+    })
 
-export type CartItem = CartProductItem | CartWorkshopItem
+    let customerId: string | undefined
+    if (customers.data.length > 0) {
+      customerId = customers.data[0].id
+    }
 
-// Kept for backwards compat
-export interface BasketItem {
-  product: Product
-  quantity: number
-}
+    const baseUrl =
+      process.env.NODE_ENV === 'production'
+        ? `https://${process.env.VERCEL_URL}`
+        : `${process.env.NEXT_PUBLIC_BASE_URL}`
 
-interface BasketState {
-  items: CartItem[]
-  addItem: (product: Product) => void
-  addWorkshop: (workshop: WorkshopCartData) => void
-  removeItem: (id: string) => void
-  clearBasket: () => void
-  getTotalPrice: () => number
-  getItemCount: (id: string) => number
-  getGroupedItems: () => CartItem[]
-}
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_creation: customerId ? undefined : 'always',
+      customer_email: !customerId ? metadata.customerEmail : undefined,
+      metadata,
+      mode: 'payment',
+      ...(promoCodeId
+        ? { discounts: [{ promotion_code: promoCodeId }] }
+        : { allow_promotion_codes: true }),
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
+      cancel_url: `${baseUrl}/basket`,
+      line_items: items.map((item) => {
+        const name =
+          item.itemType === 'product'
+            ? (item.data.name ?? 'Unnamed Product')
+            : (item.data.title ?? 'Workshop')
+        const description =
+          item.itemType === 'product'
+            ? `Product ID: ${item.data._id}`
+            : `Workshop — ${item.data.date ? new Date(item.data.date).toLocaleDateString('da-DK') : ''}`
 
-const useBasketStore = create<BasketState>()(
-  persist(
-    (set, get) => ({
-      items: [],
-
-      addItem: (product) =>
-        set((state) => {
-          const existingIndex = state.items.findIndex(
-            (item) => item.data._id === product._id,
-          )
-
-          if (existingIndex > -1) {
-            const existing = state.items[existingIndex]
-            if (existing.itemType !== 'product') return state
-            const currentQty = existing.quantity
-            if (
-              product.stock !== null &&
-              product.stock !== undefined &&
-              currentQty >= product.stock
-            ) {
-              return state
-            }
-            const newItems = [...state.items]
-            newItems[existingIndex] = { ...existing, quantity: currentQty + 1 }
-            return { items: newItems }
-          }
-
-          return {
-            items: [
-              ...state.items,
-              { itemType: 'product', data: product, quantity: 1 },
-            ],
-          }
-        }),
-
-      addWorkshop: (workshop) =>
-        set((state) => {
-          const existingIndex = state.items.findIndex(
-            (item) => item.data._id === workshop._id,
-          )
-
-          if (existingIndex > -1) {
-            const existing = state.items[existingIndex]
-            if (existing.itemType !== 'workshop') return state
-            const currentQty = existing.quantity
-            const spotsLeft =
-              (workshop.maxAllocation ?? 0) - (workshop.currentSignUps ?? 0)
-            if (currentQty >= spotsLeft) return state
-            const newItems = [...state.items]
-            newItems[existingIndex] = { ...existing, quantity: currentQty + 1 }
-            return { items: newItems }
-          }
-
-          return {
-            items: [
-              ...state.items,
-              { itemType: 'workshop', data: workshop, quantity: 1 },
-            ],
-          }
-        }),
-
-      removeItem: (id) =>
-        set((state) => ({
-          items: state.items.reduce((acc, item) => {
-            if (item.data._id === id) {
-              if (item.quantity > 1) {
-                acc.push({ ...item, quantity: item.quantity - 1 })
-              }
-            } else {
-              acc.push(item)
-            }
-            return acc
-          }, [] as CartItem[]),
-        })),
-
-      clearBasket: () => set({ items: [] }),
-
-      getTotalPrice: () =>
-        get().items.reduce(
-          (total, item) => total + (item.data?.price ?? 0) * item.quantity,
-          0,
-        ),
-
-      getItemCount: (id) => {
-        const item = get().items.find((i) => i.data._id === id)
-        return item ? item.quantity : 0
-      },
-
-      getGroupedItems: () => get().items,
-    }),
-    {
-      name: 'basket-store',
-      version: 1,
-      migrate: (persistedState: unknown, version: number) => {
-        const state = persistedState as { items?: unknown[] }
-        if (version === 0 && Array.isArray(state.items)) {
-          // Migrate old BasketItem format { product, quantity } to CartItem format { itemType, data, quantity }
-          state.items = state.items
-            .map((item: unknown) => {
-              const i = item as Record<string, unknown>
-              if (i.data) return i // Already in new format
-              if (i.product) {
-                return {
-                  itemType: 'product',
-                  data: i.product,
-                  quantity: i.quantity,
-                }
-              }
-              return null
-            })
-            .filter(Boolean)
+        return {
+          price_data: {
+            currency: 'dkk',
+            unit_amount: Math.round((item.data.price ?? 1) * 100),
+            product_data: {
+              name,
+              description,
+              metadata: { id: item.data._id },
+              images: item.data.image
+                ? [imageUrl(item.data.image).url()]
+                : undefined,
+            },
+          },
+          quantity: item.quantity,
         }
-        return state
-      },
-      onRehydrateStorage: () => (_state) => {
-        console.info('Basket Store Hydrated')
-      },
-    },
-  ),
-)
-
-export default useBasketStore
+      }),
+    })
+    return session.url
+  } catch (error) {
+    console.error('Error creating checkout session:', error)
+    throw error
+  }
+}

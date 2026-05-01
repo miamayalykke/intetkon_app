@@ -32,7 +32,9 @@ const WorkshopDetailPage = async ({
   const isFull = signUps >= maxSpots
   const spotsLeft = maxSpots - signUps
   const eventDate = new Date(workshop.date ?? '')
-  const levelColor = LEVEL_COLORS[workshop.level ?? ''] ?? 'bg-gray-100 text-gray-700 border-gray-200'
+  const levelColor =
+    LEVEL_COLORS[workshop.level ?? ''] ??
+    'bg-gray-100 text-gray-700 border-gray-200'
 
   return (
     <main className="min-h-screen bg-background pb-32">
@@ -66,12 +68,13 @@ const WorkshopDetailPage = async ({
 
               {/* Level badge */}
               {workshop.level && (
-                <div className={`absolute top-4 right-4 px-4 py-1.5 rounded-full font-bold text-[9px] uppercase tracking-widest border-2 shadow-lg -rotate-3 ${levelColor}`}>
+                <div
+                  className={`absolute top-4 right-4 px-4 py-1.5 rounded-full font-bold text-[9px] uppercase tracking-widest border-2 shadow-lg -rotate-3 ${levelColor}`}
+                >
                   {workshop.level}
                 </div>
               )}
             </div>
-
           </div>
 
           {/* --- Right: Details --- */}
@@ -105,9 +108,12 @@ const WorkshopDetailPage = async ({
                 <Clock className="w-3 h-3 text-secondary" /> {workshop.duration}
               </span>
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                <MapPin className="w-3 h-3 text-secondary" /> Bentzonzvej 50b, 2000 Frederiksberg
+                <MapPin className="w-3 h-3 text-secondary" /> Bentzonzvej 50b,
+                2000 Frederiksberg
               </span>
-              <span className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}>
+              <span
+                className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}
+              >
                 <Users className="w-3 h-3" />
                 {isFull ? 'Sold Out' : `${spotsLeft} Spots Remaining`}
               </span>
