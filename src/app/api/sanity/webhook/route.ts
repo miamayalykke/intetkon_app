@@ -43,40 +43,32 @@ export async function POST(req: NextRequest) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-    const meta = session.metadata ?? {}
 
-    if (meta.checkoutType === 'workshop') {
-      // Increment spot counter in Sanity
-      try {
-        await backendClient
-          .patch(meta.workshopId)
-          .inc({ currentSignUps: 1 })
-          .commit()
-        console.info(
-          'Incremented currentSignUps for workshop:',
-          meta.workshopId,
-        )
-      } catch (err) {
-        console.error('Error incrementing workshop sign-ups:', err)
-        return NextResponse.json(
-          { error: 'Error updating workshop sign-ups' },
-          { status: 500 },
-        )
+    try {
+      const order = await createOrderInSanity(session)
+
+      const meta = session.metadata ?? {}
+      if (meta.workshopIds) {
+        const workshopIds = meta.workshopIds.split(',').filter(Boolean)
+        for (const workshopId of workshopIds) {
+          await backendClient
+            .patch(workshopId)
+            .inc({ currentSignUps: 1 })
+            .commit()
+          console.info('Incremented currentSignUps for workshop:', workshopId)
+        }
       }
-    } else {
-      try {
-        const order = await createOrderInSanity(session)
-        console.info('Order created in Sanity:', order)
-        await sendOrderConfirmationEmail(session, order.sanityProductIds)
-      } catch (err) {
-        console.error('Error processing order:', err)
-        return NextResponse.json(
-          { error: 'Error processing order' },
-          { status: 500 },
-        )
-      }
+
+      await sendOrderConfirmationEmail(session, order.sanityProductIds)
+    } catch (err) {
+      console.error('Error processing order:', err)
+      return NextResponse.json(
+        { error: 'Error processing order' },
+        { status: 500 },
+      )
     }
   }
+
   return NextResponse.json({ recieved: true })
 }
 
@@ -97,32 +89,6 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
   const lineItemsWithProduct = await stripe.checkout.sessions.listLineItems(
     id,
     { expand: ['data.price.product'] },
-  )
-
-  // TEMPORARY DEBUG LOG
-  console.info(
-    'line items debug:',
-    JSON.stringify(
-      lineItemsWithProduct.data.map((item) => {
-        const product = item.price?.product
-        const isDeleted =
-          typeof product === 'object' &&
-          product !== null &&
-          'deleted' in product
-        return {
-          priceProductType: typeof product,
-          metadata:
-            !isDeleted && typeof product === 'object' && product !== null
-              ? (product as Stripe.Product).metadata
-              : null,
-          resolvedRef: !isDeleted
-            ? (product as Stripe.Product)?.metadata?.id
-            : null,
-        }
-      }),
-      null,
-      2,
-    ),
   )
 
   const sanityProducts = lineItemsWithProduct.data.map((item) => ({
@@ -170,7 +136,6 @@ async function sendOrderConfirmationEmail(
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
-  // Fetch both products and workshops — no _type filter
   const details = await backendClient.fetch<
     {
       _id: string
