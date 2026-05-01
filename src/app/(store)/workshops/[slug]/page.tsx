@@ -8,7 +8,6 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { PortableText } from 'next-sanity'
 
-export const dynamic = 'force-static'
 export const revalidate = 60
 
 const LEVEL_COLORS: Record<string, string> = {

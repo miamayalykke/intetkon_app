@@ -55,7 +55,6 @@ export async function POST(req: NextRequest) {
             .patch(workshopId)
             .inc({ currentSignUps: 1 })
             .commit()
-          console.info('Incremented currentSignUps for workshop:', workshopId)
         }
       }
 
