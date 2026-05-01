@@ -142,10 +142,7 @@ async function sendOrderConfirmationEmail(
   const { metadata, amount_total, currency } = session
   const { orderNumber, customerName, customerEmail } = metadata as Metadata
 
-  const baseUrl =
-    process.env.NODE_ENV === 'production'
-      ? `https://${process.env.VERCEL_URL}`
-      : process.env.NEXT_PUBLIC_BASE_URL
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
   // Fetch full product details from Sanity
   const productDetails = await backendClient.fetch<
