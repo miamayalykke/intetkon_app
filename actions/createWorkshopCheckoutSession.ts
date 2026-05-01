@@ -42,10 +42,7 @@ export async function createWorkshopCheckoutSession(
     customerId = customers.data[0].id
   }
 
-  const baseUrl =
-    process.env.NODE_ENV === 'production'
-      ? `https://${process.env.VERCEL_URL}`
-      : `${process.env.NEXT_PUBLIC_BASE_URL}`
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
