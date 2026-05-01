@@ -97,29 +97,42 @@ export default function OrderConfirmationEmail({
                     {item.courseDate && (
                       <>
                         <Text style={workshopDetail}>
-                          📅 {new Date(item.courseDate).toLocaleDateString('da-DK', {
-                            weekday: 'long',
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                          })}
+                          📅{' '}
+                          {new Date(item.courseDate).toLocaleDateString(
+                            'da-DK',
+                            {
+                              weekday: 'long',
+                              day: 'numeric',
+                              month: 'long',
+                              year: 'numeric',
+                            },
+                          )}
                         </Text>
                         <Text style={workshopDetail}>
-                          🕐 {new Date(item.courseDate).toLocaleTimeString('da-DK', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
+                          🕐{' '}
+                          {new Date(item.courseDate).toLocaleTimeString(
+                            'da-DK',
+                            {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            },
+                          )}
                         </Text>
                       </>
                     )}
                     {item.courseLocation && (
-                      <Text style={workshopDetail}>📍 {item.courseLocation}</Text>
+                      <Text style={workshopDetail}>
+                        📍 {item.courseLocation}
+                      </Text>
                     )}
                     {item.courseDuration && (
-                      <Text style={workshopDetail}>⏱ {item.courseDuration}</Text>
+                      <Text style={workshopDetail}>
+                        ⏱ {item.courseDuration}
+                      </Text>
                     )}
                     <Text style={workshopNote}>
-                      Materials are included in the price. Please arrive 10 minutes before the session starts.
+                      Materials are included in the price. Please arrive 10
+                      minutes before the session starts.
                     </Text>
                   </Section>
                 )}
