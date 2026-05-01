@@ -186,6 +186,13 @@ async function sendOrderConfirmationEmail(
     { ids: sanityProductIds.map((p) => p.id) },
   )
 
+  // TEMPORARY DEBUG LOG
+  console.info(
+    'product fetch ids:',
+    sanityProductIds.map((p) => p.id),
+  )
+  console.info('product fetch results:', JSON.stringify(productDetails))
+
   const products: OrderProduct[] = []
   for (const { id, quantity } of sanityProductIds) {
     const detail = productDetails.find((p) => p._id === id)

@@ -1,8 +1,10 @@
 import { defineQuery } from 'next-sanity'
 import type { MY_ORDERS_QUERYResult } from '../../../../sanity.types'
-import { client } from '../client'
+import { backendClient } from '../backendClient'
 
-export async function getMyOrders(userId: string): Promise<MY_ORDERS_QUERYResult> {
+export async function getMyOrders(
+  userId: string,
+): Promise<MY_ORDERS_QUERYResult> {
   if (!userId) {
     throw new Error('User ID is required')
   }
@@ -21,7 +23,12 @@ export async function getMyOrders(userId: string): Promise<MY_ORDERS_QUERYResult
     `)
 
   try {
-    const orders = await client.fetch<MY_ORDERS_QUERYResult>(MY_ORDERS_QUERY, { userId })
+    const orders = await backendClient.fetch<MY_ORDERS_QUERYResult>(
+      MY_ORDERS_QUERY,
+      {
+        userId,
+      },
+    )
     return orders || []
   } catch (error) {
     console.error('Error fetching orders:', error)
