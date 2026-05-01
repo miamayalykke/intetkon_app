@@ -174,6 +174,7 @@ async function sendOrderConfirmationEmail(
   const productDetails = await backendClient.fetch<
     {
       _id: string
+      _type: string
       name: string
       price: number
       productType: 'digital' | 'physical_course' | 'physical'
@@ -182,7 +183,7 @@ async function sendOrderConfirmationEmail(
       courseLocation?: string
     }[]
   >(
-    `*[_type == "product" && _id in $ids]{ _id, name, price, productType, s3Key, courseDate, courseLocation }`,
+    `*[_id in $ids]{ _id, _type, name, price, productType, s3Key, courseDate, courseLocation }`,
     { ids: sanityProductIds.map((p) => p.id) },
   )
 
