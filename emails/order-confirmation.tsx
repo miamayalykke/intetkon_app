@@ -6,6 +6,7 @@ import {
   Heading,
   Hr,
   Html,
+  Link,
   Preview,
   Section,
   Text,
@@ -20,6 +21,7 @@ export interface OrderProduct {
   courseDate?: string
   courseLocation?: string
   courseDuration?: string
+  productUrl?: string
 }
 
 interface OrderConfirmationEmailProps {
@@ -75,9 +77,15 @@ export default function OrderConfirmationEmail({
             {products.map((item, i) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: email template
               <Section key={i} style={productRow}>
-                <Text style={productName}>
-                  {item.name} x {item.quantity}
-                </Text>
+                {item.productUrl ? (
+                  <Link href={item.productUrl} style={productNameLink}>
+                    {item.name} x {item.quantity}
+                  </Link>
+                ) : (
+                  <Text style={productName}>
+                    {item.name} x {item.quantity}
+                  </Text>
+                )}
 
                 {item.productType === 'digital' && item.downloadUrl && (
                   <>
@@ -291,4 +299,12 @@ const workshopNote = {
   lineHeight: '18px',
   marginTop: '12px',
   fontStyle: 'italic' as const,
+}
+
+const productNameLink = {
+  ...productName,
+  color: '#f97316',
+  textDecoration: 'none',
+  display: 'block',
+  marginBottom: '4px',
 }

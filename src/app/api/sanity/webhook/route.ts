@@ -149,9 +149,10 @@ async function sendOrderConfirmationEmail(
       date?: string
       location?: string
       duration?: string
+      slug?: { current: string }
     }[]
   >(
-    `*[_id in $ids]{ _id, _type, name, title, price, productType, s3Key, courseDate, courseLocation, date, location, duration }`,
+    `*[_id in $ids]{ _id, _type, name, title, price, productType, s3Key, courseDate, courseLocation, date, location, duration, slug }`,
     { ids: sanityProductIds.map((p) => p.id) },
   )
 
@@ -180,6 +181,9 @@ async function sendOrderConfirmationEmail(
       courseDate: isWorkshop ? detail.date : detail.courseDate,
       courseLocation: isWorkshop ? detail.location : detail.courseLocation,
       courseDuration: isWorkshop ? detail.duration : undefined,
+      productUrl: detail.slug?.current
+        ? `${baseUrl}${isWorkshop ? '/workshops' : '/product'}/${detail.slug.current}`
+        : undefined,
     })
   }
 

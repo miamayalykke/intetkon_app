@@ -4,6 +4,7 @@ import { formatCurrency } from '@src/lib/formatCurrency'
 import { imageUrl } from '@src/lib/imageUrl'
 import { Clock, Download, MapPin, Receipt, Sparkles } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 async function Orders() {
@@ -107,9 +108,16 @@ async function Orders() {
                             </div>
                           )}
                           <div className="space-y-1">
-                            <p className="text-sm font-black uppercase tracking-tight group-hover/item:text-orange-500 transition-colors">
+                            <Link
+                              href={
+                                item.product?._type === 'workshop'
+                                  ? `/workshops/${item.product?.slug?.current}`
+                                  : `/product/${item.product?.slug?.current}`
+                              }
+                              className="text-sm font-black uppercase tracking-tight hover:text-orange-500 transition-colors"
+                            >
                               {item.product?.name ?? item.product?.title}
-                            </p>
+                            </Link>
                             <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                               Quantity: {item.quantity ?? '0'}
                             </p>
