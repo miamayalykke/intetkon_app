@@ -99,6 +99,32 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
     { expand: ['data.price.product'] },
   )
 
+  // TEMPORARY DEBUG LOG
+  console.info(
+    'line items debug:',
+    JSON.stringify(
+      lineItemsWithProduct.data.map((item) => {
+        const product = item.price?.product
+        const isDeleted =
+          typeof product === 'object' &&
+          product !== null &&
+          'deleted' in product
+        return {
+          priceProductType: typeof product,
+          metadata:
+            !isDeleted && typeof product === 'object' && product !== null
+              ? (product as Stripe.Product).metadata
+              : null,
+          resolvedRef: !isDeleted
+            ? (product as Stripe.Product)?.metadata?.id
+            : null,
+        }
+      }),
+      null,
+      2,
+    ),
+  )
+
   const sanityProducts = lineItemsWithProduct.data.map((item) => ({
     _key: crypto.randomUUID(),
     product: {
