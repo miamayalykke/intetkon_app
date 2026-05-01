@@ -20,6 +20,7 @@ import {
   createCheckoutSession,
   type Metadata,
 } from '../../../../actions/createCheckoutSession'
+import { generateOrderNumber } from '../../../../actions/generateOrderNumber'
 import {
   type ItemForValidation,
   type PromoValidationResult,
@@ -154,9 +155,10 @@ const BasketPage = () => {
   const handleCheckout = async () => {
     if (!isSignedIn) return
     setIsLoading(true)
+    const orderNumber = await generateOrderNumber()
     try {
       const metadata: Metadata = {
-        orderNumber: crypto.randomUUID(),
+        orderNumber,
         customerName: user?.fullName ?? 'Unknown',
         customerEmail: user?.emailAddresses[0].emailAddress ?? 'Unknown',
         clerkUserId: user?.id ?? '',
