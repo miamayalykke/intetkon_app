@@ -65,7 +65,7 @@ export default function OrderConfirmationEmail({
             <Text style={mono}>{orderNumber}</Text>
             <Text style={label}>Date</Text>
             <Text style={paragraph}>
-              {new Date(orderDate).toLocaleDateString('da-DK', {
+              {new Date(orderDate).toLocaleDateString('en-GB', {
                 dateStyle: 'long',
               })}
             </Text>
@@ -99,7 +99,7 @@ export default function OrderConfirmationEmail({
                         <Text style={workshopDetail}>
                           📅{' '}
                           {new Date(item.courseDate).toLocaleDateString(
-                            'da-DK',
+                            'en-GB',
                             {
                               weekday: 'long',
                               day: 'numeric',
