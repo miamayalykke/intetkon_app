@@ -45,6 +45,11 @@ const BasketPage = () => {
   > | null>(null)
   const appliedPromoCodeRef = useRef<string | null>(null)
 
+  const [showGuestForm, setShowGuestForm] = useState(false)
+  const [guestEmail, setGuestEmail] = useState('')
+  const [guestName, setGuestName] = useState('')
+  const [guestFormError, setGuestFormError] = useState<string | null>(null)
+
   useEffect(() => {
     setIsClient(true)
   }, [])
@@ -152,15 +157,19 @@ const BasketPage = () => {
     setPromoLoading(false)
   }
 
-  const handleCheckout = async () => {
-    if (!isSignedIn) return
+  const handleCheckout = async (email?: string, name?: string) => {
     setIsLoading(true)
+    setGuestFormError(null)
     const orderNumber = await generateOrderNumber()
     try {
+      const checkoutEmail =
+        email || user?.emailAddresses[0].emailAddress || ''
+      const checkoutName = name || user?.fullName || ''
+
       const metadata: Metadata = {
         orderNumber,
-        customerName: user?.fullName ?? 'Unknown',
-        customerEmail: user?.emailAddresses[0].emailAddress ?? 'Unknown',
+        customerName: checkoutName,
+        customerEmail: checkoutEmail,
         clerkUserId: user?.id ?? '',
       }
       const checkoutUrl = await createCheckoutSession(
@@ -171,9 +180,27 @@ const BasketPage = () => {
       if (checkoutUrl) window.location.href = checkoutUrl
     } catch (error) {
       console.error('Error creating checkout session:', error)
+      setGuestFormError('Failed to create checkout session. Please try again.')
     } finally {
       setIsLoading(false)
     }
+  }
+
+  const handleGuestCheckout = async () => {
+    setGuestFormError(null)
+
+    if (!guestEmail.trim() || !guestName.trim()) {
+      setGuestFormError('Please enter both name and email')
+      return
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(guestEmail)) {
+      setGuestFormError('Please enter a valid email address')
+      return
+    }
+
+    await handleCheckout(guestEmail.trim(), guestName.trim())
   }
 
   return (
@@ -362,7 +389,7 @@ const BasketPage = () => {
 
             {isSignedIn ? (
               <Button
-                onClick={handleCheckout}
+                onClick={() => handleCheckout()}
                 disabled={isLoading}
                 size="4xl"
                 className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
@@ -370,12 +397,86 @@ const BasketPage = () => {
                 {isLoading ? 'Processing...' : 'Complete Purchase'}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-            ) : (
-              <SignInButton mode="modal">
-                <Button className="w-full rounded-full bg-secondary hover:bg-foreground text-white font-black h-20 text-xl transition-all">
-                  Sign In to Pay
+            ) : showGuestForm ? (
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="guest-name"
+                    className="block text-sm font-bold mb-2 uppercase tracking-widest"
+                  >
+                    Full Name
+                  </label>
+                  <input
+                    id="guest-name"
+                    type="text"
+                    value={guestName}
+                    onChange={(e) => {
+                      setGuestName(e.target.value)
+                      setGuestFormError(null)
+                    }}
+                    placeholder="Your name"
+                    className="w-full px-4 py-3 border border-border rounded-2xl bg-background focus:outline-none focus:border-orange-500 transition-colors font-bold"
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="guest-email"
+                    className="block text-sm font-bold mb-2 uppercase tracking-widest"
+                  >
+                    Email Address
+                  </label>
+                  <input
+                    id="guest-email"
+                    type="email"
+                    value={guestEmail}
+                    onChange={(e) => {
+                      setGuestEmail(e.target.value)
+                      setGuestFormError(null)
+                    }}
+                    placeholder="your@email.com"
+                    className="w-full px-4 py-3 border border-border rounded-2xl bg-background focus:outline-none focus:border-orange-500 transition-colors font-bold"
+                  />
+                </div>
+                {guestFormError && (
+                  <p className="text-sm text-red-500 font-bold">
+                    {guestFormError}
+                  </p>
+                )}
+                <Button
+                  onClick={handleGuestCheckout}
+                  disabled={isLoading}
+                  size="4xl"
+                  className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
+                >
+                  {isLoading ? 'Processing...' : 'Complete Purchase'}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
-              </SignInButton>
+                <button
+                  type="button"
+                  onClick={() => setShowGuestForm(false)}
+                  className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors underline"
+                >
+                  Back
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <Button
+                  onClick={() => setShowGuestForm(true)}
+                  size="4xl"
+                  className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-16 text-base transition-all"
+                >
+                  Continue as Guest
+                </Button>
+                <SignInButton mode="modal">
+                  <Button
+                    size="4xl"
+                    className="w-full rounded-full bg-secondary hover:bg-foreground text-white font-black h-16 text-base transition-all"
+                  >
+                    Sign In
+                  </Button>
+                </SignInButton>
+              </div>
             )}
 
             <p className="mt-6 text-[10px] text-center text-muted-foreground uppercase tracking-widest font-bold">
