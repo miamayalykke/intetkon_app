@@ -12,7 +12,7 @@ export default function NewsletterForm() {
   if (state.status === 'success') {
     return (
       <p className="text-xs text-secondary font-medium py-3">
-        You're in! Check your inbox for a welcome email.
+        Check your email to confirm your subscription!
       </p>
     )
   }
@@ -20,7 +20,7 @@ export default function NewsletterForm() {
   if (state.status === 'conflict') {
     return (
       <p className="text-xs text-muted-foreground py-3">
-        You're already subscribed — preferences updated.
+        You're already subscribed.
       </p>
     )
   }
@@ -46,6 +46,11 @@ export default function NewsletterForm() {
           {isPending ? '…' : 'Join'}
         </Button>
       </div>
+      {state.status === 'invalid_email' && (
+        <p className="text-[11px] text-red-500 pl-1">
+          Please enter a valid email address.
+        </p>
+      )}
       {state.status === 'error' && (
         <p className="text-[11px] text-red-500 pl-1">
           Something went wrong. Please try again.
