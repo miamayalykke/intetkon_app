@@ -7565,9 +7565,9 @@ __metadata:
   linkType: hard
 
 "@unlayer/types@npm:latest":
-  version: 1.414.0
-  resolution: "@unlayer/types@npm:1.414.0"
-  checksum: 10c0/b4b759591854b3e9cbb6171fee8802798e4f92812464a47d80c0f81bd4c069b7c9d1818a8088be555c97c749ddac39ad076550a4a503a4011ab8ee7a35bc93e5
+  version: 1.419.0
+  resolution: "@unlayer/types@npm:1.419.0"
+  checksum: 10c0/90f28decbfedff03eaf911f0617be13f057721497beb7787c1e6f6966fe5f7a47c77f6c3166a1b4bebe207c00f1e623b9195da86842e6474ad20346abad733a6
   languageName: node
   linkType: hard
 
@@ -10766,6 +10766,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jose@npm:^6.2.3":
+  version: 6.2.3
+  resolution: "jose@npm:6.2.3"
+  checksum: 10c0/aa91bccba22cc84d86308f833749bcb0b00441e35c24e0ac79abeac5f76dc62d47bdef9c1da6a0c609f5da6478595f52b252085888b89dbdb163861e40ea4188
+  languageName: node
+  linkType: hard
+
 "js-cookie@npm:3.0.7":
   version: 3.0.7
   resolution: "js-cookie@npm:3.0.7"
@@ -11573,6 +11580,7 @@ __metadata:
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     cmdk: "npm:^1.1.1"
+    jose: "npm:^6.2.3"
     lucide-react: "npm:^0.577.0"
     motion: "npm:^12.36.0"
     next: "npm:15.5.9"
@@ -14611,10 +14619,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^6.23.0, undici@npm:^6.25.0":
+"undici@npm:^6.23.0":
   version: 6.25.0
   resolution: "undici@npm:6.25.0"
   checksum: 10c0/2597cc6689bdb02c210c557b1f85febbfda65becae6e6fc1061508e2f33734d25207f81cd8af56ada9956329eb3a7bd7431e87dcfeceba20ee87059b57dcf985
+  languageName: node
+  linkType: hard
+
+"undici@npm:^6.25.0":
+  version: 6.26.0
+  resolution: "undici@npm:6.26.0"
+  checksum: 10c0/cf2b4caf58c33d6582970991290cc7a6486d6e738845f25dcdd16952d708ec844815c6d30362919764fcaf30f719891289341f1ada496f003ce2700310453a47
   languageName: node
   linkType: hard
 
