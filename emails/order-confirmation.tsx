@@ -51,7 +51,7 @@ export default function OrderConfirmationEmail({
   return (
     <Html>
       <Head />
-      <Preview>Order confirmed - {orderNumber}</Preview>
+      <Preview>Order confirmed: {orderNumber}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={box}>

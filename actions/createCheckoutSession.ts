@@ -56,7 +56,7 @@ export async function createCheckoutSession(
         const description =
           item.itemType === 'product'
             ? `Product ID: ${item.data._id}`
-            : `Workshop — ${item.data.date ? new Date(item.data.date).toLocaleDateString('da-DK') : ''}`
+            : `Workshop - ${item.data.date ? new Date(item.data.date).toLocaleDateString('da-DK') : ''}`
 
         return {
           price_data: {

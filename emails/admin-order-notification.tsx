@@ -60,7 +60,7 @@ export default function AdminOrderNotification({
   return (
     <Html>
       <Head />
-      <Preview>New order received - {orderNumber}</Preview>
+      <Preview>New order received: {orderNumber}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={box}>
@@ -122,15 +122,12 @@ export default function AdminOrderNotification({
                     {item.courseDate && (
                       <Text style={workshopDetail}>
                         📅{' '}
-                        {new Date(item.courseDate).toLocaleDateString(
-                          'en-GB',
-                          {
-                            weekday: 'long',
-                            day: 'numeric',
-                            month: 'long',
-                            year: 'numeric',
-                          },
-                        )}
+                        {new Date(item.courseDate).toLocaleDateString('en-GB', {
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
                       </Text>
                     )}
                     {item.courseDate && (
