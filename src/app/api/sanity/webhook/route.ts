@@ -62,7 +62,11 @@ export async function POST(req: NextRequest) {
       }
 
       await sendOrderConfirmationEmail(session, order.sanityProductIds)
-      await sendAdminOrderNotification(session, order)
+      try {
+        await sendAdminOrderNotification(session, order)
+      } catch (err) {
+        console.error('Error sending admin notification:', err)
+      }
     } catch (err) {
       console.error('Error processing order:', err)
       return NextResponse.json(
@@ -229,10 +233,7 @@ async function sendOrderConfirmationEmail(
 
 async function sendAdminOrderNotification(
   session: Stripe.Checkout.Session,
-  order: {
-    _id: string
-    sanityProductIds: { id: string; quantity: number }[]
-  },
+  order: any,
 ) {
   const { metadata, amount_total, currency, total_details } = session
   const { orderNumber, customerName, customerEmail } = metadata as Metadata
@@ -256,7 +257,7 @@ async function sendAdminOrderNotification(
     }[]
   >(
     `*[_id in $ids]{ _id, _type, name, title, price, productType, courseDate, courseLocation, date, location, duration }`,
-    { ids: order.sanityProductIds.map((p) => p.id) },
+    { ids: order.sanityProductIds.map((p: any) => p.id) },
   )
 
   const products: AdminOrderProduct[] = []
