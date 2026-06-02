@@ -89,7 +89,7 @@ export default function AdminOrderNotification({
             </Text>
             <Text style={paragraph}>
               <strong>Date:</strong>{' '}
-              {new Date(orderDate).toLocaleDateString('en-GB', {
+              {new Date(orderDate).toLocaleString('en-GB', {
                 dateStyle: 'long',
                 timeStyle: 'short',
               })}
