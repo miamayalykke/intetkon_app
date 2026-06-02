@@ -88,6 +88,12 @@ export const orderType = defineType({
       ],
     }),
     defineField({
+      name: 'workshops',
+      title: 'Workshops',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'workshop' }] }],
+    }),
+    defineField({
       name: 'totalPrice',
       title: 'Total Price',
       type: 'number',

@@ -4,6 +4,11 @@ import {
   ListContactsCommand,
   SendEmailCommand,
 } from '@aws-sdk/client-sesv2'
+import { backendClient } from '@sanity/lib/backendClient'
+import {
+  getAllWorkshopsForCampaign,
+  getWorkshopAttendees,
+} from '@sanity/lib/workshops/getWorkshopAttendees'
 import { CONTACT_LIST_NAME, FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
 
 /** Replace {{variableName}} placeholders with subscriber-specific values.
@@ -28,6 +33,43 @@ function withUnsubscribeFooter(html: string): string {
     : html + UNSUBSCRIBE_FOOTER
 }
 
+async function getAllOrderCustomers(): Promise<
+  Array<{ email: string; customerName: string }>
+> {
+  const query = `*[_type == "order" && status == "paid"] {
+    email,
+    customerName
+  }`
+  const customers = await backendClient.fetch<
+    Array<{ email: string; customerName: string }>
+  >(query)
+  return customers ?? []
+}
+
+async function getWorkshopOrderCustomers(
+  workshopId?: string,
+): Promise<Array<{ email: string; customerName: string }>> {
+  if (workshopId) {
+    const query = `*[_type == "order" && status == "paid" && $workshopId in workshops[]._ref] {
+      email,
+      customerName
+    }`
+    const customers = await backendClient.fetch<
+      Array<{ email: string; customerName: string }>
+    >(query, { workshopId })
+    return customers ?? []
+  }
+
+  const query = `*[_type == "order" && status == "paid" && count(workshops) > 0] {
+    email,
+    customerName
+  }`
+  const customers = await backendClient.fetch<
+    Array<{ email: string; customerName: string }>
+  >(query)
+  return customers ?? []
+}
+
 async function getContactAttributes(
   email: string,
 ): Promise<Record<string, string>> {
@@ -45,7 +87,7 @@ async function getContactAttributes(
   }
 }
 
-export type Audience = 'newsletter' | 'pattern-tester' | 'all'
+export type Audience = 'newsletter' | 'pattern-tester' | 'all' | 'workshop-attendees'
 
 interface SendTestEmailInput {
   html: string
@@ -87,15 +129,124 @@ export async function sendTestEmail({
 interface SendCampaignInput {
   html: string
   subject: string
-  audience: Audience
+  emailType: 'campaign' | 'followup'
+  audience?: Audience
+  followupTarget?: 'all-customers' | 'workshop-orders'
+  workshopId?: string
+}
+
+export async function getWorkshopsForSelection() {
+  return getAllWorkshopsForCampaign()
 }
 
 export async function sendCampaign({
   html,
   subject,
+  emailType,
   audience,
+  followupTarget,
+  workshopId,
 }: SendCampaignInput): Promise<{ success: boolean; message: string }> {
   try {
+    if (emailType === 'followup') {
+      const customers =
+        followupTarget === 'all-customers'
+          ? await getAllOrderCustomers()
+          : await getWorkshopOrderCustomers(workshopId)
+
+      if (customers.length === 0) {
+        return {
+          success: false,
+          message: 'No customers found for this selection.',
+        }
+      }
+
+      let sent = 0
+      for (const customer of customers) {
+        try {
+          const personalizedHtml = applyVariables(
+            html,
+            { customerName: customer.customerName },
+          )
+          const personalizedSubject = applyVariables(subject, {
+            customerName: customer.customerName,
+          })
+
+          await sesv2.send(
+            new SendEmailCommand({
+              FromEmailAddress: FROM_EMAIL,
+              Destination: { ToAddresses: [customer.email] },
+              Content: {
+                Simple: {
+                  Subject: { Data: personalizedSubject },
+                  Body: { Html: { Data: personalizedHtml } },
+                },
+              },
+            }),
+          )
+          sent++
+        } catch {
+          // Skip individual failed sends and continue
+        }
+      }
+
+      return {
+        success: true,
+        message: `Follow-up email sent to ${sent} of ${customers.length} customers.`,
+      }
+    }
+
+    if (audience === 'workshop-attendees') {
+      if (!workshopId) {
+        return {
+          success: false,
+          message: 'Workshop ID is required for workshop audience.',
+        }
+      }
+
+      const attendees = await getWorkshopAttendees(workshopId)
+      if (attendees.length === 0) {
+        return {
+          success: false,
+          message: 'No attendees found for this workshop.',
+        }
+      }
+
+      let sent = 0
+      for (const attendee of attendees) {
+        try {
+          const personalizedHtml = applyVariables(
+            withUnsubscribeFooter(html),
+            { customerName: attendee.customerName },
+          )
+          const personalizedSubject = applyVariables(subject, {
+            customerName: attendee.customerName,
+          })
+
+          await sesv2.send(
+            new SendEmailCommand({
+              FromEmailAddress: FROM_EMAIL,
+              Destination: { ToAddresses: [attendee.email] },
+              Content: {
+                Simple: {
+                  Subject: { Data: personalizedSubject },
+                  Body: { Html: { Data: personalizedHtml } },
+                },
+              },
+            }),
+          )
+          sent++
+        } catch {
+          // Skip individual failed sends and continue
+        }
+      }
+
+      return {
+        success: true,
+        message: `Campaign sent to ${sent} of ${attendees.length} workshop attendees.`,
+      }
+    }
+
     const response = await sesv2.send(
       new ListContactsCommand({
         ContactListName: CONTACT_LIST_NAME,

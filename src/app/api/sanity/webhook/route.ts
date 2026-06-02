@@ -99,6 +99,15 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
     quantity: item.quantity || 0,
   }))
 
+  const workshopIds = (metadata?.workshopIds as string)
+    ?.split(',')
+    .filter(Boolean) ?? []
+
+  const workshopReferences = workshopIds.map((id) => ({
+    _type: 'reference' as const,
+    _ref: id,
+  }))
+
   const order = await backendClient.create({
     _type: 'order',
     orderNumber,
@@ -113,6 +122,7 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
       ? total_details.amount_discount / 100
       : 0,
     products: sanityProducts,
+    workshops: workshopReferences.length > 0 ? workshopReferences : undefined,
     totalPrice: amount_total ? amount_total / 100 : 0,
     status: 'paid',
     orderDate: new Date().toISOString(),
