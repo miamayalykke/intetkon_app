@@ -107,9 +107,8 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
     quantity: item.quantity || 0,
   }))
 
-  const workshopIds = (metadata?.workshopIds as string)
-    ?.split(',')
-    .filter(Boolean) ?? []
+  const workshopIds =
+    (metadata?.workshopIds as string)?.split(',').filter(Boolean) ?? []
 
   const workshopReferences = workshopIds.map((id) => ({
     _type: 'reference' as const,
@@ -223,7 +222,7 @@ async function sendOrderConfirmationEmail(
       Destination: { ToAddresses: [customerEmail] },
       Content: {
         Simple: {
-          Subject: { Data: `Order confirmed — ${orderNumber}` },
+          Subject: { Data: `Order confirmed - ${orderNumber}` },
           Body: { Html: { Data: html } },
         },
       },
@@ -306,7 +305,7 @@ async function sendAdminOrderNotification(
       Destination: { ToAddresses: [adminEmail] },
       Content: {
         Simple: {
-          Subject: { Data: `New order — ${orderNumber}` },
+          Subject: { Data: `New order - ${orderNumber}` },
           Body: { Html: { Data: html } },
         },
       },

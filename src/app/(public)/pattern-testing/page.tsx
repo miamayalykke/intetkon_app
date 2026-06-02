@@ -126,9 +126,12 @@ const PatternTesterPage = () => {
             {state.status === 'success' ? (
               <div className="flex flex-col items-center justify-center py-16 text-center space-y-4">
                 <CheckCircle2 className="w-12 h-12 text-secondary" />
-                <h2 className="text-3xl font-black tracking-tighter">You're in the pool!</h2>
+                <h2 className="text-3xl font-black tracking-tighter">
+                  You're in the pool!
+                </h2>
                 <p className="text-muted-foreground font-light italic max-w-xs">
-                  We'll reach out when a new pattern is ready for testing. Keep an eye on your inbox.
+                  We'll reach out when a new pattern is ready for testing. Keep
+                  an eye on your inbox.
                 </p>
               </div>
             ) : (
@@ -188,13 +191,18 @@ const PatternTesterPage = () => {
                       >
                         Sewing Level
                       </Label>
-                      <Select value={sewingLevel} onValueChange={setSewingLevel}>
+                      <Select
+                        value={sewingLevel}
+                        onValueChange={setSewingLevel}
+                      >
                         <SelectTrigger className="rounded-xl border-border/50 bg-background h-12">
                           <SelectValue placeholder="Select level" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="beginner">Beginner</SelectItem>
-                          <SelectItem value="intermediate">Intermediate</SelectItem>
+                          <SelectItem value="intermediate">
+                            Intermediate
+                          </SelectItem>
                           <SelectItem value="advanced">Advanced</SelectItem>
                         </SelectContent>
                       </Select>
@@ -218,7 +226,8 @@ const PatternTesterPage = () => {
 
                   {state.status === 'conflict' && (
                     <p className="text-sm text-muted-foreground italic">
-                      You're already in our tester pool — we've updated your details.
+                      You're already in our tester pool - we've updated your
+                      details.
                     </p>
                   )}
                   {state.status === 'error' && (
