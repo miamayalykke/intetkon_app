@@ -8,6 +8,9 @@ import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 import type { Metadata } from '../../../../../actions/createCheckoutSession'
+import AdminOrderNotification, {
+  type AdminOrderProduct,
+} from '../../../../../emails/admin-order-notification'
 import OrderConfirmationEmail, {
   type OrderProduct,
 } from '../../../../../emails/order-confirmation'
@@ -59,6 +62,7 @@ export async function POST(req: NextRequest) {
       }
 
       await sendOrderConfirmationEmail(session, order.sanityProductIds)
+      await sendAdminOrderNotification(session, order)
     } catch (err) {
       console.error('Error processing order:', err)
       return NextResponse.json(
@@ -216,6 +220,92 @@ async function sendOrderConfirmationEmail(
       Content: {
         Simple: {
           Subject: { Data: `Order confirmed — ${orderNumber}` },
+          Body: { Html: { Data: html } },
+        },
+      },
+    }),
+  )
+}
+
+async function sendAdminOrderNotification(
+  session: Stripe.Checkout.Session,
+  order: {
+    _id: string
+    sanityProductIds: { id: string; quantity: number }[]
+  },
+) {
+  const { metadata, amount_total, currency, total_details } = session
+  const { orderNumber, customerName, customerEmail } = metadata as Metadata
+  const amountDiscount = total_details?.amount_discount
+    ? total_details.amount_discount / 100
+    : 0
+
+  const details = await backendClient.fetch<
+    {
+      _id: string
+      _type: string
+      name?: string
+      title?: string
+      price: number
+      productType?: 'digital' | 'physical_course' | 'physical'
+      courseDate?: string
+      courseLocation?: string
+      date?: string
+      location?: string
+      duration?: string
+    }[]
+  >(
+    `*[_id in $ids]{ _id, _type, name, title, price, productType, courseDate, courseLocation, date, location, duration }`,
+    { ids: order.sanityProductIds.map((p) => p.id) },
+  )
+
+  const products: AdminOrderProduct[] = []
+  for (const { id, quantity } of order.sanityProductIds) {
+    const detail = details.find((p) => p._id === id)
+    if (!detail) continue
+
+    const isWorkshop = detail._type === 'workshop'
+
+    products.push({
+      name: isWorkshop
+        ? (detail.title ?? 'Workshop')
+        : (detail.name ?? 'Product'),
+      quantity,
+      price: detail.price,
+      productType: isWorkshop
+        ? 'physical_course'
+        : (detail.productType ?? 'physical'),
+      courseDate: isWorkshop ? detail.date : detail.courseDate,
+      courseLocation: isWorkshop ? detail.location : detail.courseLocation,
+      courseDuration: isWorkshop ? detail.duration : undefined,
+    })
+  }
+
+  const sanityOrderUrl = `https://sanity.io/manage/personal/desk/orders;${order._id}`
+
+  const html = await render(
+    AdminOrderNotification({
+      customerName,
+      customerEmail,
+      orderNumber,
+      orderDate: new Date().toISOString(),
+      totalPrice: amount_total ? amount_total / 100 : 0,
+      amountDiscount,
+      currency: currency ?? 'dkk',
+      products,
+      sanityOrderUrl,
+    }),
+  )
+
+  const adminEmail = process.env.ADMIN_ORDER_EMAIL || 'info@intetkon.com'
+
+  await sesv2.send(
+    new SendEmailCommand({
+      FromEmailAddress: ORDER_FROM_EMAIL,
+      Destination: { ToAddresses: [adminEmail] },
+      Content: {
+        Simple: {
+          Subject: { Data: `New order — ${orderNumber}` },
           Body: { Html: { Data: html } },
         },
       },
