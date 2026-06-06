@@ -25,6 +25,7 @@ interface WorkshopConfirmationEmailProps {
   workshopLevel: string
   price: number
   currency: string
+  mailInformation?: any
 }
 
 export default function WorkshopConfirmationEmail({
@@ -37,6 +38,7 @@ export default function WorkshopConfirmationEmail({
   workshopLevel,
   price,
   currency,
+  mailInformation,
 }: WorkshopConfirmationEmailProps) {
   const zonedDate = toZonedTime(new Date(workshopDate), TIMEZONE)
   const formattedDate = format(zonedDate, 'EEEE, d MMMM yyyy', { locale: da })
@@ -93,6 +95,23 @@ export default function WorkshopConfirmationEmail({
               All materials are included in the price. Please arrive 10 minutes
               before the session begins.
             </Text>
+
+            {mailInformation && mailInformation.length > 0 && (
+              <>
+                <Hr style={hr} />
+                <Text style={label}>Additional Information</Text>
+                {mailInformation.map((block: any, index: number) => {
+                  if (block._type === 'block') {
+                    return (
+                      <Text key={index} style={detail}>
+                        {block.children?.map((child: any) => child.text).join('')}
+                      </Text>
+                    )
+                  }
+                  return null
+                })}
+              </>
+            )}
 
             <Hr style={hr} />
             <Text style={footer}>Intetkøn</Text>

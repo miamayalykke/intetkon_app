@@ -343,9 +343,10 @@ async function sendWorkshopConfirmationEmails(
       location?: string
       level?: string
       price: number
+      mailInformation?: any
     }[]
   >(
-    `*[_id in $ids]{ _id, title, date, duration, location, level, price }`,
+    `*[_id in $ids]{ _id, title, date, duration, location, level, price, mailInformation }`,
     { ids: workshopIds },
   )
 
@@ -361,6 +362,7 @@ async function sendWorkshopConfirmationEmails(
         workshopLevel: workshop.level ?? '',
         price: workshop.price,
         currency: currency ?? 'dkk',
+        mailInformation: workshop.mailInformation,
       }),
     )
 

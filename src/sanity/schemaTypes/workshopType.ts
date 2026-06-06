@@ -86,6 +86,12 @@ export const workshopType = defineType({
       type: 'blockContent',
     }),
     defineField({
+      name: 'mailInformation',
+      title: 'Mail Information',
+      description: 'Additional information to be sent only in confirmation emails (not displayed on website)',
+      type: 'blockContent',
+    }),
+    defineField({
       name: 'image',
       title: 'Main Image',
       type: 'image',
