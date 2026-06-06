@@ -12,6 +12,7 @@ import {
   Section,
   Text,
 } from '@react-email/components'
+import { blockContentToHtml } from '@src/lib/blockContentToHtml'
 
 const TIMEZONE = 'Europe/Copenhagen'
 
@@ -47,6 +48,10 @@ export default function WorkshopConfirmationEmail({
     style: 'currency',
     currency: currency.toUpperCase(),
   }).format(price)
+
+  const mailInformationHtml = mailInformation
+    ? blockContentToHtml(mailInformation)
+    : null
 
   return (
     <Html>
@@ -96,20 +101,20 @@ export default function WorkshopConfirmationEmail({
               before the session begins.
             </Text>
 
-            {mailInformation && mailInformation.length > 0 && (
+            {mailInformationHtml && (
               <>
                 <Hr style={hr} />
                 <Text style={label}>Additional Information</Text>
-                {mailInformation.map((block: any, index: number) => {
-                  if (block._type === 'block') {
-                    return (
-                      <Text key={index} style={detail}>
-                        {block.children?.map((child: any) => child.text).join('')}
-                      </Text>
-                    )
-                  }
-                  return null
-                })}
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: mailInformationHtml,
+                  }}
+                  style={{
+                    fontSize: '14px',
+                    color: '#444',
+                    lineHeight: '20px',
+                  }}
+                />
               </>
             )}
 
