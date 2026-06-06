@@ -1,3 +1,6 @@
+import { format } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
+import { da } from 'date-fns/locale'
 import {
   Body,
   Container,
@@ -9,6 +12,8 @@ import {
   Section,
   Text,
 } from '@react-email/components'
+
+const TIMEZONE = 'Europe/Copenhagen'
 
 interface WorkshopConfirmationEmailProps {
   customerName: string
@@ -33,16 +38,9 @@ export default function WorkshopConfirmationEmail({
   price,
   currency,
 }: WorkshopConfirmationEmailProps) {
-  const formattedDate = new Date(workshopDate).toLocaleDateString('da-DK', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
-  const formattedTime = new Date(workshopDate).toLocaleTimeString('da-DK', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const zonedDate = toZonedTime(new Date(workshopDate), TIMEZONE)
+  const formattedDate = format(zonedDate, 'EEEE, d MMMM yyyy', { locale: da })
+  const formattedTime = format(zonedDate, 'HH:mm')
   const formattedPrice = new Intl.NumberFormat('da-DK', {
     style: 'currency',
     currency: currency.toUpperCase(),

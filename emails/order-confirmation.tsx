@@ -12,7 +12,10 @@ import {
   Text,
 } from '@react-email/components'
 import { format } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
 import { da } from 'date-fns/locale'
+
+const TIMEZONE = 'Europe/Copenhagen'
 
 export interface OrderProduct {
   name: string
@@ -109,13 +112,17 @@ export default function OrderConfirmationEmail({
                         <Text style={workshopDetail}>
                           📅{' '}
                           {format(
-                            new Date(item.courseDate),
+                            toZonedTime(new Date(item.courseDate), TIMEZONE),
                             'EEEE, d MMMM yyyy',
                             { locale: da },
                           )}
                         </Text>
                         <Text style={workshopDetail}>
-                          🕐 {format(new Date(item.courseDate), 'HH:mm')}
+                          🕐{' '}
+                          {format(
+                            toZonedTime(new Date(item.courseDate), TIMEZONE),
+                            'HH:mm',
+                          )}
                         </Text>
                       </>
                     )}

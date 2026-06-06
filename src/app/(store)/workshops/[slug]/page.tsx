@@ -1,7 +1,8 @@
 import { getWorkshopBySlug } from '@sanity/lib/workshops/getWorkshopBySlug'
 import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
-import { addMinutes, format } from 'date-fns'
+import { format, addMinutes } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
 import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -24,6 +25,8 @@ const parseDuration = (duration: string): number => {
   return 0
 }
 
+const TIMEZONE = 'Europe/Copenhagen'
+
 const WorkshopDetailPage = async ({
   params,
 }: {
@@ -38,14 +41,15 @@ const WorkshopDetailPage = async ({
   const maxSpots = workshop.maxAllocation ?? 0
   const isFull = signUps >= maxSpots
   const spotsLeft = maxSpots - signUps
-  const eventDate = new Date(workshop.date ?? '')
+  const utcDate = new Date(workshop.date ?? '')
+  const eventDate = toZonedTime(utcDate, TIMEZONE)
   const levelColor =
     LEVEL_COLORS[workshop.level ?? ''] ??
     'bg-gray-100 text-gray-700 border-gray-200'
 
   const durationMinutes = parseDuration(workshop.duration ?? '')
   const endDate = addMinutes(eventDate, durationMinutes)
-  const timeRange = `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
+  const timeRange = `${format(eventDate, 'HH:mm')} to ${format(endDate, 'HH:mm')}`
 
   return (
     <main className="min-h-screen bg-background pb-32">
