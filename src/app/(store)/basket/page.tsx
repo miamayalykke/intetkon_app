@@ -31,7 +31,7 @@ import useBasketStore from '../../../../store/store'
 const BasketPage = () => {
   const groupedItems = useBasketStore((state) => state.getGroupedItems())
   const getTotalPrice = useBasketStore((state) => state.getTotalPrice())
-  const { isSignedIn } = useAuth()
+  const { isSignedIn, userId } = useAuth()
   const { user } = useUser()
 
   const [isClient, setIsClient] = useState(false)
@@ -170,7 +170,7 @@ const BasketPage = () => {
         orderNumber,
         customerName: checkoutName,
         customerEmail: checkoutEmail,
-        clerkUserId: user?.id ?? '',
+        clerkUserId: userId ?? '',
       }
       const checkoutUrl = await createCheckoutSession(
         groupedItems,

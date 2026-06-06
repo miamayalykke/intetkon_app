@@ -91,24 +91,25 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
   } = session
 
   const { orderNumber, customerName, customerEmail, clerkUserId } =
-    metadata as Metadata
+    metadata as Metadata & { clerkUserId?: string }
 
   const lineItemsWithProduct = await stripe.checkout.sessions.listLineItems(
     id,
-    { expand: ['data.price.product'] },
   )
-
-  const sanityProducts = lineItemsWithProduct.data.map((item) => ({
-    _key: crypto.randomUUID(),
-    product: {
-      _type: 'reference',
-      _ref: (item.price?.product as Stripe.Product)?.metadata?.id,
-    },
-    quantity: item.quantity || 0,
-  }))
 
   const workshopIds =
     (metadata?.workshopIds as string)?.split(',').filter(Boolean) ?? []
+  const productIds =
+    (metadata?.productIds as string)?.split(',').filter(Boolean) ?? []
+
+  const sanityProducts = productIds.map((id, index) => ({
+    _key: crypto.randomUUID(),
+    product: {
+      _type: 'reference',
+      _ref: id,
+    },
+    quantity: lineItemsWithProduct.data[index]?.quantity || 1,
+  }))
 
   const workshopReferences = workshopIds.map((id) => ({
     _type: 'reference' as const,

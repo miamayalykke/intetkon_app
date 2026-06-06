@@ -1,12 +1,20 @@
 'use client'
 
 import { Button } from '@ui/button'
-import { format } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import { ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Link from 'next/link'
 import type { WORKSHOPS_QUERYResult } from '../../../sanity.types'
 
 type WorkshopItem = WORKSHOPS_QUERYResult[number]
+
+const parseDuration = (duration: string): number => {
+  const match = duration.match(/(\d+\.?\d*)\s*(?:hour|hr)/i)
+  if (match) {
+    return Math.round(parseFloat(match[1]) * 60)
+  }
+  return 0
+}
 
 const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
   const signUps = workshop.currentSignUps ?? 0
@@ -14,6 +22,10 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
   const isFull = signUps >= maxSpots
   const spotsLeft = maxSpots - signUps
   const eventDate = new Date(workshop.date ?? '')
+  
+  const durationMinutes = parseDuration(workshop.duration ?? '')
+  const endDate = addMinutes(eventDate, durationMinutes)
+  const timeRange = `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
 
   return (
     <div
@@ -37,7 +49,7 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
         <div className="space-y-4 text-center lg:text-left">
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
             <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              <Clock className="w-3 h-3 text-secondary" /> {workshop.duration}
+              <Clock className="w-3 h-3 text-secondary" /> {timeRange}
             </span>
             <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               <MapPin className="w-3 h-3 text-secondary" /> {workshop.location}

@@ -11,6 +11,7 @@ export type Metadata = {
   customerEmail: string
   clerkUserId: string
   workshopIds?: string
+  productIds?: string
 }
 
 export async function createCheckoutSession(
@@ -36,11 +37,16 @@ export async function createCheckoutSession(
       .map((item) => item.data._id)
       .join(',')
 
+    const productIds = items
+      .filter((item) => item.itemType === 'product')
+      .map((item) => item.data._id)
+      .join(',')
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_creation: customerId ? undefined : 'always',
       customer_email: !customerId ? metadata.customerEmail : undefined,
-      metadata: { ...metadata, ...(workshopIds ? { workshopIds } : {}) },
+      metadata: { ...metadata, ...(workshopIds ? { workshopIds } : {}), ...(productIds ? { productIds } : {}) },
       mode: 'payment',
       payment_method_configuration: 'pmc_1SDjXTJoZ0voIfvhegmhzz3s',
       ...(promoCodeId

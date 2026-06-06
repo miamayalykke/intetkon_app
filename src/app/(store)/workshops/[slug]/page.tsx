@@ -1,7 +1,7 @@
 import { getWorkshopBySlug } from '@sanity/lib/workshops/getWorkshopBySlug'
 import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
-import { format } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,6 +14,14 @@ const LEVEL_COLORS: Record<string, string> = {
   Beginner: 'bg-green-100 text-green-700 border-green-200',
   Intermediate: 'bg-orange-100 text-orange-700 border-orange-200',
   Advanced: 'bg-red-100 text-red-700 border-red-200',
+}
+
+const parseDuration = (duration: string): number => {
+  const match = duration.match(/(\d+\.?\d*)\s*(?:hour|hr)/i)
+  if (match) {
+    return Math.round(parseFloat(match[1]) * 60)
+  }
+  return 0
 }
 
 const WorkshopDetailPage = async ({
@@ -34,6 +42,10 @@ const WorkshopDetailPage = async ({
   const levelColor =
     LEVEL_COLORS[workshop.level ?? ''] ??
     'bg-gray-100 text-gray-700 border-gray-200'
+
+  const durationMinutes = parseDuration(workshop.duration ?? '')
+  const endDate = addMinutes(eventDate, durationMinutes)
+  const timeRange = `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
 
   return (
     <main className="min-h-screen bg-background pb-32">
@@ -104,7 +116,7 @@ const WorkshopDetailPage = async ({
             {/* Meta row */}
             <div className="flex flex-wrap gap-4">
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                <Clock className="w-3 h-3 text-secondary" /> {workshop.duration}
+                <Clock className="w-3 h-3 text-secondary" /> {timeRange}
               </span>
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 <MapPin className="w-3 h-3 text-secondary" /> Bentzonzvej 50b,

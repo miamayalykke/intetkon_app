@@ -11,6 +11,8 @@ import {
   Section,
   Text,
 } from '@react-email/components'
+import { format } from 'date-fns'
+import { da } from 'date-fns/locale'
 
 export interface OrderProduct {
   name: string
@@ -105,26 +107,10 @@ export default function OrderConfirmationEmail({
                     {item.courseDate && (
                       <>
                         <Text style={workshopDetail}>
-                          📅{' '}
-                          {new Date(item.courseDate).toLocaleDateString(
-                            'en-GB',
-                            {
-                              weekday: 'long',
-                              day: 'numeric',
-                              month: 'long',
-                              year: 'numeric',
-                            },
-                          )}
+                          📅 {format(new Date(item.courseDate), 'EEEE, d MMMM yyyy', { locale: da })}
                         </Text>
                         <Text style={workshopDetail}>
-                          🕐{' '}
-                          {new Date(item.courseDate).toLocaleTimeString(
-                            'da-DK',
-                            {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            },
-                          )}
+                          🕐 {format(new Date(item.courseDate), 'HH:mm')}
                         </Text>
                       </>
                     )}
