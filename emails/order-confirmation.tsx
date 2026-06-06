@@ -107,7 +107,12 @@ export default function OrderConfirmationEmail({
                     {item.courseDate && (
                       <>
                         <Text style={workshopDetail}>
-                          📅 {format(new Date(item.courseDate), 'EEEE, d MMMM yyyy', { locale: da })}
+                          📅{' '}
+                          {format(
+                            new Date(item.courseDate),
+                            'EEEE, d MMMM yyyy',
+                            { locale: da },
+                          )}
                         </Text>
                         <Text style={workshopDetail}>
                           🕐 {format(new Date(item.courseDate), 'HH:mm')}

@@ -15,10 +15,7 @@ export async function getMyOrders(
                 ...,
                 product->
             },
-            workshopBookings[] {
-                ...,
-                workshop->
-            }
+            workshops[]->
         }
     `)
 

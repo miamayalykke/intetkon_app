@@ -14,6 +14,7 @@ import AdminOrderNotification, {
 import OrderConfirmationEmail, {
   type OrderProduct,
 } from '../../../../../emails/order-confirmation'
+import WorkshopConfirmationEmail from '../../../../../emails/workshop-confirmation'
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -61,7 +62,19 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      await sendOrderConfirmationEmail(session, order.sanityProductIds)
+      const workshopIds = meta.workshopIds
+        ? meta.workshopIds.split(',').filter(Boolean)
+        : []
+      const productIds = meta.productIds
+        ? meta.productIds.split(',').filter(Boolean)
+        : []
+
+      if (workshopIds.length > 0 && productIds.length === 0) {
+        await sendWorkshopConfirmationEmails(session, workshopIds)
+      } else {
+        await sendOrderConfirmationEmail(session, order.sanityProductIds)
+      }
+
       try {
         await sendAdminOrderNotification(session, order)
       } catch (err) {
@@ -312,4 +325,56 @@ async function sendAdminOrderNotification(
       },
     }),
   )
+}
+
+async function sendWorkshopConfirmationEmails(
+  session: Stripe.Checkout.Session,
+  workshopIds: string[],
+) {
+  const { metadata, currency } = session
+  const { orderNumber, customerName, customerEmail } = metadata as Metadata
+
+  const workshops = await backendClient.fetch<
+    {
+      _id: string
+      title?: string
+      date?: string
+      duration?: string
+      location?: string
+      level?: string
+      price: number
+    }[]
+  >(
+    `*[_id in $ids]{ _id, title, date, duration, location, level, price }`,
+    { ids: workshopIds },
+  )
+
+  for (const workshop of workshops) {
+    const html = await render(
+      WorkshopConfirmationEmail({
+        customerName,
+        orderNumber,
+        workshopTitle: workshop.title ?? 'Workshop',
+        workshopDate: workshop.date ?? '',
+        workshopDuration: workshop.duration ?? '',
+        workshopLocation: workshop.location ?? '',
+        workshopLevel: workshop.level ?? '',
+        price: workshop.price,
+        currency: currency ?? 'dkk',
+      }),
+    )
+
+    await sesv2.send(
+      new SendEmailCommand({
+        FromEmailAddress: ORDER_FROM_EMAIL,
+        Destination: { ToAddresses: [customerEmail] },
+        Content: {
+          Simple: {
+            Subject: { Data: `Workshop confirmed - ${orderNumber}` },
+            Body: { Html: { Data: html } },
+          },
+        },
+      }),
+    )
+  }
 }

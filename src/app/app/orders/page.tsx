@@ -92,7 +92,32 @@ async function Orders() {
                   {/* --- Items Grid --- */}
                   <div className="p-6 lg:p-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {order.products?.map((item: Record<string, any>) => (
+                      {(() => {
+                        const items: Record<string, any>[] = []
+
+                        // Add products
+                        if (order.products?.length) {
+                          items.push(
+                            ...order.products.map((item: Record<string, any>) => ({
+                              type: 'product',
+                              product: item.product,
+                              quantity: item.quantity,
+                            })),
+                          )
+                        }
+
+                        // Add workshops
+                        if (order.workshops?.length) {
+                          items.push(
+                            ...order.workshops.map((workshop: Record<string, any>) => ({
+                              type: 'workshop',
+                              product: workshop,
+                              quantity: 1,
+                            })),
+                          )
+                        }
+
+                        return items.map((item: Record<string, any>) => (
                         <div
                           key={item.product?._id}
                           className="flex gap-6 items-center group/item"
@@ -165,7 +190,8 @@ async function Orders() {
                             )}
                           </div>
                         </div>
-                      ))}
+                      ))
+                      })()}
                     </div>
                   </div>
 
