@@ -10,11 +10,18 @@ type SyncableDocument = {
   title?: string
   price: number
   stripeProductId?: string
+  date?: string
 }
 
 async function syncDocToStripe(doc: SyncableDocument): Promise<{ ok: boolean; id: string; error?: string }> {
   try {
-    const name = doc._type === 'product' ? (doc.name ?? 'Product') : (doc.title ?? 'Workshop')
+    let name: string
+    if (doc._type === 'product') {
+      name = doc.name ?? 'Product'
+    } else {
+      const dateStr = doc.date ? new Date(doc.date).toLocaleDateString('da-DK') : 'No date'
+      name = `${doc.title ?? 'Workshop'} - ${dateStr}`
+    }
 
     if (doc.stripeProductId) {
       await stripe.products.update(doc.stripeProductId, {
@@ -47,6 +54,7 @@ async function runSync() {
       title,
       price,
       stripeProductId,
+      date,
     }
   `)
 

@@ -11,6 +11,7 @@ type SyncableDocument = {
   title?: string
   price: number
   stripeProductId?: string
+  date?: string
 }
 
 type WebhookPayload = {
@@ -38,13 +39,21 @@ async function fetchDocFromSanity(sanityId: string): Promise<SyncableDocument | 
       title,
       price,
       stripeProductId,
+      date,
     }`,
     { id: sanityId },
   )
 }
 
 async function syncToStripe(doc: SyncableDocument): Promise<void> {
-  const name = doc._type === 'product' ? (doc.name ?? 'Product') : (doc.title ?? 'Workshop')
+  let name: string
+  if (doc._type === 'product') {
+    name = doc.name ?? 'Product'
+  } else {
+    const date = (doc as any).date
+    const dateStr = date ? new Date(date).toLocaleDateString('da-DK') : 'No date'
+    name = `${doc.title ?? 'Workshop'} - ${dateStr}`
+  }
   let productId: string
 
   if (doc.stripeProductId) {
@@ -69,30 +78,34 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
       .commit()
   }
 
-  const prices = await stripe.prices.list({
-    product: productId,
-    active: true,
-    limit: 1,
-  })
+  try {
+    const prices = await stripe.prices.list({
+      product: productId,
+      active: true,
+      limit: 1,
+    })
 
-  if (prices.data.length > 0) {
-    const existingPrice = prices.data[0]
-    if (existingPrice.unit_amount !== Math.round(doc.price * 100)) {
-      await stripe.prices.update(existingPrice.id, { active: false })
+    if (prices.data.length > 0) {
+      const existingPrice = prices.data[0]
+      if (existingPrice.unit_amount !== Math.round(doc.price * 100)) {
+        await stripe.prices.update(existingPrice.id, { active: false })
+        await stripe.prices.create({
+          product: productId,
+          currency: 'dkk',
+          unit_amount: Math.round(doc.price * 100),
+        })
+        console.log('[product-sync] Created new price for product:', productId)
+      }
+    } else {
       await stripe.prices.create({
         product: productId,
         currency: 'dkk',
         unit_amount: Math.round(doc.price * 100),
       })
-      console.log('[product-sync] Created new price for product:', productId)
+      console.log('[product-sync] Created price for product:', productId)
     }
-  } else {
-    await stripe.prices.create({
-      product: productId,
-      currency: 'dkk',
-      unit_amount: Math.round(doc.price * 100),
-    })
-    console.log('[product-sync] Created price for product:', productId)
+  } catch (error) {
+    console.error('[product-sync] Error creating price for product:', productId, error)
   }
 }
 
