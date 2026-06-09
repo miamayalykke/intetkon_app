@@ -47,6 +47,20 @@ export const promotionType = defineType({
       initialValue: true,
     }),
     defineField({
+      name: 'discountAppliesTo',
+      title: 'Discount Applies To',
+      description: 'Choose whether discount applies only to items matching the condition, or all items if condition is met',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'All Items (if conditions met)', value: 'allItems' },
+          { title: 'Only Matching Items', value: 'matchingItems' },
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'allItems',
+    }),
+    defineField({
       name: 'conditions',
       title: 'Conditions',
       description: 'All conditions must be met for the promotion to apply',

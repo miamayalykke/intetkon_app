@@ -7,11 +7,19 @@ import stripe from '@src/lib/stripe'
 type ExpandedPromotionCode = Stripe.PromotionCode & { coupon: Stripe.Coupon }
 import { backendClient } from '@sanity/lib/backendClient'
 
+type Condition = {
+  _type: string
+  itemIds?: string[]
+  categoryId?: string
+  groups?: Array<{ itemIds?: string[] }>
+}
+
 type SaleDocument = {
   _id: string
   title?: string
   discountAmount?: number
   discountType?: 'percentage' | 'fixed'
+  discountAppliesTo?: 'allItems' | 'matchingItems'
   couponCode?: string
   maxRedemptions?: number
   validFrom?: string
@@ -19,6 +27,7 @@ type SaleDocument = {
   isActive?: boolean
   excludedProductIds?: string[]
   excludedCategoryIds?: string[]
+  conditions?: Condition[]
 }
 
 // Sanity sends document fields directly in the projection.
@@ -50,6 +59,7 @@ async function fetchSaleFromSanity(
       title,
       discountAmount,
       discountType,
+      discountAppliesTo,
       couponCode,
       maxRedemptions,
       validFrom,
@@ -57,6 +67,14 @@ async function fetchSaleFromSanity(
       isActive,
       "excludedProductIds": excludedProducts[]->_id,
       "excludedCategoryIds": excludedCategories[]->_id,
+      "conditions": conditions[] -> {
+        _type,
+        "itemIds": items[]._ref,
+        "categoryId": category._ref,
+        "groups": groups[] {
+          "itemIds": items[]._ref
+        }
+      }
     }`,
     { id: sanityId },
   )
@@ -96,6 +114,51 @@ async function getEligibleStripeProductIds(
   return eligible.map((p) => p.stripeProductId).filter(Boolean)
 }
 
+async function getStripeProductIdsFromConditions(conditions: Condition[]): Promise<string[]> {
+  if (!conditions.length) return []
+
+  const allItemIds = new Set<string>()
+
+  for (const condition of conditions) {
+    switch (condition._type) {
+      case 'condCartContainsAll':
+      case 'condCartContainsAny': {
+        const ids = condition.itemIds ?? []
+        for (const id of ids) allItemIds.add(id)
+        break
+      }
+      case 'condCartContainsOneFromEachGroup': {
+        const groups = condition.groups ?? []
+        for (const group of groups) {
+          const ids = group.itemIds ?? []
+          for (const id of ids) allItemIds.add(id)
+        }
+        break
+      }
+      case 'condCategoryCount': {
+        const categoryId = condition.categoryId
+        if (categoryId) {
+          const products = await backendClient.fetch<{ _id: string }[]>(
+            `*[_type == "product" && $categoryId in categories[]._ref]{ _id }`,
+            { categoryId },
+          )
+          for (const p of products) allItemIds.add(p._id)
+        }
+        break
+      }
+    }
+  }
+
+  if (!allItemIds.size) return []
+
+  const items = await backendClient.fetch<{ stripeProductId: string }[]>(
+    `*[_id in $ids && defined(stripeProductId)]{ stripeProductId }`,
+    { ids: Array.from(allItemIds) },
+  )
+
+  return items.map((item) => item.stripeProductId).filter(Boolean)
+}
+
 async function syncToStripe(doc: SaleDocument): Promise<void> {
   if (!doc.couponCode || doc.discountAmount === undefined) {
     console.warn(
@@ -106,14 +169,22 @@ async function syncToStripe(doc: SaleDocument): Promise<void> {
   }
 
   const isPercentage = doc.discountType !== 'fixed'
-  const excludedProductIds = doc.excludedProductIds ?? []
-  const excludedCategoryIds = doc.excludedCategoryIds ?? []
-  const hasExclusions =
-    excludedProductIds.length > 0 || excludedCategoryIds.length > 0
+  const discountAppliesTo = doc.discountAppliesTo ?? 'allItems'
 
-  const eligibleStripeProductIds = hasExclusions
-    ? await getEligibleStripeProductIds(excludedProductIds, excludedCategoryIds)
-    : []
+  let eligibleStripeProductIds: string[] = []
+
+  if (discountAppliesTo === 'matchingItems' && doc.conditions?.length) {
+    eligibleStripeProductIds = await getStripeProductIdsFromConditions(doc.conditions)
+  } else if (discountAppliesTo === 'allItems') {
+    const excludedProductIds = doc.excludedProductIds ?? []
+    const excludedCategoryIds = doc.excludedCategoryIds ?? []
+    const hasExclusions =
+      excludedProductIds.length > 0 || excludedCategoryIds.length > 0
+
+    eligibleStripeProductIds = hasExclusions
+      ? await getEligibleStripeProductIds(excludedProductIds, excludedCategoryIds)
+      : []
+  }
 
   // --- Find existing promo code (and its coupon) by code string ---
   const existingPromo = await findPromotionCode(doc.couponCode)

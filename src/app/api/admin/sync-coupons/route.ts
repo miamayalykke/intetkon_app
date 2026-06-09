@@ -4,18 +4,27 @@ import { currentUser } from '@clerk/nextjs/server'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 
+type Condition = {
+  _type: string
+  itemIds?: string[]
+  categoryId?: string
+  groups?: Array<{ itemIds?: string[] }>
+}
+
 type SyncDocument = {
   _id: string
   _type: 'sale' | 'promotion'
   title?: string
   discountAmount?: number
   discountType?: 'percentage' | 'fixed'
+  discountAppliesTo?: 'allItems' | 'matchingItems'
   couponCode?: string
   maxRedemptions?: number
   validTo?: string
   isActive?: boolean
   excludedProductIds?: string[]
   excludedCategoryIds?: string[]
+  conditions?: Condition[]
 }
 
 async function findExistingPromo(code: string) {
@@ -43,18 +52,71 @@ async function getEligibleStripeProductIds(
   return eligible.map((p) => p.stripeProductId).filter(Boolean)
 }
 
+async function getStripeProductIdsFromConditions(conditions: Condition[]): Promise<string[]> {
+  if (!conditions.length) return []
+
+  const allItemIds = new Set<string>()
+
+  for (const condition of conditions) {
+    switch (condition._type) {
+      case 'condCartContainsAll':
+      case 'condCartContainsAny': {
+        const ids = condition.itemIds ?? []
+        for (const id of ids) allItemIds.add(id)
+        break
+      }
+      case 'condCartContainsOneFromEachGroup': {
+        const groups = condition.groups ?? []
+        for (const group of groups) {
+          const ids = group.itemIds ?? []
+          for (const id of ids) allItemIds.add(id)
+        }
+        break
+      }
+      case 'condCategoryCount': {
+        const categoryId = condition.categoryId
+        if (categoryId) {
+          const products = await backendClient.fetch<{ _id: string }[]>(
+            `*[_type == "product" && $categoryId in categories[]._ref]{ _id }`,
+            { categoryId },
+          )
+          for (const p of products) allItemIds.add(p._id)
+        }
+        break
+      }
+    }
+  }
+
+  if (!allItemIds.size) return []
+
+  const items = await backendClient.fetch<{ stripeProductId: string }[]>(
+    `*[_id in $ids && defined(stripeProductId)]{ stripeProductId }`,
+    { ids: Array.from(allItemIds) },
+  )
+
+  return items.map((item) => item.stripeProductId).filter(Boolean)
+}
+
 async function syncDocToStripe(doc: SyncDocument): Promise<{ ok: boolean; code: string; error?: string }> {
   if (!doc.couponCode || doc.discountAmount === undefined) {
     return { ok: false, code: doc.couponCode ?? '(none)', error: 'Missing couponCode or discountAmount' }
   }
 
   const isPercentage = doc.discountType !== 'fixed'
-  const excludedProductIds = doc.excludedProductIds ?? []
-  const excludedCategoryIds = doc.excludedCategoryIds ?? []
-  const eligibleStripeProductIds =
-    excludedProductIds.length || excludedCategoryIds.length
-      ? await getEligibleStripeProductIds(excludedProductIds, excludedCategoryIds)
-      : []
+  const discountAppliesTo = doc.discountAppliesTo ?? 'allItems'
+
+  let eligibleStripeProductIds: string[] = []
+
+  if (discountAppliesTo === 'matchingItems' && doc.conditions?.length) {
+    eligibleStripeProductIds = await getStripeProductIdsFromConditions(doc.conditions)
+  } else if (discountAppliesTo === 'allItems') {
+    const excludedProductIds = doc.excludedProductIds ?? []
+    const excludedCategoryIds = doc.excludedCategoryIds ?? []
+    eligibleStripeProductIds =
+      excludedProductIds.length || excludedCategoryIds.length
+        ? await getEligibleStripeProductIds(excludedProductIds, excludedCategoryIds)
+        : []
+  }
 
   const existingPromo = await findExistingPromo(doc.couponCode)
   const existingCoupon = existingPromo?.coupon ?? null
@@ -143,12 +205,21 @@ async function runSync() {
       title,
       discountAmount,
       discountType,
+      discountAppliesTo,
       couponCode,
       maxRedemptions,
       validTo,
       isActive,
       "excludedProductIds": excludedProducts[]->_id,
       "excludedCategoryIds": excludedCategories[]->_id,
+      "conditions": conditions[] -> {
+        _type,
+        "itemIds": items[]._ref,
+        "categoryId": category._ref,
+        "groups": groups[] {
+          "itemIds": items[]._ref
+        }
+      }
     }
   `)
 
