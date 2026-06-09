@@ -1,6 +1,5 @@
 'use server'
 
-import { imageUrl } from '@src/lib/imageUrl'
 import stripe from '@src/lib/stripe'
 import 'server-only'
 import type { CartItem } from '../store/store'
@@ -42,6 +41,35 @@ export async function createCheckoutSession(
       .map((item) => item.data._id)
       .join(',')
 
+    const lineItems = await Promise.all(
+      items.map(async (item) => {
+        const stripeProductId = (item.data as any).stripeProductId
+
+        if (!stripeProductId) {
+          throw new Error(
+            `Product "${item.itemType === 'product' ? (item.data as any).name : (item.data as any).title}" is missing Stripe ID. Please sync products first.`,
+          )
+        }
+
+        const prices = await stripe.prices.list({
+          product: stripeProductId,
+          active: true,
+          limit: 1,
+        })
+
+        if (!prices.data.length) {
+          throw new Error(
+            `No price found for product "${item.itemType === 'product' ? (item.data as any).name : (item.data as any).title}". Please sync products first.`,
+          )
+        }
+
+        return {
+          price: prices.data[0].id,
+          quantity: item.quantity,
+        }
+      }),
+    )
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_creation: customerId ? undefined : 'always',
@@ -54,32 +82,7 @@ export async function createCheckoutSession(
         : { allow_promotion_codes: true }),
       success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
       cancel_url: `${baseUrl}/basket`,
-      line_items: items.map((item) => {
-        const name =
-          item.itemType === 'product'
-            ? (item.data.name ?? 'Unnamed Product')
-            : (item.data.title ?? 'Workshop')
-        const description =
-          item.itemType === 'product'
-            ? `Product ID: ${item.data._id}`
-            : `Workshop - ${item.data.date ? new Date(item.data.date).toLocaleDateString('da-DK') : ''}`
-
-        return {
-          price_data: {
-            currency: 'dkk',
-            unit_amount: Math.round((item.data.price ?? 1) * 100),
-            product_data: {
-              name,
-              description,
-              metadata: { id: item.data._id },
-              images: item.data.image
-                ? [imageUrl(item.data.image).url()]
-                : undefined,
-            },
-          },
-          quantity: item.quantity,
-        }
-      }),
+      line_items: lineItems,
     })
     return session.url
   } catch (error) {

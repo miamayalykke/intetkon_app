@@ -45,6 +45,7 @@ async function fetchDocFromSanity(sanityId: string): Promise<SyncableDocument | 
 
 async function syncToStripe(doc: SyncableDocument): Promise<void> {
   const name = doc._type === 'product' ? (doc.name ?? 'Product') : (doc.title ?? 'Workshop')
+  let productId: string
 
   if (doc.stripeProductId) {
     await stripe.products.update(doc.stripeProductId, {
@@ -52,6 +53,7 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
       metadata: { sanityId: doc._id },
     })
     console.log('[product-sync] Updated Stripe product:', doc.stripeProductId)
+    productId = doc.stripeProductId
   } else {
     const product = await stripe.products.create({
       name,
@@ -59,11 +61,38 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
       metadata: { sanityId: doc._id },
     })
     console.log('[product-sync] Created Stripe product:', product.id)
+    productId = product.id
 
     await backendClient
       .patch(doc._id)
       .set({ stripeProductId: product.id })
       .commit()
+  }
+
+  const prices = await stripe.prices.list({
+    product: productId,
+    active: true,
+    limit: 1,
+  })
+
+  if (prices.data.length > 0) {
+    const existingPrice = prices.data[0]
+    if (existingPrice.unit_amount !== Math.round(doc.price * 100)) {
+      await stripe.prices.update(existingPrice.id, { active: false })
+      await stripe.prices.create({
+        product: productId,
+        currency: 'dkk',
+        unit_amount: Math.round(doc.price * 100),
+      })
+      console.log('[product-sync] Created new price for product:', productId)
+    }
+  } else {
+    await stripe.prices.create({
+      product: productId,
+      currency: 'dkk',
+      unit_amount: Math.round(doc.price * 100),
+    })
+    console.log('[product-sync] Created price for product:', productId)
   }
 }
 

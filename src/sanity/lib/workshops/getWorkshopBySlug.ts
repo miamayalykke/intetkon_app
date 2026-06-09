@@ -19,7 +19,8 @@ const WORKSHOP_BY_SLUG_QUERY = defineQuery(`
     currentSignUps,
     description,
     body,
-    image
+    image,
+    stripeProductId
   }
 `)
 
