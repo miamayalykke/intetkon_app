@@ -97,6 +97,13 @@ export const workshopType = defineType({
       type: 'image',
       options: { hotspot: true },
     }),
+    defineField({
+      name: 'stripeProductId',
+      title: 'Stripe Product ID',
+      type: 'string',
+      hidden: true,
+      readOnly: true,
+    }),
   ],
   preview: {
     select: {

@@ -32,10 +32,11 @@ async function getEligibleStripeProductIds(
   if (!excludedProductIds.length && !excludedCategoryIds.length) return []
   const eligible = await backendClient.fetch<{ stripeProductId: string }[]>(
     `*[
-      _type == "product"
+      (
+        (_type == "product" && !(_id in $excludedProductIds) && !(count(categories[_ref in $excludedCategoryIds]) > 0))
+        || _type == "workshop"
+      )
       && defined(stripeProductId)
-      && !(_id in $excludedProductIds)
-      && !(count(categories[_ref in $excludedCategoryIds]) > 0)
     ]{ stripeProductId }`,
     { excludedProductIds, excludedCategoryIds },
   )

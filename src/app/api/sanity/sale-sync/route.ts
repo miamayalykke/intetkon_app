@@ -73,7 +73,7 @@ async function findPromotionCode(
   return (results.data[0] ?? null) as ExpandedPromotionCode | null
 }
 
-// Fetch Stripe Product IDs for all eligible products (not excluded)
+// Fetch Stripe Product IDs for all eligible products and workshops (not excluded)
 async function getEligibleStripeProductIds(
   excludedProductIds: string[],
   excludedCategoryIds: string[],
@@ -84,10 +84,11 @@ async function getEligibleStripeProductIds(
 
   const eligible = await backendClient.fetch<{ stripeProductId: string }[]>(
     `*[
-      _type == "product"
+      (
+        (_type == "product" && !(_id in $excludedProductIds) && !(count(categories[_ref in $excludedCategoryIds]) > 0))
+        || _type == "workshop"
+      )
       && defined(stripeProductId)
-      && !(_id in $excludedProductIds)
-      && !(count(categories[_ref in $excludedCategoryIds]) > 0)
     ]{ stripeProductId }`,
     { excludedProductIds, excludedCategoryIds },
   )
