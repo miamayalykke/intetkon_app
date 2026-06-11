@@ -21,7 +21,8 @@ export const salesType = defineType({
       name: 'discountAmount',
       type: 'number',
       title: 'Discount Amount',
-      description: 'The amount to discount — percentage (e.g. 20 = 20%) or fixed DKK value depending on Discount Type',
+      description:
+        'The amount to discount — percentage (e.g. 20 = 20%) or fixed DKK value depending on Discount Type',
     }),
     defineField({
       name: 'discountType',
@@ -88,7 +89,8 @@ export const salesType = defineType({
       isActive: 'isActive',
     },
     prepare(selection) {
-      const { title, discountAmount, discountType, couponCode, isActive } = selection
+      const { title, discountAmount, discountType, couponCode, isActive } =
+        selection
       const status = isActive ? 'Active' : 'Inactive'
       const suffix = discountType === 'fixed' ? ' DKK' : '%'
       return {

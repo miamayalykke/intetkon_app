@@ -74,7 +74,11 @@ export async function createCheckoutSession(
       customer: customerId,
       customer_creation: customerId ? undefined : 'always',
       customer_email: !customerId ? metadata.customerEmail : undefined,
-      metadata: { ...metadata, ...(workshopIds ? { workshopIds } : {}), ...(productIds ? { productIds } : {}) },
+      metadata: {
+        ...metadata,
+        ...(workshopIds ? { workshopIds } : {}),
+        ...(productIds ? { productIds } : {}),
+      },
       mode: 'payment',
       payment_method_configuration: 'pmc_1SDjXTJoZ0voIfvhegmhzz3s',
       ...(promoCodeId

@@ -12,8 +12,8 @@ import {
   Text,
 } from '@react-email/components'
 import { format } from 'date-fns'
-import { toZonedTime } from 'date-fns-tz'
 import { da } from 'date-fns/locale'
+import { toZonedTime } from 'date-fns-tz'
 
 const TIMEZONE = 'Europe/Copenhagen'
 

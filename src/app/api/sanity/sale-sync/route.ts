@@ -1,10 +1,10 @@
 import { timingSafeEqual } from 'node:crypto'
+import stripe from '@src/lib/stripe'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 
-import stripe from '@src/lib/stripe'
-
 type ExpandedPromotionCode = Stripe.PromotionCode & { coupon: Stripe.Coupon }
+
 import { backendClient } from '@sanity/lib/backendClient'
 
 type Condition = {
@@ -114,7 +114,9 @@ async function getEligibleStripeProductIds(
   return eligible.map((p) => p.stripeProductId).filter(Boolean)
 }
 
-async function getStripeProductIdsFromConditions(conditions: Condition[]): Promise<string[]> {
+async function getStripeProductIdsFromConditions(
+  conditions: Condition[],
+): Promise<string[]> {
   if (!conditions.length) return []
 
   const allItemIds = new Set<string>()
@@ -174,7 +176,9 @@ async function syncToStripe(doc: SaleDocument): Promise<void> {
   let eligibleStripeProductIds: string[] = []
 
   if (discountAppliesTo === 'matchingItems' && doc.conditions?.length) {
-    eligibleStripeProductIds = await getStripeProductIdsFromConditions(doc.conditions)
+    eligibleStripeProductIds = await getStripeProductIdsFromConditions(
+      doc.conditions,
+    )
   } else if (discountAppliesTo === 'allItems') {
     const excludedProductIds = doc.excludedProductIds ?? []
     const excludedCategoryIds = doc.excludedCategoryIds ?? []
@@ -182,7 +186,10 @@ async function syncToStripe(doc: SaleDocument): Promise<void> {
       excludedProductIds.length > 0 || excludedCategoryIds.length > 0
 
     eligibleStripeProductIds = hasExclusions
-      ? await getEligibleStripeProductIds(excludedProductIds, excludedCategoryIds)
+      ? await getEligibleStripeProductIds(
+          excludedProductIds,
+          excludedCategoryIds,
+        )
       : []
   }
 
@@ -314,7 +321,10 @@ export async function POST(req: NextRequest) {
   )
 
   if (!['sale', 'promotion'].includes(payload._type)) {
-    return NextResponse.json({ ok: true, skipped: 'not a sale or promotion document' })
+    return NextResponse.json({
+      ok: true,
+      skipped: 'not a sale or promotion document',
+    })
   }
 
   try {

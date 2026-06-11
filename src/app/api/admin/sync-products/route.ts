@@ -13,13 +13,17 @@ type SyncableDocument = {
   date?: string
 }
 
-async function syncDocToStripe(doc: SyncableDocument): Promise<{ ok: boolean; id: string; error?: string }> {
+async function syncDocToStripe(
+  doc: SyncableDocument,
+): Promise<{ ok: boolean; id: string; error?: string }> {
   try {
     let name: string
     if (doc._type === 'product') {
       name = doc.name ?? 'Product'
     } else {
-      const dateStr = doc.date ? new Date(doc.date).toLocaleDateString('da-DK') : 'No date'
+      const dateStr = doc.date
+        ? new Date(doc.date).toLocaleDateString('da-DK')
+        : 'No date'
       name = `${doc.title ?? 'Workshop'} - ${dateStr}`
     }
 
@@ -36,7 +40,10 @@ async function syncDocToStripe(doc: SyncableDocument): Promise<{ ok: boolean; id
         metadata: { sanityId: doc._id },
       })
 
-      await backendClient.patch(doc._id).set({ stripeProductId: product.id }).commit()
+      await backendClient
+        .patch(doc._id)
+        .set({ stripeProductId: product.id })
+        .commit()
 
       return { ok: true, id: product.id }
     }

@@ -1,7 +1,12 @@
 import { getWorkshops } from '@sanity/lib/workshops/getWorkshops'
-import WorkshopList from '@src/components/workshop/WorkshopList'
+import LocalizedWorkshopList from '@src/components/workshop/LocalizedWorkshopList'
 
-const WorkshopPage = async () => {
+const WorkshopPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) => {
+  const { locale } = await params
   const workshops = await getWorkshops()
 
   return (
@@ -23,7 +28,7 @@ const WorkshopPage = async () => {
           </p>
         </header>
 
-        <WorkshopList workshops={workshops} />
+        <LocalizedWorkshopList workshops={workshops} locale={locale} />
       </section>
     </main>
   )

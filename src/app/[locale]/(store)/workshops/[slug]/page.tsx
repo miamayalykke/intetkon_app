@@ -1,7 +1,8 @@
 import { getWorkshopBySlug } from '@sanity/lib/workshops/getWorkshopBySlug'
+import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
-import { format, addMinutes } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
@@ -30,12 +31,16 @@ const TIMEZONE = 'Europe/Copenhagen'
 const WorkshopDetailPage = async ({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string; locale: string }>
 }) => {
-  const { slug } = await params
+  const { slug, locale } = await params
   const workshop = await getWorkshopBySlug(slug)
 
   if (!workshop) notFound()
+
+  const title = getLocalizedField(workshop.title, locale)
+  const description = getLocalizedField(workshop.description, locale)
+  const body = getLocalizedField(workshop.body, locale)
 
   const signUps = workshop.currentSignUps ?? 0
   const maxSpots = workshop.maxAllocation ?? 0
@@ -70,7 +75,7 @@ const WorkshopDetailPage = async ({
               {workshop.image ? (
                 <Image
                   src={imageUrl(workshop.image).url()}
-                  alt={workshop.title ?? 'Workshop image'}
+                  alt={title ?? 'Workshop image'}
                   fill
                   priority
                   className="object-cover transition-transform duration-700 hover:scale-105"
@@ -112,7 +117,7 @@ const WorkshopDetailPage = async ({
                   Studio Session
                 </p>
                 <h1 className="text-4xl lg:text-6xl font-black tracking-tighter leading-[0.9] uppercase">
-                  {workshop.title}
+                  {title}
                 </h1>
               </div>
             </div>
@@ -136,13 +141,13 @@ const WorkshopDetailPage = async ({
 
             {/* Short description */}
             <p className="text-base text-muted-foreground font-light leading-relaxed italic border-l-2 border-orange-500/30 pl-4">
-              {workshop.description}
+              {description}
             </p>
 
             {/* Rich body content */}
-            {Array.isArray(workshop.body) && workshop.body.length > 0 && (
+            {Array.isArray(body) && body.length > 0 && (
               <div className="prose prose-sm prose-orange max-w-none text-foreground leading-relaxed">
-                <PortableText value={workshop.body} />
+                <PortableText value={body} />
               </div>
             )}
 

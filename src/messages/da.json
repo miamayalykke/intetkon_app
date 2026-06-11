@@ -1,0 +1,87 @@
+{
+  "common": {
+    "home": "Hjem",
+    "about": "Om os",
+    "contact": "Kontakt",
+    "cart": "Indkøbsvogn",
+    "search": "Søg",
+    "menu": "Menu",
+    "close": "Luk",
+    "loading": "Indlæser...",
+    "error": "Fejl",
+    "success": "Succes"
+  },
+  "navigation": {
+    "home": "Hjem",
+    "shop": "Butik",
+    "workshops": "Workshops",
+    "about": "Om os",
+    "contact": "Kontakt",
+    "privacyPolicy": "Privatlivspolitik",
+    "returnPolicy": "Returpolitik",
+    "termsOfService": "Betingelser",
+    "careers": "Karriere"
+  },
+  "products": {
+    "addToCart": "Tilføj til indkøbsvogn",
+    "addToBasket": "Tilføj til kurv",
+    "price": "Pris",
+    "quantity": "Mængde",
+    "description": "Beskrivelse",
+    "details": "Detaljer",
+    "inStock": "På lager",
+    "outOfStock": "Ikke på lager"
+  },
+  "cart": {
+    "title": "Indkøbsvogn",
+    "empty": "Din indkøbsvogn er tom",
+    "total": "I alt",
+    "checkout": "Gå til kasse",
+    "continueShopping": "Fortsæt med at købe"
+  },
+  "footer": {
+    "about": "Om os",
+    "contact": "Kontakt",
+    "followUs": "Følg os",
+    "newsletter": "Nyhedsbrev",
+    "subscribeNewsletter": "Abonner på vores nyhedsbrev"
+  },
+  "pages": {
+    "about": {
+      "label": "Vores Historie",
+      "title": "Om",
+      "subtitle": "INTETKØN",
+      "description": "Lær om vores mission, værdier og historierne bag vores kreationer."
+    },
+    "contact": {
+      "label": "Tag kontakt",
+      "title": "Kontakt",
+      "subtitle": "Studio",
+      "description": "Har du spørgsmål om et mønster, en skabt bestilling, eller vil du bare hilse? Vores digitale atelier er altid åbent."
+    },
+    "privacy": {
+      "label": "Juridisk & Privatliv",
+      "title": "Privatliv",
+      "subtitle": "Politik",
+      "description": "Dine data behandles med samme omhu som vores tøj."
+    },
+    "returnPolicy": {
+      "label": "Returneringer & Ombytninger",
+      "title": "Retur",
+      "subtitle": "Politik",
+      "description": "Vi ønsker, at du er fuldstændig tilfreds med dit køb."
+    },
+    "termsOfService": {
+      "label": "Vilkår & Betingelser",
+      "title": "Vilkår for",
+      "subtitle": "Service",
+      "description": "Læs venligst vores vilkår omhyggeligt før du afgiver en bestilling."
+    },
+    "careers": {
+      "label": "Bliv en del af vores team",
+      "title": "Karriere",
+      "subtitle": "Muligheder",
+      "description": "Vi søger altid talentfulde, passionerede mennesker til at joininere os."
+    }
+  }
+}

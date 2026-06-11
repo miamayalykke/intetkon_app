@@ -1,7 +1,7 @@
 import { Button, Stack, Text } from '@sanity/ui'
 import { useCallback, useRef, useState } from 'react'
-import { set } from 'sanity'
 import type { StringInputProps } from 'sanity'
+import { set } from 'sanity'
 
 export function S3FileUpload(props: StringInputProps) {
   const { onChange, value } = props
@@ -60,7 +60,10 @@ export function S3FileUpload(props: StringInputProps) {
         onChange={handleFileChange}
       />
       {error && (
-        <Text size={1} style={{ color: 'var(--card-badge-critical-dot-color)' }}>
+        <Text
+          size={1}
+          style={{ color: 'var(--card-badge-critical-dot-color)' }}
+        >
           {error}
         </Text>
       )}

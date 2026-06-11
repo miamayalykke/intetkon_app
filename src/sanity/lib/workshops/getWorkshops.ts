@@ -1,4 +1,5 @@
 import { defineQuery } from 'next-sanity'
+
 import { client } from '../client'
 
 const WORKSHOPS_QUERY = defineQuery(`

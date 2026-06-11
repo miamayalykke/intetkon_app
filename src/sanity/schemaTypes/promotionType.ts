@@ -39,7 +39,11 @@ export const promotionType = defineType({
     }),
     defineField({ name: 'validFrom', title: 'Valid From', type: 'datetime' }),
     defineField({ name: 'validTo', title: 'Valid To', type: 'datetime' }),
-    defineField({ name: 'maxRedemptions', title: 'Max Redemptions', type: 'number' }),
+    defineField({
+      name: 'maxRedemptions',
+      title: 'Max Redemptions',
+      type: 'number',
+    }),
     defineField({
       name: 'isActive',
       title: 'Active',
@@ -49,7 +53,8 @@ export const promotionType = defineType({
     defineField({
       name: 'discountAppliesTo',
       title: 'Discount Applies To',
-      description: 'Choose whether discount applies only to items matching the condition, or all items if condition is met',
+      description:
+        'Choose whether discount applies only to items matching the condition, or all items if condition is met',
       type: 'string',
       options: {
         list: [

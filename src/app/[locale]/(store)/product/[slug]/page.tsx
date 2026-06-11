@@ -1,3 +1,4 @@
+import { getLocale } from 'next-intl/server'
 import { getProductBySlug } from '@sanity/lib/products/getProductBySlug'
 import AddToBasketButton from '@src/components/AddToBasketButton'
 import { imageUrl } from '@src/lib/imageUrl'
@@ -13,9 +14,9 @@ export const revalidate = 60
 const ProductPage = async ({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ slug: string; locale: string }>
 }) => {
-  const { slug } = await params
+  const { slug, locale } = await params
   const product = await getProductBySlug(slug)
 
   if (!product) notFound()

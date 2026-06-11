@@ -3,8 +3,8 @@
 import Logo from '@public/logo.svg'
 import NewsletterForm from '@src/components/newsletter/NewsletterForm'
 import Image from 'next/image'
-import { FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa'
 import Link from 'next/link'
+import { FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa'
 
 const PublicFooter = () => {
   return (

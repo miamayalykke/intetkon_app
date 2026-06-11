@@ -27,9 +27,10 @@ export async function getAllWorkshopsForCampaign() {
     date
   }`
 
-  const workshops = await backendClient.fetch<
-    Array<{ _id: string; title: string; date: string }>
-  >(query)
+  const workshops =
+    await backendClient.fetch<
+      Array<{ _id: string; title: string; date: string }>
+    >(query)
 
   return workshops ?? []
 }

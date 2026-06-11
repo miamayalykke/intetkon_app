@@ -1,12 +1,15 @@
+import { getLocale } from 'next-intl/server'
+
 import { getAllCategories } from '@sanity/lib/products/getAllCategories'
 import { getPhysicalProducts } from '@sanity/lib/products/getPhysicalProducts'
 import DiscountBanner from '@src/components/product/DiscountBanner'
-import ProductsView from '@src/components/product/ProductsView'
+import LocalizedProductsView from '@src/components/product/LocalizedProductsView'
 
 export const dynamic = 'force-static'
 export const revalidate = 60
 
 const ShopPage = async () => {
+  const locale = await getLocale()
   const products = await getPhysicalProducts()
   const categories = await getAllCategories()
 
@@ -25,7 +28,7 @@ const ShopPage = async () => {
           </p>
         </header>
 
-        <ProductsView products={products} categories={categories} />
+        <LocalizedProductsView products={products} categories={categories} />
       </div>
     </main>
   )

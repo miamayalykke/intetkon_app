@@ -1,8 +1,7 @@
 import { timingSafeEqual } from 'node:crypto'
-import { type NextRequest, NextResponse } from 'next/server'
-
 import { backendClient } from '@sanity/lib/backendClient'
 import stripe from '@src/lib/stripe'
+import { type NextRequest, NextResponse } from 'next/server'
 
 type SyncableDocument = {
   _id: string
@@ -30,7 +29,9 @@ function validateSecret(req: NextRequest): boolean {
   }
 }
 
-async function fetchDocFromSanity(sanityId: string): Promise<SyncableDocument | null> {
+async function fetchDocFromSanity(
+  sanityId: string,
+): Promise<SyncableDocument | null> {
   return backendClient.fetch<SyncableDocument | null>(
     `*[_id == $id && _type in ["product", "workshop"]][0]{
       _id,
@@ -51,7 +52,9 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
     name = doc.name ?? 'Product'
   } else {
     const date = (doc as any).date
-    const dateStr = date ? new Date(date).toLocaleDateString('da-DK') : 'No date'
+    const dateStr = date
+      ? new Date(date).toLocaleDateString('da-DK')
+      : 'No date'
     name = `${doc.title ?? 'Workshop'} - ${dateStr}`
   }
   let productId: string
@@ -105,7 +108,11 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
       console.log('[product-sync] Created price for product:', productId)
     }
   } catch (error) {
-    console.error('[product-sync] Error creating price for product:', productId, error)
+    console.error(
+      '[product-sync] Error creating price for product:',
+      productId,
+      error,
+    )
   }
 }
 
@@ -128,17 +135,28 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  console.log('[product-sync] Received webhook for:', payload._id, 'type:', payload._type)
+  console.log(
+    '[product-sync] Received webhook for:',
+    payload._id,
+    'type:',
+    payload._type,
+  )
 
   if (!['product', 'workshop'].includes(payload._type)) {
-    return NextResponse.json({ ok: true, skipped: 'not a product or workshop document' })
+    return NextResponse.json({
+      ok: true,
+      skipped: 'not a product or workshop document',
+    })
   }
 
   try {
     const doc = await fetchDocFromSanity(payload._id)
 
     if (!doc) {
-      console.log('[product-sync] Document deleted — deactivating in Stripe:', payload._id)
+      console.log(
+        '[product-sync] Document deleted — deactivating in Stripe:',
+        payload._id,
+      )
       await deactivateInStripe(payload._id)
     } else {
       console.log('[product-sync] Syncing document:', doc._id)

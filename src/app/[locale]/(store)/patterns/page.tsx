@@ -1,14 +1,16 @@
+import { getLocale } from 'next-intl/server'
 import { getAllCategories } from '@sanity/lib/products/getAllCategories'
 import { getDigitalProducts } from '@sanity/lib/products/getDigitalProducts'
 
 import DiscountBanner from '@src/components/product/DiscountBanner'
-import ProductsView from '@src/components/product/ProductsView'
+import LocalizedProductsView from '@src/components/product/LocalizedProductsView'
 import { FileText, Monitor, Zap } from 'lucide-react'
 
 export const dynamic = 'force-static'
 export const revalidate = 60
 
 const PatternsShopPage = async () => {
+  const locale = await getLocale()
   const products = await getDigitalProducts()
   const categories = await getAllCategories()
 
@@ -41,7 +43,7 @@ const PatternsShopPage = async () => {
           </div>
         </header>
 
-        <ProductsView products={products} categories={categories} />
+        <LocalizedProductsView products={products} categories={categories} />
       </div>
     </main>
   )

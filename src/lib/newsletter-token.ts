@@ -1,8 +1,12 @@
-import { SignJWT, jwtVerify } from 'jose'
+import { jwtVerify, SignJWT } from 'jose'
 
-const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-key-change-this')
+const secret = new TextEncoder().encode(
+  process.env.JWT_SECRET || 'your-secret-key-change-this',
+)
 
-export async function generateConfirmationToken(email: string): Promise<string> {
+export async function generateConfirmationToken(
+  email: string,
+): Promise<string> {
   const token = await new SignJWT({ email })
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('24h')
@@ -11,7 +15,9 @@ export async function generateConfirmationToken(email: string): Promise<string> 
   return token
 }
 
-export async function verifyConfirmationToken(token: string): Promise<string | null> {
+export async function verifyConfirmationToken(
+  token: string,
+): Promise<string | null> {
   try {
     const verified = await jwtVerify(token, secret)
     return (verified.payload.email as string) || null

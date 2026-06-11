@@ -22,7 +22,7 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
   const isFull = signUps >= maxSpots
   const spotsLeft = maxSpots - signUps
   const eventDate = new Date(workshop.date ?? '')
-  
+
   const durationMinutes = parseDuration(workshop.duration ?? '')
   const endDate = addMinutes(eventDate, durationMinutes)
   const timeRange = `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`

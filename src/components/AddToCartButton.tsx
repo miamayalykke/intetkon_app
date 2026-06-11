@@ -59,7 +59,14 @@ const AddToCartButton = ({ product, disabled }: AddToCartButtonProps) => {
           {/* Increase */}
           <button
             type="button"
-            onClick={() => setQuantity((q) => Math.min(q + 1, availableToAdd === Infinity ? q + 1 : availableToAdd))}
+            onClick={() =>
+              setQuantity((q) =>
+                Math.min(
+                  q + 1,
+                  availableToAdd === Infinity ? q + 1 : availableToAdd,
+                ),
+              )
+            }
             disabled={isDisabled || quantity >= availableToAdd}
             className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
               ${
@@ -82,7 +89,9 @@ const AddToCartButton = ({ product, disabled }: AddToCartButtonProps) => {
             {totalStock > 0 && (
               <>
                 <span className="text-muted-foreground/40 text-[10px]">/</span>
-                <span className="text-muted-foreground text-xs">{totalStock}</span>
+                <span className="text-muted-foreground text-xs">
+                  {totalStock}
+                </span>
               </>
             )}
           </div>

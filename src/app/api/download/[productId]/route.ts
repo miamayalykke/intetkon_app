@@ -21,10 +21,7 @@ export async function GET(
   )
 
   if (!order) {
-    return NextResponse.json(
-      { error: 'Purchase not found' },
-      { status: 404 },
-    )
+    return NextResponse.json({ error: 'Purchase not found' }, { status: 404 })
   }
 
   // Get the S3 key for the product

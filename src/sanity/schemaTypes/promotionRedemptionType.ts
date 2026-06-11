@@ -14,7 +14,11 @@ export const promotionRedemptionType = defineType({
     }),
     defineField({ name: 'orderId', title: 'Order ID', type: 'string' }),
     defineField({ name: 'clerkUserId', title: 'User ID', type: 'string' }),
-    defineField({ name: 'customerEmail', title: 'Customer Email', type: 'string' }),
+    defineField({
+      name: 'customerEmail',
+      title: 'Customer Email',
+      type: 'string',
+    }),
     defineField({
       name: 'redeemedAt',
       title: 'Redeemed At',

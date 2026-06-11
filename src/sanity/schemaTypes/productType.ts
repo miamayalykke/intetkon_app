@@ -1,5 +1,6 @@
 import { PackageIcon } from 'lucide-react'
 import { defineField, defineType } from 'sanity'
+
 import { S3FileUpload } from '../components/S3FileUpload'
 
 export const productType = defineType({
@@ -11,22 +12,18 @@ export const productType = defineType({
     defineField({
       name: 'name',
       title: 'Product Name',
-      type: 'string',
+      type: 'internationalizedArrayString',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
-      type: 'slug',
-      options: {
-        source: 'name',
-        maxLength: 96,
-      },
+      type: 'internationalizedArraySlug',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'image',
-      title: 'Product image',
+      title: 'Product Image',
       type: 'image',
       options: {
         hotspot: true,
@@ -35,7 +32,7 @@ export const productType = defineType({
     defineField({
       name: 'description',
       title: 'Description',
-      type: 'blockContent',
+      type: 'internationalizedArrayBlockContent',
     }),
     defineField({
       name: 'price',
@@ -92,7 +89,8 @@ export const productType = defineType({
     defineField({
       name: 's3Key',
       title: 'S3 File Key',
-      description: 'The S3 object key for the downloadable file (digital products only)',
+      description:
+        'The S3 object key for the downloadable file (digital products only)',
       type: 'string',
       components: { input: S3FileUpload },
       hidden: ({ document }) => document?.productType !== 'digital',
@@ -121,7 +119,7 @@ export const productType = defineType({
 
   preview: {
     select: {
-      title: 'name',
+      title: 'name.0.value',
       media: 'image',
       price: 'price',
     },

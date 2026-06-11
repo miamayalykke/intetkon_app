@@ -106,9 +106,7 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
   const { orderNumber, customerName, customerEmail, clerkUserId } =
     metadata as Metadata & { clerkUserId?: string }
 
-  const lineItemsWithProduct = await stripe.checkout.sessions.listLineItems(
-    id,
-  )
+  const lineItemsWithProduct = await stripe.checkout.sessions.listLineItems(id)
 
   const workshopIds =
     (metadata?.workshopIds as string)?.split(',').filter(Boolean) ?? []

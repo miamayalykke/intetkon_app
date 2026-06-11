@@ -9,11 +9,11 @@ import {
 import { render } from '@react-email/render'
 import ConfirmEmail from '../../emails/confirm-newsletter'
 import WelcomeEmail from '../../emails/welcome'
-import { CONTACT_LIST_NAME, FROM_EMAIL, sesv2 } from './ses-client'
 import {
   generateConfirmationToken,
   verifyConfirmationToken,
 } from './newsletter-token'
+import { CONTACT_LIST_NAME, FROM_EMAIL, sesv2 } from './ses-client'
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -185,13 +185,16 @@ export async function getContactListStats(): Promise<{
     const contacts = response.Contacts || []
     const newsletterCount = contacts.filter((c) =>
       c.TopicPreferences?.some(
-        (tp) => tp.TopicName === 'newsletter' && tp.SubscriptionStatus === 'OPT_IN',
+        (tp) =>
+          tp.TopicName === 'newsletter' && tp.SubscriptionStatus === 'OPT_IN',
       ),
     ).length
 
     const testerCount = contacts.filter((c) =>
       c.TopicPreferences?.some(
-        (tp) => tp.TopicName === 'pattern-tester' && tp.SubscriptionStatus === 'OPT_IN',
+        (tp) =>
+          tp.TopicName === 'pattern-tester' &&
+          tp.SubscriptionStatus === 'OPT_IN',
       ),
     ).length
 
@@ -321,7 +324,10 @@ export async function verifyPatternTesterSubscription(
         }),
       )
     } catch (emailErr) {
-      console.error('[verifyPatternTesterSubscription] welcome email failed:', emailErr)
+      console.error(
+        '[verifyPatternTesterSubscription] welcome email failed:',
+        emailErr,
+      )
     }
 
     return { status: 'success' }

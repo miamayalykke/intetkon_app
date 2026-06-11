@@ -31,7 +31,8 @@ const BasketItemControls = ({ item }: BasketItemControlsProps) => {
   const isAtMax =
     item.itemType === 'product'
       ? (item.data.stock ?? 0) > 0 && itemCount >= (item.data.stock ?? 0)
-      : itemCount >= (item.data.maxAllocation ?? 0) - (item.data.currentSignUps ?? 0)
+      : itemCount >=
+        (item.data.maxAllocation ?? 0) - (item.data.currentSignUps ?? 0)
 
   const handleAdd = () => {
     if (item.itemType === 'product') addItem(item.data)

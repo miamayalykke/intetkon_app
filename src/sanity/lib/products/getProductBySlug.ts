@@ -1,11 +1,12 @@
 import { defineQuery } from 'next-sanity'
+
 import { client } from '../client'
 
 export const getProductBySlug = async (slug: string) => {
   const PRODUCT_BY_ID_QUERY = defineQuery(`
         *[
-            _type== "product" &&slug.current == $slug
-        ] | order(name asc)[0] {
+            _type == "product" && slug[0].value == $slug
+        ][0] {
           ...,
           stripeProductId
         }

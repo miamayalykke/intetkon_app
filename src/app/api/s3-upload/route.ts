@@ -1,7 +1,7 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { currentUser } from '@clerk/nextjs/server'
-import { s3, S3_BUCKET } from '@src/lib/s3-client'
+import { S3_BUCKET, s3 } from '@src/lib/s3-client'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {

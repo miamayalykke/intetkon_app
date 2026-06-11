@@ -8,14 +8,13 @@ export const workshopType = defineType({
     defineField({
       name: 'title',
       title: 'Title',
-      type: 'string',
+      type: 'internationalizedArrayString',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
       title: 'Slug',
-      type: 'slug',
-      options: { source: 'title', maxLength: 96 },
+      type: 'internationalizedArraySlug',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -75,21 +74,22 @@ export const workshopType = defineType({
       name: 'description',
       title: 'Short Description',
       description: 'Brief summary shown on the workshop listing card',
-      type: 'text',
-      rows: 4,
+      type: 'internationalizedArrayText',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'body',
       title: 'Full Description',
-      description: 'Rich content shown on the workshop detail page (sections, bullet points, etc.)',
-      type: 'blockContent',
+      description:
+        'Rich content shown on the workshop detail page (sections, bullet points, etc.)',
+      type: 'internationalizedArrayBlockContent',
     }),
     defineField({
       name: 'mailInformation',
       title: 'Mail Information',
-      description: 'Additional information to be sent only in confirmation emails (not displayed on website)',
-      type: 'blockContent',
+      description:
+        'Additional information to be sent only in confirmation emails (not displayed on website)',
+      type: 'internationalizedArrayBlockContent',
     }),
     defineField({
       name: 'image',
@@ -107,7 +107,7 @@ export const workshopType = defineType({
   ],
   preview: {
     select: {
-      title: 'title',
+      title: 'title.0.value',
       date: 'date',
       level: 'level',
       media: 'image',

@@ -101,7 +101,9 @@ export const condCartContainsAll = defineType({
       title: 'Required Items (all must be in cart)',
       description: 'Can be products or workshops',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'product' }, { type: 'workshop' }] }],
+      of: [
+        { type: 'reference', to: [{ type: 'product' }, { type: 'workshop' }] },
+      ],
     }),
   ],
   preview: {
@@ -141,7 +143,12 @@ export const condCartContainsOneFromEachGroup = defineType({
               name: 'items',
               title: 'Items in this group (any date / instance)',
               type: 'array',
-              of: [{ type: 'reference', to: [{ type: 'product' }, { type: 'workshop' }] }],
+              of: [
+                {
+                  type: 'reference',
+                  to: [{ type: 'product' }, { type: 'workshop' }],
+                },
+              ],
             }),
           ],
           preview: {
@@ -173,7 +180,9 @@ export const condCartContainsAny = defineType({
       title: 'Items (any one must be in cart)',
       description: 'Can be products or workshops',
       type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'product' }, { type: 'workshop' }] }],
+      of: [
+        { type: 'reference', to: [{ type: 'product' }, { type: 'workshop' }] },
+      ],
     }),
   ],
   preview: {

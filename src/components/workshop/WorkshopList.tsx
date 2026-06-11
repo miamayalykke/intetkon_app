@@ -7,7 +7,11 @@ import WorkshopCard from './WorkshopCard'
 const LEVELS = ['All', 'Beginner', 'Intermediate', 'Advanced'] as const
 type Filter = (typeof LEVELS)[number]
 
-export default function WorkshopList({ workshops }: { workshops: WORKSHOPS_QUERYResult }) {
+export default function WorkshopList({
+  workshops,
+}: {
+  workshops: WORKSHOPS_QUERYResult
+}) {
   const [filter, setFilter] = useState<Filter>('All')
 
   const filtered =

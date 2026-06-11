@@ -1,10 +1,7 @@
 import { ClerkProvider } from '@clerk/nextjs'
-import PublicFooter from '@src/components/footers/PublicFooter'
-import Header from '@src/components/headers/Header'
 import type { Metadata } from 'next'
+
 import './globals.css'
-import { Analytics } from '@vercel/analytics/next'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
   title: 'Intetkøn',
@@ -16,19 +13,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-background">
-        <Analytics />
-        <SpeedInsights />
-        <ClerkProvider dynamic>
-          <Header />
-
-          <main className="pt-22 min-h-svh">{children}</main>
-
-          <PublicFooter />
-        </ClerkProvider>
-      </body>
-    </html>
-  )
+  return <ClerkProvider dynamic>{children}</ClerkProvider>
 }

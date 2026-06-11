@@ -1,4 +1,5 @@
 import logo from '@public/logo.svg'
+import LanguageSwitcher from '@src/components/LanguageSwitcher'
 import { Button } from '@ui/button'
 import { ShoppingCartIcon } from 'lucide-react'
 import Image from 'next/image'
@@ -8,9 +9,9 @@ import { NavMenu } from './NavigationMenu'
 import HeaderBasketCount from './ServerBasketCount'
 import { UserMenu } from './UserMenu'
 
-const Header = async () => {
+const Header = async ({ locale }: { locale: string }) => {
   return (
-    <nav className="fixed top-0 left-0 w-full h-16 bg-background/80 backdrop-blur-md z-100">
+    <nav className="fixed top-0 left-0 w-full h-16 bg-background/80 backdrop-blur-md z-100" suppressHydrationWarning>
       <div className="flex h-full items-center justify-between px-4 lg:px-8 max-w-[100vw]">
         <Link
           href="/"
@@ -33,6 +34,8 @@ const Header = async () => {
         </div>
 
         <div className="flex items-center gap-1 sm:gap-2">
+          <LanguageSwitcher currentLocale={locale} />
+
           <Link href="/basket" className="relative shrink-0">
             <Button
               variant="ghost"

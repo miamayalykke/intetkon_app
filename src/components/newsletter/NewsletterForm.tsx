@@ -1,8 +1,8 @@
 'use client'
 import { subscribe } from '@src/lib/newsletter-actions'
+import { Button } from '@ui/button'
 import { Mail } from 'lucide-react'
 import { useActionState } from 'react'
-import { Button } from '@ui/button'
 
 const initialState = { status: 'idle' as const }
 

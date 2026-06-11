@@ -1,6 +1,6 @@
+import { currentUser } from '@clerk/nextjs/server'
 import { backendClient } from '@sanity/lib/backendClient'
 import stripe from '@src/lib/stripe'
-import { currentUser } from '@clerk/nextjs/server'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
 
@@ -30,7 +30,9 @@ type SyncDocument = {
 async function findExistingPromo(code: string) {
   const results = await stripe.promotionCodes.list({ code, limit: 1 })
   if (!results.data[0]) return null
-  const promo = results.data[0] as Stripe.PromotionCode & { coupon: Stripe.Coupon }
+  const promo = results.data[0] as Stripe.PromotionCode & {
+    coupon: Stripe.Coupon
+  }
   return promo
 }
 
@@ -52,7 +54,9 @@ async function getEligibleStripeProductIds(
   return eligible.map((p) => p.stripeProductId).filter(Boolean)
 }
 
-async function getStripeProductIdsFromConditions(conditions: Condition[]): Promise<string[]> {
+async function getStripeProductIdsFromConditions(
+  conditions: Condition[],
+): Promise<string[]> {
   if (!conditions.length) return []
 
   const allItemIds = new Set<string>()
@@ -97,9 +101,15 @@ async function getStripeProductIdsFromConditions(conditions: Condition[]): Promi
   return items.map((item) => item.stripeProductId).filter(Boolean)
 }
 
-async function syncDocToStripe(doc: SyncDocument): Promise<{ ok: boolean; code: string; error?: string }> {
+async function syncDocToStripe(
+  doc: SyncDocument,
+): Promise<{ ok: boolean; code: string; error?: string }> {
   if (!doc.couponCode || doc.discountAmount === undefined) {
-    return { ok: false, code: doc.couponCode ?? '(none)', error: 'Missing couponCode or discountAmount' }
+    return {
+      ok: false,
+      code: doc.couponCode ?? '(none)',
+      error: 'Missing couponCode or discountAmount',
+    }
   }
 
   const isPercentage = doc.discountType !== 'fixed'
@@ -108,13 +118,18 @@ async function syncDocToStripe(doc: SyncDocument): Promise<{ ok: boolean; code: 
   let eligibleStripeProductIds: string[] = []
 
   if (discountAppliesTo === 'matchingItems' && doc.conditions?.length) {
-    eligibleStripeProductIds = await getStripeProductIdsFromConditions(doc.conditions)
+    eligibleStripeProductIds = await getStripeProductIdsFromConditions(
+      doc.conditions,
+    )
   } else if (discountAppliesTo === 'allItems') {
     const excludedProductIds = doc.excludedProductIds ?? []
     const excludedCategoryIds = doc.excludedCategoryIds ?? []
     eligibleStripeProductIds =
       excludedProductIds.length || excludedCategoryIds.length
-        ? await getEligibleStripeProductIds(excludedProductIds, excludedCategoryIds)
+        ? await getEligibleStripeProductIds(
+            excludedProductIds,
+            excludedCategoryIds,
+          )
         : []
   }
 
@@ -145,9 +160,16 @@ async function syncDocToStripe(doc: SyncDocument): Promise<{ ok: boolean; code: 
         metadata: { sanityId: doc._id },
         ...(isPercentage
           ? { percent_off: doc.discountAmount }
-          : { amount_off: Math.round(doc.discountAmount * 100), currency: 'dkk' }),
-        ...(doc.validTo ? { redeem_by: Math.floor(new Date(doc.validTo).getTime() / 1000) } : {}),
-        ...(eligibleStripeProductIds.length ? { applies_to: { products: eligibleStripeProductIds } } : {}),
+          : {
+              amount_off: Math.round(doc.discountAmount * 100),
+              currency: 'dkk',
+            }),
+        ...(doc.validTo
+          ? { redeem_by: Math.floor(new Date(doc.validTo).getTime() / 1000) }
+          : {}),
+        ...(eligibleStripeProductIds.length
+          ? { applies_to: { products: eligibleStripeProductIds } }
+          : {}),
       }
       const newCoupon = await stripe.coupons.create(couponParams)
       couponId = newCoupon.id
@@ -160,9 +182,16 @@ async function syncDocToStripe(doc: SyncDocument): Promise<{ ok: boolean; code: 
       metadata: { sanityId: doc._id },
       ...(isPercentage
         ? { percent_off: doc.discountAmount }
-        : { amount_off: Math.round(doc.discountAmount * 100), currency: 'dkk' }),
-      ...(doc.validTo ? { redeem_by: Math.floor(new Date(doc.validTo).getTime() / 1000) } : {}),
-      ...(eligibleStripeProductIds.length ? { applies_to: { products: eligibleStripeProductIds } } : {}),
+        : {
+            amount_off: Math.round(doc.discountAmount * 100),
+            currency: 'dkk',
+          }),
+      ...(doc.validTo
+        ? { redeem_by: Math.floor(new Date(doc.validTo).getTime() / 1000) }
+        : {}),
+      ...(eligibleStripeProductIds.length
+        ? { applies_to: { products: eligibleStripeProductIds } }
+        : {}),
     }
     const newCoupon = await stripe.coupons.create(couponParams)
     couponId = newCoupon.id
@@ -171,7 +200,8 @@ async function syncDocToStripe(doc: SyncDocument): Promise<{ ok: boolean; code: 
   const activePromo = existingCoupon?.id === couponId ? existingPromo : null
 
   if (activePromo) {
-    const redemptionsChanged = activePromo.max_redemptions !== (doc.maxRedemptions ?? null)
+    const redemptionsChanged =
+      activePromo.max_redemptions !== (doc.maxRedemptions ?? null)
     if (redemptionsChanged) {
       await stripe.promotionCodes.update(activePromo.id, { active: false })
       await stripe.promotionCodes.create({
@@ -182,7 +212,9 @@ async function syncDocToStripe(doc: SyncDocument): Promise<{ ok: boolean; code: 
         ...(doc.maxRedemptions ? { max_redemptions: doc.maxRedemptions } : {}),
       })
     } else {
-      await stripe.promotionCodes.update(activePromo.id, { active: doc.isActive ?? true })
+      await stripe.promotionCodes.update(activePromo.id, {
+        active: doc.isActive ?? true,
+      })
     }
   } else {
     await stripe.promotionCodes.create({
@@ -227,7 +259,11 @@ async function runSync() {
 
   const summary = results.map((r, i) => {
     if (r.status === 'fulfilled') return r.value
-    return { ok: false, code: docs[i].couponCode ?? '?', error: String(r.reason) }
+    return {
+      ok: false,
+      code: docs[i].couponCode ?? '?',
+      error: String(r.reason),
+    }
   })
 
   return {

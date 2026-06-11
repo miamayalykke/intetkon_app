@@ -5,7 +5,7 @@ import { ArrowRight, Check, Heart, Scissors, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import useBasketStore from '../../../../store/store'
+import useBasketStore from '@store/store'
 
 function SuccessPage() {
   const searchParams = useSearchParams()

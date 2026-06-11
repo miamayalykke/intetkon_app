@@ -19,14 +19,14 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   createCheckoutSession,
   type Metadata,
-} from '../../../../actions/createCheckoutSession'
-import { generateOrderNumber } from '../../../../actions/generateOrderNumber'
+} from '@actions/createCheckoutSession'
+import { generateOrderNumber } from '@actions/generateOrderNumber'
 import {
   type ItemForValidation,
   type PromoValidationResult,
   validatePromoCode,
-} from '../../../../actions/validatePromoCode'
-import useBasketStore from '../../../../store/store'
+} from '@actions/validatePromoCode'
+import useBasketStore from '@store/store'
 
 const BasketPage = () => {
   const groupedItems = useBasketStore((state) => state.getGroupedItems())
@@ -162,8 +162,7 @@ const BasketPage = () => {
     setGuestFormError(null)
     const orderNumber = await generateOrderNumber()
     try {
-      const checkoutEmail =
-        email || user?.emailAddresses[0].emailAddress || ''
+      const checkoutEmail = email || user?.emailAddresses[0].emailAddress || ''
       const checkoutName = name || user?.fullName || ''
 
       const metadata: Metadata = {

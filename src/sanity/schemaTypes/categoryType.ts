@@ -9,24 +9,23 @@ export const categoryType = defineType({
   fields: [
     defineField({
       name: 'title',
-      type: 'string',
+      type: 'internationalizedArrayString',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'slug',
-      type: 'slug',
-      options: {
-        source: 'title',
-      },
+      type: 'internationalizedArraySlug',
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
-      type: 'text',
+      type: 'internationalizedArrayText',
     }),
   ],
   preview: {
     select: {
-      title: 'title',
-      subtitle: 'description',
+      title: 'title.0.value',
+      subtitle: 'description.0.value',
     },
   },
 })

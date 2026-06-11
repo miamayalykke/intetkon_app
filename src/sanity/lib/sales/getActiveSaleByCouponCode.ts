@@ -12,7 +12,9 @@ export const getActiveSaleByCouponCode = async (couponCode: CouponCode) => {
          `)
 
   try {
-    const activeSale = await client.fetch(ACTIVE_SALE_BY_COUPON_QUERY, { couponCode })
+    const activeSale = await client.fetch(ACTIVE_SALE_BY_COUPON_QUERY, {
+      couponCode,
+    })
     return activeSale ?? null
   } catch (error) {
     console.error('Error fetching active sale by coupon code:', error)

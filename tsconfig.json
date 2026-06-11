@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es2022"
-    ],
+    "lib": ["dom", "dom.iterable", "es2022"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -25,18 +21,13 @@
       }
     ],
     "paths": {
-      "@ui/*": [
-        "./src/components/ui/*"
-      ],
-      "@sanity/*": [
-        "./src/sanity/*"
-      ],
-      "@src/*": [
-        "./src/*"
-      ],
-      "@public/*": [
-        "./public/*"
-      ]
+      "@ui/*": ["./src/components/ui/*"],
+      "@sanity/*": ["./src/sanity/*"],
+      "@src/*": ["./src/*"],
+      "@public/*": ["./public/*"],
+      "@actions/*": ["./actions/*"],
+      "@store/*": ["./store/*"],
+      "@root/*": ["./*"]
     }
   },
   "include": [
@@ -46,7 +37,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

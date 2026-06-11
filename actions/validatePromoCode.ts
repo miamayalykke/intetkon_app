@@ -51,34 +51,53 @@ function evaluateCondition(
       const missing = ids.filter((id) => !items.some((i) => i.id === id))
       return missing.length === 0
         ? { met: true, message: '' }
-        : { met: false, message: 'Your cart is missing required items for this code' }
+        : {
+            met: false,
+            message: 'Your cart is missing required items for this code',
+          }
     }
     case 'condCartContainsAny': {
       const ids = condition.itemIds ?? []
       const hasAny = ids.some((id) => items.some((i) => i.id === id))
       return hasAny
         ? { met: true, message: '' }
-        : { met: false, message: 'Your cart must contain at least one required item' }
+        : {
+            met: false,
+            message: 'Your cart must contain at least one required item',
+          }
     }
     case 'condCartSubtotal': {
       const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
       return total >= (condition.minAmount ?? 0)
         ? { met: true, message: '' }
-        : { met: false, message: `Minimum order of ${condition.minAmount} DKK required` }
+        : {
+            met: false,
+            message: `Minimum order of ${condition.minAmount} DKK required`,
+          }
     }
     case 'condProductCount': {
       const count = items.reduce((sum, i) => sum + i.quantity, 0)
       return count >= (condition.minCount ?? 0)
         ? { met: true, message: '' }
-        : { met: false, message: `Add at least ${condition.minCount} items to use this code` }
+        : {
+            met: false,
+            message: `Add at least ${condition.minCount} items to use this code`,
+          }
     }
     case 'condCategoryCount': {
       const count = items
-        .filter((i) => condition.categoryId && i.categoryIds.includes(condition.categoryId))
+        .filter(
+          (i) =>
+            condition.categoryId &&
+            i.categoryIds.includes(condition.categoryId),
+        )
         .reduce((sum, i) => sum + i.quantity, 0)
       return count >= (condition.minCount ?? 0)
         ? { met: true, message: '' }
-        : { met: false, message: `Add at least ${condition.minCount} items from the required category` }
+        : {
+            met: false,
+            message: `Add at least ${condition.minCount} items from the required category`,
+          }
     }
     case 'condCartContainsOneFromEachGroup': {
       const groups = condition.groups ?? []
@@ -153,7 +172,8 @@ export async function validatePromoCode(
   if (!stripePromo?.active) {
     return {
       valid: false,
-      message: 'This code is not yet active in our payment system. Please try again shortly.',
+      message:
+        'This code is not yet active in our payment system. Please try again shortly.',
     }
   }
 

@@ -1,0 +1,87 @@
+{
+  "common": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "cart": "Cart",
+    "search": "Search",
+    "menu": "Menu",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "navigation": {
+    "home": "Home",
+    "shop": "Shop",
+    "workshops": "Workshops",
+    "about": "About",
+    "contact": "Contact",
+    "privacyPolicy": "Privacy Policy",
+    "returnPolicy": "Return Policy",
+    "termsOfService": "Terms of Service",
+    "careers": "Careers"
+  },
+  "products": {
+    "addToCart": "Add to Cart",
+    "addToBasket": "Add to Basket",
+    "price": "Price",
+    "quantity": "Quantity",
+    "description": "Description",
+    "details": "Details",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "total": "Total",
+    "checkout": "Checkout",
+    "continueShopping": "Continue Shopping"
+  },
+  "footer": {
+    "about": "About",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "newsletter": "Newsletter",
+    "subscribeNewsletter": "Subscribe to our newsletter"
+  },
+  "pages": {
+    "about": {
+      "label": "Our Story",
+      "title": "About",
+      "subtitle": "INTETKØN",
+      "description": "Learn about our mission, values, and the stories behind our creations."
+    },
+    "contact": {
+      "label": "Get in touch",
+      "title": "Contact",
+      "subtitle": "Studio",
+      "description": "Questions about a pattern, a bespoke order, or just want to say hi? Our digital atelier is always open."
+    },
+    "privacy": {
+      "label": "Legal & Privacy",
+      "title": "Privacy",
+      "subtitle": "Policy",
+      "description": "Your data is handled with the same care as our garments."
+    },
+    "returnPolicy": {
+      "label": "Returns & Exchanges",
+      "title": "Return",
+      "subtitle": "Policy",
+      "description": "We want you to be completely satisfied with your purchase."
+    },
+    "termsOfService": {
+      "label": "Terms & Conditions",
+      "title": "Terms of",
+      "subtitle": "Service",
+      "description": "Please read our terms carefully before placing an order."
+    },
+    "careers": {
+      "label": "Join Our Team",
+      "title": "Careers",
+      "subtitle": "Opportunities",
+      "description": "We're always looking for talented, passionate people to join us."
+    }
+  }
+}
