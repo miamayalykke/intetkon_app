@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
+      - name: Generate Next.js types
+        run: yarn next build
+
       - name: Type check
         run: yarn tsc --noEmit
 
