@@ -5,7 +5,7 @@ import { Button } from '@ui/button'
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@ui/sheet'
 import { Menu } from 'lucide-react'
 import Image from 'next/image'
-import Logo from 'public/logo.svg'
+import Logo from '@public/logo.svg'
 import { useState } from 'react'
 import { NavMenu } from './NavigationMenu'
 
