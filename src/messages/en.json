@@ -634,6 +634,7 @@
     "continueGuest": "Continue as Guest",
     "signIn": "Sign In",
     "stripeText": "Secure checkout powered by Stripe",
+    "checkoutError": "Something went wrong. Please try again or contact us.",
     "footerText": "By purchasing, you support gender-neutral design and local Danish craft. Read our",
     "returnPolicy": "Return Policy"
   }

@@ -666,6 +666,7 @@
     "continueGuest": "Fortsæt som gæst",
     "signIn": "Log ind",
     "stripeText": "Sikker betaling via Stripe",
+    "checkoutError": "Noget gik galt. Prøv igen eller kontakt os.",
     "footerText": "Ved at købe støtter du kønsvenligt design og lokalt dansk håndværk. Læs vores",
     "returnPolicy": "returpolitik"
   }

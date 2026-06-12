@@ -37,25 +37,37 @@ async function syncDocToStripe(
     }
 
     if (doc.stripeProductId) {
-      await stripe.products.update(doc.stripeProductId, {
-        name,
-        metadata: { sanityId: doc._id },
-      })
-      return { ok: true, id: doc.stripeProductId }
-    } else {
-      const product = await stripe.products.create({
-        name,
-        type: 'good',
-        metadata: { sanityId: doc._id },
-      })
-
-      await backendClient
-        .patch(doc._id)
-        .set({ stripeProductId: product.id })
-        .commit()
-
-      return { ok: true, id: product.id }
+      try {
+        await stripe.products.update(doc.stripeProductId, {
+          name,
+          metadata: { sanityId: doc._id },
+        })
+        return { ok: true, id: doc.stripeProductId }
+      } catch (updateError: any) {
+        // Stale ID from a different Stripe environment — clear it and create fresh
+        if (updateError?.code === 'resource_missing') {
+          await backendClient
+            .patch(doc._id)
+            .unset(['stripeProductId'])
+            .commit()
+          doc = { ...doc, stripeProductId: undefined }
+        } else {
+          throw updateError
+        }
+      }
     }
+
+    const product = await stripe.products.create({
+      name,
+      metadata: { sanityId: doc._id },
+    })
+
+    await backendClient
+      .patch(doc._id)
+      .set({ stripeProductId: product.id })
+      .commit()
+
+    return { ok: true, id: product.id }
   } catch (error) {
     return { ok: false, id: doc._id, error: String(error) }
   }

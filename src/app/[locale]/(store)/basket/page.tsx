@@ -55,6 +55,8 @@ const BasketPage = () => {
   const [guestEmail, setGuestEmail] = useState('')
   const [guestName, setGuestName] = useState('')
   const [guestFormError, setGuestFormError] = useState<string | null>(null)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
+
 
   useEffect(() => {
     setIsClient(true)
@@ -164,9 +166,10 @@ const BasketPage = () => {
 
   const handleCheckout = async (email?: string, name?: string) => {
     setIsLoading(true)
+    setCheckoutError(null)
     setGuestFormError(null)
-    const orderNumber = await generateOrderNumber()
     try {
+      const orderNumber = await generateOrderNumber()
       const checkoutEmail = email || user?.emailAddresses[0].emailAddress || ''
       const checkoutName = name || user?.fullName || ''
 
@@ -184,7 +187,9 @@ const BasketPage = () => {
       if (checkoutUrl) window.location.href = checkoutUrl
     } catch (error) {
       console.error('Error creating checkout session:', error)
-      setGuestFormError('Failed to create checkout session. Please try again.')
+      const msg = t('basket.checkoutError')
+      setCheckoutError(msg)
+      setGuestFormError(msg)
     } finally {
       setIsLoading(false)
     }
@@ -398,15 +403,20 @@ const BasketPage = () => {
             </div>
 
             {isSignedIn ? (
-              <Button
-                onClick={() => handleCheckout()}
-                disabled={isLoading}
-                size="4xl"
-                className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
-              >
-                {isLoading ? t('basket.processing') : t('basket.completePurchase')}
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              <div className="space-y-3">
+                <Button
+                  onClick={() => handleCheckout()}
+                  disabled={isLoading}
+                  size="4xl"
+                  className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
+                >
+                  {isLoading ? t('basket.processing') : t('basket.completePurchase')}
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                {checkoutError && (
+                  <p className="text-sm text-red-500 font-bold text-center">{checkoutError}</p>
+                )}
+              </div>
             ) : showGuestForm ? (
               <div className="space-y-4">
                 <div>
