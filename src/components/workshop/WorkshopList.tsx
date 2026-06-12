@@ -1,17 +1,19 @@
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import type { WORKSHOPS_QUERYResult } from '../../../sanity.types'
 import WorkshopCard from './WorkshopCard'
 
-const LEVELS = ['All', 'Beginner', 'Intermediate', 'Advanced'] as const
-type Filter = (typeof LEVELS)[number]
+const LEVEL_VALUES = ['All', 'Beginner', 'Intermediate', 'Advanced'] as const
+type Filter = (typeof LEVEL_VALUES)[number]
 
 export default function WorkshopList({
   workshops,
 }: {
   workshops: WORKSHOPS_QUERYResult
 }) {
+  const t = useTranslations()
   const [filter, setFilter] = useState<Filter>('All')
 
   const filtered =
@@ -22,7 +24,7 @@ export default function WorkshopList({
       <div className="flex items-center gap-4 mb-8 flex-wrap">
         <div className="h-px grow bg-border hidden sm:block" />
         <div className="flex gap-2 flex-wrap">
-          {LEVELS.map((level) => (
+          {LEVEL_VALUES.map((level) => (
             <button
               key={level}
               type="button"
@@ -33,7 +35,7 @@ export default function WorkshopList({
                   : 'border-border text-muted-foreground hover:border-orange-500 hover:text-orange-500'
               }`}
             >
-              {level}
+              {level === 'All' ? t('pages.workshops.filters.all') : t(`pages.workshops.filters.${level.toLowerCase()}`)}
             </button>
           ))}
         </div>
@@ -42,7 +44,7 @@ export default function WorkshopList({
 
       {filtered.length === 0 ? (
         <p className="text-center text-muted-foreground italic py-24">
-          No upcoming workshops at this level.
+          {t('workshops.noUpcoming')}
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-12">

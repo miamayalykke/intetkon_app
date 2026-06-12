@@ -1,9 +1,8 @@
-import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server'
 import { getAllCategories } from '@sanity/lib/products/getAllCategories'
 import { getPhysicalProducts } from '@sanity/lib/products/getPhysicalProducts'
-import { locales } from '@src/i18n'
-import DiscountBanner from '@src/components/product/DiscountBanner'
 import LocalizedProductsView from '@src/components/product/LocalizedProductsView'
+import { locales } from '@src/i18n'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 export const revalidate = 3600
 
@@ -11,18 +10,20 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
 
-const ShopPage = async () => {
-  const locale = await getLocale()
+const ShopPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) => {
+  const { locale } = await params
   setRequestLocale(locale)
-  
+
   const t = await getTranslations()
   const products = await getPhysicalProducts()
   const categories = await getAllCategories()
 
   return (
     <main className="min-h-screen pb-32">
-      <DiscountBanner />
-
       <div className="container mx-auto px-6 pt-12">
         <header className="mb-12">
           <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none">
@@ -34,7 +35,7 @@ const ShopPage = async () => {
           </p>
         </header>
 
-        <LocalizedProductsView products={products} categories={categories} />
+        <LocalizedProductsView products={products} categories={categories} locale={locale} />
       </div>
     </main>
   )

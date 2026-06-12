@@ -5,7 +5,7 @@ import { client } from '../client'
 export const getProductBySlug = async (slug: string) => {
   const PRODUCT_BY_ID_QUERY = defineQuery(`
         *[
-            _type == "product" && slug[0].value == $slug
+            _type == "product" && (slug[0].value.current == $slug || slug[1].value.current == $slug || slug.current == $slug)
         ][0] {
           ...,
           stripeProductId

@@ -1,10 +1,11 @@
 'use client'
 
+import { getLocalizedSlug } from '@src/lib/slug-helpers'
 import { Button } from '@ui/button'
 import { addMinutes, format } from 'date-fns'
 import { ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Link from 'next/link'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import type { WORKSHOPS_QUERYResult } from '../../../sanity.types'
 
 type WorkshopItem = WORKSHOPS_QUERYResult[number]
@@ -18,6 +19,7 @@ const parseDuration = (duration: string): number => {
 }
 
 const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
+  const t = useTranslations()
   const locale = useLocale()
   const signUps = workshop.currentSignUps ?? 0
   const maxSpots = workshop.maxAllocation ?? 0
@@ -28,6 +30,7 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
   const durationMinutes = parseDuration(workshop.duration ?? '')
   const endDate = addMinutes(eventDate, durationMinutes)
   const timeRange = `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
+  const workshopSlug = getLocalizedSlug(workshop.slug, locale)
 
   return (
     <div
@@ -60,7 +63,9 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
               className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}
             >
               <Users className="w-3 h-3" />{' '}
-              {isFull ? 'Sold Out' : `${spotsLeft} Spots Remaining`}
+              {isFull
+                ? t('workshops.card.soldOut')
+                : t('workshops.card.spotsRemaining', { count: spotsLeft })}
             </span>
           </div>
 
@@ -78,27 +83,31 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
             {(workshop.price ?? 0).toFixed(2)} DKK
           </div>
 
-          <Link
-            href={`/${locale}/workshops/${workshop.slug?.current}`}
-            className="w-full"
-          >
-            <Button
-              disabled={isFull}
-              size="2xl"
-              className={`w-full h-16 rounded-full font-black uppercase tracking-widest transition-all
-                ${
-                  isFull
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-orange-500 text-white hover:bg-black hover:scale-105 shadow-lg shadow-orange-500/20'
-                }`}
+          {workshopSlug && (
+            <Link
+              href={`/${locale}/workshops/${workshopSlug}`}
+              className="w-full"
             >
-              {isFull ? 'At Capacity' : 'View Details'}
-              {!isFull && <ArrowRight className="ml-2 w-4 h-4" />}
-            </Button>
-          </Link>
+              <Button
+                disabled={isFull}
+                size="2xl"
+                className={`w-full h-16 rounded-full font-black uppercase tracking-widest transition-all
+                  ${
+                    isFull
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-orange-500 text-white hover:bg-black hover:scale-105 shadow-lg shadow-orange-500/20'
+                  }`}
+              >
+                {isFull
+                  ? t('workshops.card.atCapacity')
+                  : t('workshops.card.viewDetails')}
+                {!isFull && <ArrowRight className="ml-2 w-4 h-4" />}
+              </Button>
+            </Link>
+          )}
 
           <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
-            Materials Included in Price
+            {t('workshops.card.materialsIncluded')}
           </p>
         </div>
       </div>

@@ -1,10 +1,9 @@
-import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server'
 import { getAllCategories } from '@sanity/lib/products/getAllCategories'
 import { getDigitalProducts } from '@sanity/lib/products/getDigitalProducts'
-import { locales } from '@src/i18n'
-import DiscountBanner from '@src/components/product/DiscountBanner'
 import LocalizedProductsView from '@src/components/product/LocalizedProductsView'
+import { locales } from '@src/i18n'
 import { FileText, Monitor, Zap } from 'lucide-react'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 export const revalidate = 3600
 
@@ -12,18 +11,20 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
 }
 
-const PatternsShopPage = async () => {
-  const locale = await getLocale()
+const PatternsShopPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) => {
+  const { locale } = await params
   setRequestLocale(locale)
-  
+
   const t = await getTranslations()
   const products = await getDigitalProducts()
   const categories = await getAllCategories()
 
   return (
     <main className="min-h-screen pb-32">
-      <DiscountBanner />
-
       <div className="container mx-auto px-6 pt-12">
         <header className="mb-16 relative">
           <div className="inline-flex items-center gap-2 mb-4 bg-secondary text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest -rotate-2 shadow-lg">
@@ -48,7 +49,7 @@ const PatternsShopPage = async () => {
           </div>
         </header>
 
-        <LocalizedProductsView products={products} categories={categories} />
+        <LocalizedProductsView products={products} categories={categories} locale={locale} />
       </div>
     </main>
   )

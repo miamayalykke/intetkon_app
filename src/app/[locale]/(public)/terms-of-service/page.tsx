@@ -16,10 +16,8 @@ const TermsPage = () => {
   const t = useTranslations('pages.terms')
   return (
     <main className="w-full overflow-x-clip">
-      {/* --- Section 1: Header --- */}
       <section className="pt-24 pb-12">
         <div className="relative isolate flex flex-col items-center justify-center min-h-[40vh] w-full overflow-hidden text-center px-6">
-          {/* Brand Signature Threads */}
           <svg
             className="absolute inset-0 w-full h-full -z-10 opacity-20 pointer-events-none"
             viewBox="0 0 100 100"
@@ -43,10 +41,11 @@ const TermsPage = () => {
           <div className="bg-foreground text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg rotate-1 border-2 border-white mb-8">
             {t('hero.tag')}
           </div>
-
           <h1 className="text-5xl lg:text-[7rem] font-black text-foreground tracking-tighter leading-[0.85] mb-6">
             {t('hero.title')} <br />
-            <span className="text-secondary italic font-serif">{t('hero.titleItalic')}</span>
+            <span className="text-secondary italic font-serif">
+              {t('hero.titleItalic')}
+            </span>
           </h1>
           <p className="max-w-xl text-muted-foreground font-light italic">
             {t('hero.effectiveDate')} <br />
@@ -55,177 +54,136 @@ const TermsPage = () => {
         </div>
       </section>
 
-      {/* --- Section 2: Terms Content --- */}
       <section className="container mx-auto px-6 pb-24">
         <div className="max-w-4xl mx-auto">
-          {/* Operator Info Card */}
           <div className="mb-16 p-8 bg-card border border-border rounded-[3rem] shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="space-y-1">
               <p className="text-[10px] font-black uppercase tracking-widest text-secondary">
-                Operator
+                {t('operator.operatorTitle')}
               </p>
-              <p className="font-bold text-lg">INTETKØN / Emilie Kallager</p>
+              <p className="font-bold text-lg">{t('operator.label')}</p>
             </div>
             <div className="hidden md:block w-px h-12 bg-border" />
             <div className="space-y-1 text-center md:text-left">
               <p className="text-[10px] font-black uppercase tracking-widest text-secondary">
-                Location
+                {t('operator.locationTitle')}
               </p>
-              <p className="text-muted-foreground">Frederiksberg, Denmark</p>
+              <p className="text-muted-foreground">{t('operator.location')}</p>
             </div>
             <div className="hidden md:block w-px h-12 bg-border" />
             <div className="space-y-1 text-center md:text-right">
               <p className="text-[10px] font-black uppercase tracking-widest text-secondary">
-                Contact
+                {t('operator.contactTitle')}
               </p>
-              <p className="text-muted-foreground">info@intetkon.com</p>
+              <p className="text-muted-foreground">{t('operator.contact')}</p>
             </div>
           </div>
 
-          {/* Detailed Terms Grid */}
           <div className="space-y-12">
-            {/* 1. Overview */}
             <div className="space-y-4">
               <h2 className="text-2xl font-black tracking-tight flex items-center gap-3">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500 text-white text-xs">
-                  01
+                  {t('sections.overview.number')}
                 </span>
-                Overview
+                {t('sections.overview.title')}
               </h2>
               <p className="text-muted-foreground leading-relaxed font-light italic">
-                By visiting our website and/or purchasing something from us, you
-                engage in our “Service” and agree to be bound by these Terms of
-                Service (“Terms”), including additional terms, policies and
-                notices referenced here or available by hyperlink.
+                {t('sections.overview.description')}
               </p>
             </div>
 
-            {/* 2 & 3 Online Store & General Conditions */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="p-8 rounded-[2.5rem] bg-orange-500/5 border border-orange-500/10 space-y-3">
                 <h3 className="font-bold flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4" /> Store Terms
+                  <ShoppingBag className="w-4 h-4" />{' '}
+                  {t('sections.storeTerms.title')}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  You confirm you are of the age of majority. You may not use
-                  our products for any unauthorized or illegal purpose,
-                  including copyright violations.
+                  {t('sections.storeTerms.description')}
                 </p>
               </div>
               <div className="p-8 rounded-[2.5rem] bg-secondary/5 border border-secondary/10 space-y-3">
                 <h3 className="font-bold flex items-center gap-2">
-                  <Gavel className="w-4 h-4" /> General Conditions
+                  <Gavel className="w-4 h-4" />{' '}
+                  {t('sections.generalConditions.title')}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  We reserve the right to refuse service. Your content may be
-                  transferred unencrypted (excluding payment data which is
-                  always encrypted).
+                  {t('sections.generalConditions.description')}
                 </p>
               </div>
             </div>
 
-            {/* Middle Sections (Text Focused) */}
             <div className="space-y-10 prose prose-sm prose-orange max-w-none text-muted-foreground font-light">
               <div className="space-y-4">
                 <h3 className="text-foreground font-bold text-lg">
-                  4. Accuracy & Timeliness
+                  {t('sections.accuracy.number')}.{' '}
+                  {t('sections.accuracy.title')}
                 </h3>
-                <p>
-                  We are not responsible if information on this site is not
-                  accurate or current. Material is for general information and
-                  reliance is at your own risk.
-                </p>
+                <p>{t('sections.accuracy.description')}</p>
               </div>
-
               <div className="space-y-4">
                 <h3 className="text-foreground font-bold text-lg">
-                  5 & 6. Modifications & Products
+                  {t('sections.modifications.number')}.{' '}
+                  {t('sections.modifications.title')}
                 </h3>
-                <p>
-                  Prices are subject to change without notice. We reserve the
-                  right to modify or discontinue services. We have made every
-                  effort to display colors accurately, but monitor displays
-                  vary.
-                </p>
+                <p>{t('sections.modifications.description')}</p>
               </div>
-
-              {/* Highlight Card for Billing */}
               <div className="bg-card border-2 border-dashed border-border p-8 rounded-[3rem] my-8">
                 <h3 className="text-foreground font-bold text-lg mb-2 flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-orange-500" /> 7 & 8.
-                  Billing & Payments
+                  <CreditCard className="w-5 h-5 text-orange-500" />{' '}
+                  {t('sections.billing.number')}. {t('sections.billing.title')}
                 </h3>
-                <p>
-                  We reserve the right to refuse any order. Payments are
-                  processed by third-party providers like{' '}
-                  <strong>Stripe</strong>. You agree to provide current,
-                  complete, and accurate purchase information for all
-                  transactions.
-                </p>
+                <p>{t('sections.billing.description')}</p>
               </div>
-
               <div className="space-y-4">
                 <h3 className="text-foreground font-bold text-lg">
-                  10. User Content & Feedback
+                  {t('sections.userContent.number')}.{' '}
+                  {t('sections.userContent.title')}
                 </h3>
-                <p>
-                  If you submit creative ideas or comments, we may edit, copy,
-                  and distribute them in any medium without obligation to pay
-                  compensation or respond.
-                </p>
+                <p>{t('sections.userContent.description')}</p>
               </div>
-
               <div className="space-y-4">
                 <h3 className="text-foreground font-bold text-lg flex items-center gap-2">
-                  <ShieldAlert className="w-5 h-5 text-destructive" /> 13.
-                  Prohibited Uses
+                  <ShieldAlert className="w-5 h-5 text-destructive" />{' '}
+                  {t('sections.prohibitedUses.number')}.{' '}
+                  {t('sections.prohibitedUses.title')}
                 </h3>
-                <p>
-                  You are prohibited from using the site for unlawful purposes,
-                  infringing on intellectual property, transmitting viruses, or
-                  scraping content. Violation results in immediate termination.
-                </p>
+                <p>{t('sections.prohibitedUses.description')}</p>
               </div>
             </div>
 
-            {/* Liability Section (Styled like a warning label) */}
             <div className="p-10 bg-foreground text-background rounded-[3rem] space-y-6">
               <h3 className="text-2xl font-black tracking-tighter uppercase flex items-center gap-3">
-                <Scale className="text-orange-500 w-8 h-8" /> 14. Limitation of
-                Liability
+                <Scale className="text-orange-500 w-8 h-8" />{' '}
+                {t('sections.liability.number')}.{' '}
+                {t('sections.liability.title')}
               </h3>
               <p className="text-background/80 font-light leading-relaxed italic">
-                The Service and all products are provided “as is” and “as
-                available” without warranties of any kind. In no case shall
-                INTETKØN be liable for any injury, loss, claim, or consequential
-                damages arising from your use of the service.
+                {t('sections.liability.description')}
               </p>
             </div>
 
-            {/* Closing Sections */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-border">
               <div className="space-y-4">
                 <h4 className="font-bold text-foreground italic">
-                  19. Governing Law
+                  {t('sections.governingLaw.number')}.{' '}
+                  {t('sections.governingLaw.title')}
                 </h4>
                 <p className="text-sm text-muted-foreground font-light">
-                  These Terms shall be governed by and construed in accordance
-                  with the laws of <strong>Denmark</strong>.
+                  {t('sections.governingLaw.description')}
                 </p>
               </div>
               <div className="space-y-4">
                 <h4 className="font-bold text-foreground italic">
-                  20. Changes to Terms
+                  {t('sections.changes.number')}. {t('sections.changes.title')}
                 </h4>
                 <p className="text-sm text-muted-foreground font-light">
-                  We reserve the right to update or replace any part of these
-                  Terms by posting updates to our website.
+                  {t('sections.changes.description')}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Contact Footer */}
           <div className="mt-24 p-12 lg:p-16 bg-secondary rounded-[4rem] text-center text-white relative overflow-hidden">
             <RefreshCw className="absolute -top-10 -left-10 w-48 h-48 text-white/5 rotate-12" />
             <Mail className="w-12 h-12 text-white mb-6 mx-auto" />
@@ -245,7 +203,6 @@ const TermsPage = () => {
         </div>
       </section>
 
-      {/* --- Bottom Marquee --- */}
       <section className="py-6 bg-foreground overflow-hidden">
         <div className="flex whitespace-nowrap animate-marquee text-white">
           {[...Array(6)].map((_, i) => (
@@ -253,9 +210,9 @@ const TermsPage = () => {
               key={i}
               className="text-[10px] font-black uppercase tracking-[0.4em] mx-12 flex items-center gap-4"
             >
-              Terms of Service <FileText className="w-4 h-4 text-orange-500" />
-              Bound by Choice <Scale className="w-4 h-4 text-secondary" />
-              The Studio Rules <Gavel className="w-4 h-4 text-orange-500" />
+              {t('marquee.0')} <FileText className="w-4 h-4 text-orange-500" />
+              {t('marquee.1')} <Scale className="w-4 h-4 text-secondary" />
+              {t('marquee.2')} <Gavel className="w-4 h-4 text-orange-500" />
             </span>
           ))}
         </div>

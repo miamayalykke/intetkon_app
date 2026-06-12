@@ -1,6 +1,7 @@
 'use client'
 
 import { Minus, Plus, ShoppingBag } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import type { Product } from '../../sanity.types'
 import useBasketStore from '../../store/store'
@@ -12,6 +13,7 @@ interface AddToBasketButtonProps {
 
 const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
   const addItem = useBasketStore((state) => state.addItem)
+  const t = useTranslations('products')
 
   const [quantity, setQuantity] = useState(1)
   const [isClient, setIsClient] = useState(false)
@@ -35,7 +37,6 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
 
   return (
     <div className="flex items-center gap-3">
-      {/* Quantity counter */}
       <div className="flex items-center gap-2 bg-card border border-border p-1.5 rounded-full shadow-sm">
         <button
           type="button"
@@ -53,7 +54,7 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
 
         <div className="flex flex-col items-center leading-none px-1">
           <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-0.5">
-            Qty
+            {t('qty')}
           </span>
           <div className="flex items-baseline gap-1 font-black tabular-nums tracking-tighter">
             <span className="text-orange-500 text-sm">{quantity}</span>
@@ -77,7 +78,6 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
         </button>
       </div>
 
-      {/* Add to Cart button */}
       <button
         type="button"
         onClick={handleAddToCart}
@@ -90,7 +90,7 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
           }`}
       >
         <ShoppingBag className="w-3.5 h-3.5" />
-        Add to Cart
+        {t('addToCart')}
       </button>
     </div>
   )

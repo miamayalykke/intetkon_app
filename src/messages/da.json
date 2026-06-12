@@ -30,10 +30,28 @@
     "addToBasket": "Tilføj til indkøbskurv",
     "price": "Pris",
     "quantity": "Antal",
+    "qty": "Antal",
     "description": "Beskrivelse",
     "details": "Detaljer",
     "inStock": "På lager",
-    "outOfStock": "Ikke på lager"
+    "outOfStock": "Ikke på lager",
+    "limitedEdition": "Begrænset udgave",
+    "newDrop": "Nyt produkt",
+    "secureCheckout": "Sikker betaling & levering verden over",
+    "craftLabel": "Håndværk",
+    "craftValue": "Kønsneutralt",
+    "formatLabel": "Format",
+    "formatValue": "Lagdelt PDF",
+    "backToAtelier": "Tilbage til Atelieret",
+    "digitalDownload": "Digital Download",
+    "physicalDrop": "Fysisk produkt",
+    "archived": "Udgået"
+  },
+  "user": {
+    "signIn": "Log ind",
+    "welcome": "Velkommen",
+    "myOrders": "Mine ordrer",
+    "admin": "Admin"
   },
   "cart": {
     "title": "Indkøbskurv",
@@ -65,7 +83,12 @@
     "newsletter": {
       "title": "Bliv opdateret",
       "description": "Få inspiration med kønsneutrale DIY-ideer og workshop-nyheder.",
-      "button": "Tilmeld"
+      "button": "Tilmeld",
+      "placeholder": "din@email.dk",
+      "success": "Tjek din e-mail for at bekræfte dit abonnement!",
+      "conflict": "Du er allerede tilmeldt.",
+      "invalidEmail": "Indtast venligst en gyldig e-mailadresse.",
+      "error": "Noget gik galt. Prøv igen."
     },
     "copyright": "© {year} INTETKØN. ALLE RETTIGHEDER FORBEHOLDT.",
     "tagline2": "Skabt for Lighed"
@@ -80,10 +103,28 @@
       "lifetime": "Livstidsadgang"
     },
     "categories": {
-      "allPieces": "Alle Stykker",
-      "pants": "Bukser",
-      "accessories": "Tilbehør",
-      "shirts": "Skjorter"
+      "allPieces": "Alle Stykker"
+    }
+  },
+  "workshops": {
+    "levels": {
+      "Beginner": "Begynder",
+      "Intermediate": "Øvet",
+      "Advanced": "Avanceret"
+    },
+    "detail": {
+      "backToSessions": "Tilbage til Studio Sessions",
+      "studioSession": "Studio Session",
+      "soldOut": "Udsolgt",
+      "spotsRemaining": "{count} pladser tilbage",
+      "materialsIncluded": "Materialer inkluderet i prisen"
+    },
+    "card": {
+      "soldOut": "Udsolgt",
+      "spotsRemaining": "{count} pladser tilbage",
+      "atCapacity": "Fuldt booket",
+      "viewDetails": "Se detaljer",
+      "materialsIncluded": "Materialer inkluderet i prisen"
     }
   },
   "shop": {
@@ -96,10 +137,7 @@
     "resultsFor": "Søgeresultater for",
     "loading": "Indlæser...",
     "categories": {
-      "allPieces": "Alle Stykker",
-      "pants": "Bukser",
-      "accessories": "Tilbehør",
-      "shirts": "Skjorter"
+      "allPieces": "Alle Stykker"
     }
   },
   "success": {
@@ -110,7 +148,11 @@
     "orderRef": "Ordre Ref",
     "myOrders": "Mine Ordrer",
     "backToShop": "Tilbage til Butik",
-    "marquee": ["Intetkøn Familie", "Bæredygtigt Håndværk", "Kønsneutralt Fremtid"]
+    "marquee": [
+      "Intetkøn Familie",
+      "Bæredygtigt Håndværk",
+      "Kønsneutralt Fremtid"
+    ]
   },
   "pages": {
     "home": {
@@ -124,7 +166,11 @@
         "buttonWorkshops": "Workshops"
       },
       "about": {
-        "marqueeAbout": ["Kreativ Frihed", "Inklusivt Univers", "Håndlavet Æstetik"],
+        "marqueeAbout": [
+          "Kreativ Frihed",
+          "Inklusivt Univers",
+          "Håndlavet Æstetik"
+        ],
         "builtOnPresence": "Bygget på Tilstedeværelse",
         "intro": "Et kreativt brand bygget på håndværk, æstetik og tilstedeværelse.",
         "founder": "Mit navn er Emilie, og jeg er grundlægger af Intetkøn. Her skaber jeg mønstre, produkter og workshops med plads til personlighed, læring og kreativ frihed.",
@@ -135,7 +181,11 @@
         "title": "Opdag de nyeste teknikker, historier fra bag kulisserne og workshop-nyheder direkte fra atelieret.",
         "label": "Journal",
         "heading": "Dyk ned i Intetkøn.",
-        "marquee": ["Udforsk hvad der sker nu", "Atelier Indsigter", "Seneste Kreationer"]
+        "marquee": [
+          "Udforsk hvad der sker nu",
+          "Atelier Indsigter",
+          "Seneste Kreationer"
+        ]
       },
       "products": {
         "hangaroundBag": {
@@ -206,7 +256,11 @@
       },
       "whatSetsUsApart": "Hvad adskiller os",
       "marqueeTop": ["Kønsneutralt", "Frihed i Udtryk", "Bæredygtigt Håndværk"],
-      "marqueeBottom": ["Omskriv Reglerne", "Ét Stik Ad Gangen", "Fremtiden er Kønneutralt"]
+      "marqueeBottom": [
+        "Omskriv Reglerne",
+        "Ét Stik Ad Gangen",
+        "Fremtiden er Kønneutralt"
+      ]
     },
     "contact": {
       "hero": {
@@ -239,7 +293,7 @@
         "label": "Fysisk Rum",
         "heading": "STUDIET",
         "status": "Kun åbent efter aftale",
-        "address": "Bentzonsvej 50B\n2000 Frederiksberg\nDanmark"
+        "address": "Adresse: Bentzonsvej 50B, 2000 Frederiksberg, Danmark"
       },
       "marquee": "Kom forbi os i dag",
       "marqueeSubtitle": "Studio Frederiksberg"
@@ -310,7 +364,12 @@
         "heading": "Spørgsmål eller anmodninger?",
         "description": "Vores atelierkoncern er her til at hjælpe med eventuelle privatlivsspørgsmål.",
         "email": "info@intetkon.com"
-      }
+      },
+      "marquee": [
+        "Privatliv Først",
+        "Dine Data, Dine Regler",
+        "Sikkert Atelier"
+      ]
     },
     "returnPolicy": {
       "hero": {
@@ -396,7 +455,12 @@
         "description": "Send os en e-mail med dit ordrenummer og fotos, før du sender noget tilbage.",
         "email": "info@intetkon.com",
         "address": "Adresse: Bentzonsvej 50B, 2000 Frederiksberg, Danmark"
-      }
+      },
+      "marquee": [
+        "Bygget til at holde",
+        "Gennemsigtig Politik",
+        "Venlighed Altid"
+      ]
     },
     "terms": {
       "hero": {
@@ -409,7 +473,10 @@
       "operator": {
         "label": "INTETKØN / Emilie Kallager",
         "location": "Frederiksberg, Danmark",
-        "contact": "info@intetkon.com"
+        "contact": "info@intetkon.com",
+        "operatorTitle": "Operatør",
+        "locationTitle": "Placering",
+        "contactTitle": "Kontakt"
       },
       "sections": {
         "overview": {
@@ -470,7 +537,14 @@
         "heading": "Spørgsmål om vilkårene?",
         "description": "Send os en e-mail, og vores atelierkoncern vil kontakte dig.",
         "email": "info@intetkon.com"
-      }
+      },
+      "marquee": ["Handelsbetingelser", "Et Bevidst Valg", "Studiets Regler"]
+    },
+    "underConstruction": {
+      "badge": "Kommer Snart",
+      "title": "Vi er ved at skabe",
+      "titleItalic": "nye mønstre.",
+      "subtitle": "Noget smukt er ved at blive syet sammen. Kig forbi snart."
     },
     "careers": {
       "hero": {
@@ -488,7 +562,11 @@
         "description": "Send venligst din ansøgning, CV og portefølje til vores atelierkoncern. Vi gennemgår ansøgninger løbende.",
         "button": "Ansøg via e-mail"
       },
-      "marquee": ["Tilslut dig Revolutionen", "Omskriv Reglerne", "Kønneutralt Fremtid"]
+      "marquee": [
+        "Tilslut dig Revolutionen",
+        "Omskriv Reglerne",
+        "Kønneutralt Fremtid"
+      ]
     },
     "patternTester": {
       "hero": {
@@ -534,13 +612,61 @@
         "error": "Noget gik galt. Prøv igen.",
         "privacy": "Når du ansøger, godkender du vores privatpolitik i forhold til vores behandling af data."
       },
-      "marqueeBottom": ["Feedback Loop", "Perfecting the Fit", "Community Craft"]
+      "marqueeBottom": [
+        "Feedback Loop",
+        "Perfecting the Fit",
+        "Community Craft"
+      ]
     },
     "workshops": {
       "tag": "Fysisk undervisning",
-      "title": "STUDIO-SESSIONER",
+      "title": "STUDIO",
       "titleItalic": "SESSIONER",
-      "subtitle": "Fra trådning af nål til avanceret drapering. Kom med i atelieret og mestre håndværket bag kønsfri mode."
+      "subtitle": "Fra trådning af nål til avanceret drapering. Kom med i atelieret og mestre håndværket bag kønsfri mode.",
+      "filters": {
+        "all": "Alle",
+        "beginner": "Begynder",
+        "intermediate": "Mellemliggende",
+        "advanced": "Avanceret"
+      },
+      "noUpcoming": "Ingen kommende workshops på dette niveau.",
+      "levels": {
+        "Beginner": "Begynder",
+        "Intermediate": "Mellemliggende",
+        "Advanced": "Avanceret"
+      }
     }
+  },
+  "basket": {
+    "emptyTitle": "Tomt Atelier",
+    "emptyMessage": "Din kurv ser lidt tom ud. Det er tid til at starte dit næste syprojekt.",
+    "browsePatterns": "Se mønstre",
+    "headerTag": "Gennemse dine varer",
+    "title": "DIN",
+    "titleItalic": "KURV",
+    "workshopTag": "Studio Session",
+    "perUnit": "pr. stk.",
+    "checkoutSummary": "Betalingoversigt",
+    "applied": "anvendt",
+    "promoPlaceholder": "Rabatkode",
+    "applyPromo": "Anvend",
+    "totalItems": "I alt",
+    "subtotal": "Subtotal",
+    "discount": "Rabat",
+    "shipping": "Forsendelse",
+    "shippingCalculated": "Beregnet i næste trin",
+    "total": "I alt",
+    "processing": "Behandler...",
+    "completePurchase": "Afslut købet",
+    "fullName": "Fulde navn",
+    "namePlaceholder": "Dit navn",
+    "emailAddress": "E-mailadresse",
+    "emailPlaceholder": "din@email.com",
+    "back": "Tilbage",
+    "continueGuest": "Fortsæt som gæst",
+    "signIn": "Log ind",
+    "stripeText": "Sikker betaling via Stripe",
+    "footerText": "Ved at købe støtter du kønsvenligt design og lokalt dansk håndværk. Læs vores",
+    "returnPolicy": "returpolitik"
   }
 }

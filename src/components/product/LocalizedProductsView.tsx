@@ -1,5 +1,3 @@
-import { getLocale } from 'next-intl/server'
-
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 
 import ProductsView from './ProductsView'
@@ -12,11 +10,12 @@ interface LocalizedProduct {
 export default async function LocalizedProductsView({
   products,
   categories,
+  locale,
 }: {
   products: LocalizedProduct[]
   categories: any[]
+  locale: string
 }) {
-  const locale = await getLocale()
 
   // Extract localized fields from products
   const localizedProducts = products.map((product: any) => {

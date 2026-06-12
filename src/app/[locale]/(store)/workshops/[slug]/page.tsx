@@ -1,13 +1,15 @@
 import { getWorkshopBySlug } from '@sanity/lib/workshops/getWorkshopBySlug'
-import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
+import { getLocalizedSlug } from '@src/lib/slug-helpers'
+import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 import { addMinutes, format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { PortableText } from 'next-sanity'
 
 export const revalidate = 60
@@ -34,13 +36,24 @@ const WorkshopDetailPage = async ({
   params: Promise<{ slug: string; locale: string }>
 }) => {
   const { slug, locale } = await params
+  setRequestLocale(locale)
+  const t = await getTranslations()
+
   const workshop = await getWorkshopBySlug(slug)
 
   if (!workshop) notFound()
 
+  const correctSlug = getLocalizedSlug(workshop.slug, locale)
+  if (correctSlug && correctSlug !== slug) {
+    redirect(`/${locale}/workshops/${correctSlug}`)
+  }
+
   const title = getLocalizedField(workshop.title, locale)
   const description = getLocalizedField(workshop.description, locale)
   const body = getLocalizedField(workshop.body, locale)
+  const levelDisplay = workshop.level
+    ? t(`workshops.levels.${workshop.level}`)
+    : null
 
   const signUps = workshop.currentSignUps ?? 0
   const maxSpots = workshop.maxAllocation ?? 0
@@ -60,11 +73,11 @@ const WorkshopDetailPage = async ({
     <main className="min-h-screen bg-background pb-32">
       <div className="container mx-auto px-6 pt-8">
         <Link
-          href="/workshops"
+          href={`/${locale}/workshops`}
           className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.3em] text-muted-foreground hover:text-orange-500 transition-colors mb-8 group"
         >
           <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
-          Back to Studio Sessions
+          {t('workshops.detail.backToSessions')}
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
@@ -87,11 +100,11 @@ const WorkshopDetailPage = async ({
               )}
 
               {/* Level badge */}
-              {workshop.level && (
+              {levelDisplay && (
                 <div
                   className={`absolute top-4 right-4 px-4 py-1.5 rounded-full font-bold text-[9px] uppercase tracking-widest border-2 shadow-lg -rotate-3 ${levelColor}`}
                 >
-                  {workshop.level}
+                  {levelDisplay}
                 </div>
               )}
             </div>
@@ -114,7 +127,7 @@ const WorkshopDetailPage = async ({
               </div>
               <div>
                 <p className="text-[9px] font-black uppercase tracking-[0.3em] text-orange-500 mb-1">
-                  Studio Session
+                  {t('workshops.detail.studioSession')}
                 </p>
                 <h1 className="text-4xl lg:text-6xl font-black tracking-tighter leading-[0.9] uppercase">
                   {title}
@@ -135,7 +148,9 @@ const WorkshopDetailPage = async ({
                 className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}
               >
                 <Users className="w-3 h-3" />
-                {isFull ? 'Sold Out' : `${spotsLeft} Spots Remaining`}
+                {isFull
+                  ? t('workshops.detail.soldOut')
+                  : t('workshops.detail.spotsRemaining', { count: spotsLeft })}
               </span>
             </div>
 
@@ -147,7 +162,9 @@ const WorkshopDetailPage = async ({
             {/* Rich body content */}
             {Array.isArray(body) && body.length > 0 && (
               <div className="prose prose-sm prose-orange max-w-none text-foreground leading-relaxed">
-                <PortableText value={body} />
+                <PortableText
+                  value={body.filter((b: any) => b?._type !== undefined)}
+                />
               </div>
             )}
 
@@ -160,7 +177,7 @@ const WorkshopDetailPage = async ({
               <BookWorkshopButton workshop={workshop} isFull={isFull} />
 
               <p className="text-[9px] uppercase font-bold text-muted-foreground tracking-widest">
-                Materials Included in Price
+                {t('workshops.detail.materialsIncluded')}
               </p>
             </div>
           </div>
@@ -176,3 +193,27 @@ const WorkshopDetailPage = async ({
 }
 
 export default WorkshopDetailPage
+
+export async function generateStaticParams() {
+  const { client } = await import('@src/sanity/lib/client')
+  const { getLocalizedSlug } = await import('@src/lib/slug-helpers')
+
+  const WORKSHOPS_QUERY = `*[_type == "workshop"] { slug }`
+  const workshops = await client.fetch(WORKSHOPS_QUERY)
+
+  const params: Array<{ locale: string; slug: string }> = []
+
+  for (const workshop of workshops) {
+    const enSlug = getLocalizedSlug(workshop.slug, 'en')
+    const daSlug = getLocalizedSlug(workshop.slug, 'da')
+
+    if (enSlug) {
+      params.push({ locale: 'en', slug: enSlug })
+    }
+    if (daSlug) {
+      params.push({ locale: 'da', slug: daSlug })
+    }
+  }
+
+  return params
+}

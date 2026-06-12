@@ -1,7 +1,7 @@
-import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server'
 import { getWorkshops } from '@sanity/lib/workshops/getWorkshops'
-import { locales } from '@src/i18n'
 import LocalizedWorkshopList from '@src/components/workshop/LocalizedWorkshopList'
+import { locales } from '@src/i18n'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 export const revalidate = 3600
 
@@ -16,7 +16,7 @@ const WorkshopPage = async ({
 }) => {
   const { locale } = await params
   setRequestLocale(locale)
-  
+
   const t = await getTranslations()
   const workshops = await getWorkshops()
 

@@ -17,14 +17,23 @@ async function syncDocToStripe(
   doc: SyncableDocument,
 ): Promise<{ ok: boolean; id: string; error?: string }> {
   try {
+    const resolveLocalized = (field: any): string => {
+      if (typeof field === 'string') return field
+      if (Array.isArray(field)) {
+        const en = field.find((f: any) => f.language === 'en')
+        return en?.value ?? field[0]?.value ?? ''
+      }
+      return ''
+    }
+
     let name: string
     if (doc._type === 'product') {
-      name = doc.name ?? 'Product'
+      name = resolveLocalized(doc.name) || 'Product'
     } else {
       const dateStr = doc.date
         ? new Date(doc.date).toLocaleDateString('da-DK')
         : 'No date'
-      name = `${doc.title ?? 'Workshop'} - ${dateStr}`
+      name = `${resolveLocalized(doc.title) || 'Workshop'} - ${dateStr}`
     }
 
     if (doc.stripeProductId) {

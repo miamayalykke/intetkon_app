@@ -3,6 +3,7 @@
 import { Button } from '@ui/button'
 import { ShoppingBag } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import type { WorkshopCartData } from '../../store/store'
 import useBasketStore from '../../store/store'
 
@@ -14,6 +15,7 @@ type Props = {
 export function BookWorkshopButton({ workshop, isFull }: Props) {
   const addWorkshop = useBasketStore((state) => state.addWorkshop)
   const router = useRouter()
+  const t = useTranslations()
 
   const handleAddToCart = () => {
     if (isFull) return
@@ -34,7 +36,7 @@ export function BookWorkshopButton({ workshop, isFull }: Props) {
       size="2xl"
       className={buttonClass}
     >
-      {isFull ? 'At Capacity' : 'Add to Basket'}
+      {isFull ? t('workshops.card.atCapacity') : t('products.addToBasket')}
       {!isFull && <ShoppingBag className="ml-2 w-4 h-4" />}
     </Button>
   )

@@ -47,7 +47,9 @@ const PrivacyPage = () => {
 
           <h1 className="text-5xl lg:text-[7rem] font-black text-foreground tracking-tighter leading-[0.85] mb-6">
             {t('hero.title')} <br />
-            <span className="text-orange-500 italic font-serif">{t('hero.titleItalic')}</span>
+            <span className="text-orange-500 italic font-serif">
+              {t('hero.titleItalic')}
+            </span>
           </h1>
           <p className="max-w-xl text-muted-foreground font-light italic">
             {t('hero.effectiveDate')} <br />
@@ -63,7 +65,8 @@ const PrivacyPage = () => {
           <div className="p-8 lg:p-12 bg-card border border-border rounded-[3rem] shadow-sm relative overflow-hidden">
             <div className="relative z-10 space-y-4">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <ShieldCheck className="text-secondary w-6 h-6" /> {t('whoWeAre.heading')}
+                <ShieldCheck className="text-secondary w-6 h-6" />{' '}
+                {t('whoWeAre.heading')}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
                 {t('whoWeAre.intro')}
@@ -81,7 +84,8 @@ const PrivacyPage = () => {
           {/* Data Collection Grid */}
           <div className="space-y-8">
             <h3 className="text-3xl font-black tracking-tighter flex items-center gap-3">
-              <Eye className="text-orange-500 w-8 h-8" /> {t('dataCollection.heading')}
+              <Eye className="text-orange-500 w-8 h-8" />{' '}
+              {t('dataCollection.heading')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {t.raw('dataCollection.items').map((item: any, i: number) => (
@@ -106,9 +110,7 @@ const PrivacyPage = () => {
               {t('purposes.heading')}
             </h3>
             <div className="prose prose-orange max-w-none text-muted-foreground font-light leading-relaxed space-y-4">
-              <p>
-                {t('purposes.description')}
-              </p>
+              <p>{t('purposes.description')}</p>
             </div>
           </div>
 
@@ -116,7 +118,8 @@ const PrivacyPage = () => {
           <div className="relative p-10 bg-secondary/5 rounded-[3rem] border border-secondary/20">
             <div className="space-y-6">
               <h3 className="text-3xl font-black tracking-tighter flex items-center gap-3">
-                <Scale className="text-secondary w-8 h-8" /> {t('rights.heading')}
+                <Scale className="text-secondary w-8 h-8" />{' '}
+                {t('rights.heading')}
               </h3>
               <p className="text-muted-foreground font-light">
                 {t('rights.description')}
@@ -138,7 +141,8 @@ const PrivacyPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-4">
               <h4 className="text-xl font-bold flex items-center gap-2">
-                <Lock className="text-orange-500 w-5 h-5" /> {t('payments.heading')}
+                <Lock className="text-orange-500 w-5 h-5" />{' '}
+                {t('payments.heading')}
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed font-light">
                 {t('payments.description')}
@@ -146,7 +150,8 @@ const PrivacyPage = () => {
             </div>
             <div className="space-y-4">
               <h4 className="text-xl font-bold flex items-center gap-2">
-                <Cookie className="text-secondary w-5 h-5" /> {t('cookies.heading')}
+                <Cookie className="text-secondary w-5 h-5" />{' '}
+                {t('cookies.heading')}
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed font-light">
                 {t('cookies.description')}
@@ -159,19 +164,17 @@ const PrivacyPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground font-light">
               <div className="space-y-2">
                 <h5 className="font-bold text-foreground flex items-center gap-2">
-                  <Globe className="w-4 h-4" /> {t('finalDetails.internationalTransfers.heading')}
+                  <Globe className="w-4 h-4" />{' '}
+                  {t('finalDetails.internationalTransfers.heading')}
                 </h5>
-                <p>
-                  {t('finalDetails.internationalTransfers.description')}
-                </p>
+                <p>{t('finalDetails.internationalTransfers.description')}</p>
               </div>
               <div className="space-y-2">
                 <h5 className="font-bold text-foreground flex items-center gap-2">
-                  <UserCheck className="w-4 h-4" /> {t('finalDetails.ageOfConsent.heading')}
+                  <UserCheck className="w-4 h-4" />{' '}
+                  {t('finalDetails.ageOfConsent.heading')}
                 </h5>
-                <p>
-                  {t('finalDetails.ageOfConsent.description')}
-                </p>
+                <p>{t('finalDetails.ageOfConsent.description')}</p>
               </div>
             </div>
           </div>
@@ -203,9 +206,9 @@ const PrivacyPage = () => {
               key={i}
               className="text-[10px] font-black uppercase tracking-[0.4em] mx-12 flex items-center gap-4"
             >
-              Privacy First <ShieldCheck className="w-4 h-4" />
-              Your Data Your Rules <FileText className="w-4 h-4" />
-              Secure Atelier <Lock className="w-4 h-4" />
+              {t('marquee.0')} <ShieldCheck className="w-4 h-4" />
+              {t('marquee.1')} <FileText className="w-4 h-4" />
+              {t('marquee.2')} <Lock className="w-4 h-4" />
             </span>
           ))}
         </div>

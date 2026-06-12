@@ -4,6 +4,9 @@ import { SignInButton, useAuth, useUser } from '@clerk/nextjs'
 import BasketItemControls from '@src/components/BasketItemControls'
 import Loader from '@src/components/Loader'
 import { imageUrl } from '@src/lib/imageUrl'
+import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
+import { useTranslations } from 'next-intl'
+import { usePathname } from 'next/navigation'
 import { Button } from '@ui/button'
 import {
   ArrowRight,
@@ -29,6 +32,9 @@ import {
 import useBasketStore from '@store/store'
 
 const BasketPage = () => {
+  const t = useTranslations()
+  const pathname = usePathname()
+  const locale = pathname.split('/')[1] || 'en'
   const groupedItems = useBasketStore((state) => state.getGroupedItems())
   const getTotalPrice = useBasketStore((state) => state.getTotalPrice())
   const { isSignedIn, userId } = useAuth()
@@ -109,18 +115,17 @@ const BasketPage = () => {
           <ShoppingBag className="w-10 h-10 text-secondary opacity-40" />
         </div>
         <h1 className="text-5xl lg:text-7xl font-black tracking-tighter mb-4 italic font-serif">
-          Empty Atelier
+          {t('basket.emptyTitle')}
         </h1>
         <p className="text-muted-foreground max-w-sm mb-12 font-light italic">
-          Your basket is looking a bit light. Time to start your next sewing
-          project.
+          {t('basket.emptyMessage')}
         </p>
-        <Link href="/patterns">
+        <Link href={`/${locale}/patterns`}>
           <Button
             size="2xl"
             className="rounded-full px-12 bg-foreground hover:bg-orange-500 font-bold gap-4 transition-all hover:scale-105"
           >
-            Browse Patterns <ArrowRight className="w-5 h-5" />
+            {t('basket.browsePatterns')} <ArrowRight className="w-5 h-5" />
           </Button>
         </Link>
       </main>
@@ -207,10 +212,11 @@ const BasketPage = () => {
       {/* --- Header Section --- */}
       <header className="mb-16">
         <div className="inline-flex items-center gap-2 mb-4 bg-orange-500 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest -rotate-1 shadow-lg">
-          <ShoppingBag className="w-3 h-3" /> Review Your Gear
+          <ShoppingBag className="w-3 h-3" /> {t('basket.headerTag')}
         </div>
         <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none">
-          YOUR <span className="text-orange-500 italic font-serif">BASKET</span>
+          {t('basket.title')}{' '}
+          <span className="text-orange-500 italic font-serif">{t('basket.titleItalic')}</span>
         </h1>
       </header>
 
@@ -221,15 +227,20 @@ const BasketPage = () => {
             const id = item.data._id
             const name =
               item.itemType === 'product'
-                ? (item.data.name ?? 'Unnamed Product')
-                : (item.data.title ?? 'Workshop')
+                ? (getLocalizedField<string>(item.data.name as any, locale) ?? 'Unnamed Product')
+                : (getLocalizedField<string>(item.data.title as any, locale) ?? 'Workshop')
             const price = item.data.price ?? 0
             const image = item.data.image
+            const rawSlug = item.data.slug
+            const slugCurrent =
+              typeof rawSlug === 'object' && rawSlug !== null && !Array.isArray(rawSlug)
+                ? (rawSlug as any).current
+                : (getLocalizedField<{ current: string }>(rawSlug as any, locale)?.current ?? '')
             const href =
               item.itemType === 'product'
-                ? `/product/${item.data.slug?.current}`
-                : `/workshops/${item.data.slug?.current}`
-            const tag = item.itemType === 'workshop' ? 'Studio Session' : null
+                ? `/${locale}/product/${slugCurrent}`
+                : `/${locale}/workshops/${slugCurrent}`
+            const tag = item.itemType === 'workshop' ? t('basket.workshopTag') : null
 
             return (
               <div
@@ -261,7 +272,7 @@ const BasketPage = () => {
                       {name}
                     </h2>
                     <p className="text-sm text-muted-foreground font-light uppercase tracking-widest">
-                      {price.toFixed(2)} DKK per unit
+                      {price.toFixed(2)} DKK {t('basket.perUnit')}
                     </p>
                   </div>
 
@@ -287,7 +298,7 @@ const BasketPage = () => {
             </div>
 
             <h3 className="text-2xl font-black tracking-tighter uppercase mb-8 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-orange-500" /> Checkout Summary
+              <Lock className="w-4 h-4 text-orange-500" /> {t('basket.checkoutSummary')}
             </h3>
 
             {/* --- Promo Code Input --- */}
@@ -297,7 +308,7 @@ const BasketPage = () => {
                   <div className="flex items-center gap-2 text-green-700">
                     <CheckCircle className="w-4 h-4 shrink-0" />
                     <span className="text-sm font-bold">
-                      {appliedPromo.label} applied
+                      {appliedPromo.label} {t('basket.applied')}
                     </span>
                   </div>
                   <button
@@ -324,7 +335,7 @@ const BasketPage = () => {
                         setPromoError(null)
                       }}
                       onKeyDown={(e) => e.key === 'Enter' && handleApplyPromo()}
-                      placeholder="Promo code"
+                      placeholder={t('basket.promoPlaceholder')}
                       className="w-full pl-9 pr-3 py-2.5 text-sm font-bold tracking-widest border border-border rounded-2xl bg-background focus:outline-none focus:border-orange-500 transition-colors"
                     />
                   </div>
@@ -334,7 +345,7 @@ const BasketPage = () => {
                     size="sm"
                     className="rounded-2xl bg-foreground hover:bg-orange-500 text-white font-bold px-4 transition-all"
                   >
-                    {promoLoading ? '...' : 'Apply'}
+                    {promoLoading ? '...' : t('basket.applyPromo')}
                   </Button>
                 </div>
               )}
@@ -347,19 +358,19 @@ const BasketPage = () => {
 
             <div className="space-y-4 mb-8">
               <div className="flex justify-between text-muted-foreground font-light">
-                <span>Total Items</span>
+                <span>{t('basket.totalItems')}</span>
                 <span className="font-bold text-foreground">{totalItems}</span>
               </div>
               {appliedPromo && (
                 <>
                   <div className="flex justify-between text-muted-foreground font-light">
-                    <span>Subtotal</span>
+                    <span>{t('basket.subtotal')}</span>
                     <span className="font-bold text-foreground">
                       {totalPrice} DKK
                     </span>
                   </div>
                   <div className="flex justify-between text-green-600 font-bold">
-                    <span>Discount ({appliedPromo.label})</span>
+                    <span>{t('basket.discount')} ({appliedPromo.label})</span>
                     <span>
                       -
                       {(Number(totalPrice) - Number(discountedTotal)).toFixed(
@@ -372,13 +383,13 @@ const BasketPage = () => {
               )}
               {!appliedPromo && (
                 <div className="flex justify-between text-muted-foreground font-light">
-                  <span>Shipping</span>
-                  <span className="italic">Calculated at next step</span>
+                  <span>{t('basket.shipping')}</span>
+                  <span className="italic">{t('basket.shippingCalculated')}</span>
                 </div>
               )}
               <div className="pt-6 border-t border-dashed border-border flex justify-between items-baseline">
                 <span className="text-lg font-black uppercase tracking-tighter">
-                  Total
+                  {t('basket.total')}
                 </span>
                 <span className="text-4xl font-black text-orange-500 tracking-tighter">
                   {appliedPromo ? discountedTotal : totalPrice} DKK
@@ -393,7 +404,7 @@ const BasketPage = () => {
                 size="4xl"
                 className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
               >
-                {isLoading ? 'Processing...' : 'Complete Purchase'}
+                {isLoading ? t('basket.processing') : t('basket.completePurchase')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             ) : showGuestForm ? (
@@ -403,7 +414,7 @@ const BasketPage = () => {
                     htmlFor="guest-name"
                     className="block text-sm font-bold mb-2 uppercase tracking-widest"
                   >
-                    Full Name
+                    {t('basket.fullName')}
                   </label>
                   <input
                     id="guest-name"
@@ -413,7 +424,7 @@ const BasketPage = () => {
                       setGuestName(e.target.value)
                       setGuestFormError(null)
                     }}
-                    placeholder="Your name"
+                    placeholder={t('basket.namePlaceholder')}
                     className="w-full px-4 py-3 border border-border rounded-2xl bg-background focus:outline-none focus:border-orange-500 transition-colors font-bold"
                   />
                 </div>
@@ -422,7 +433,7 @@ const BasketPage = () => {
                     htmlFor="guest-email"
                     className="block text-sm font-bold mb-2 uppercase tracking-widest"
                   >
-                    Email Address
+                    {t('basket.emailAddress')}
                   </label>
                   <input
                     id="guest-email"
@@ -432,7 +443,7 @@ const BasketPage = () => {
                       setGuestEmail(e.target.value)
                       setGuestFormError(null)
                     }}
-                    placeholder="your@email.com"
+                    placeholder={t('basket.emailPlaceholder')}
                     className="w-full px-4 py-3 border border-border rounded-2xl bg-background focus:outline-none focus:border-orange-500 transition-colors font-bold"
                   />
                 </div>
@@ -447,7 +458,7 @@ const BasketPage = () => {
                   size="4xl"
                   className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
                 >
-                  {isLoading ? 'Processing...' : 'Complete Purchase'}
+                  {isLoading ? t('basket.processing') : t('basket.completePurchase')}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <button
@@ -455,7 +466,7 @@ const BasketPage = () => {
                   onClick={() => setShowGuestForm(false)}
                   className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors underline"
                 >
-                  Back
+                  {t('basket.back')}
                 </button>
               </div>
             ) : (
@@ -465,30 +476,29 @@ const BasketPage = () => {
                   size="4xl"
                   className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-16 text-base transition-all"
                 >
-                  Continue as Guest
+                  {t('basket.continueGuest')}
                 </Button>
                 <SignInButton mode="modal">
                   <Button
                     size="4xl"
                     className="w-full rounded-full bg-secondary hover:bg-foreground text-white font-black h-16 text-base transition-all"
                   >
-                    Sign In
+                    {t('basket.signIn')}
                   </Button>
                 </SignInButton>
               </div>
             )}
 
             <p className="mt-6 text-[10px] text-center text-muted-foreground uppercase tracking-widest font-bold">
-              Secure checkout powered by Stripe
+              {t('basket.stripeText')}
             </p>
           </div>
 
           <div className="mt-8 p-6 text-center">
             <p className="text-xs text-muted-foreground font-light italic leading-relaxed">
-              By purchasing, you support gender-neutral design and local Danish
-              craft. Read our{' '}
-              <Link href="/returns" className="underline hover:text-orange-500">
-                Return Policy
+              {t('basket.footerText')}{' '}
+              <Link href={`/${locale}/return-policy`} className="underline hover:text-orange-500">
+                {t('basket.returnPolicy')}
               </Link>
               .
             </p>

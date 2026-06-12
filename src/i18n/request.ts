@@ -2,20 +2,20 @@ import { getRequestConfig } from 'next-intl/server'
 
 import { defaultLocale, locales } from '../i18n'
 
-export default getRequestConfig(async ({ locale }) => {
-  const currentLocale = locale || defaultLocale
+export default getRequestConfig(async ({ requestLocale }) => {
+  const locale = (await requestLocale) ?? defaultLocale
 
-  // Validate that the locale is supported
-  if (!(locales as readonly string[]).includes(currentLocale)) {
+  if (!(locales as readonly string[]).includes(locale)) {
     return {
       locale: defaultLocale,
       messages: (await import(`../messages/${defaultLocale}.json`)).default,
+      timeZone: 'Europe/Copenhagen',
     }
   }
 
   return {
-    locale: currentLocale,
-    messages: (await import(`../messages/${currentLocale}.json`)).default,
+    locale,
+    messages: (await import(`../messages/${locale}.json`)).default,
     timeZone: 'Europe/Copenhagen',
   }
 })

@@ -30,10 +30,28 @@
     "addToBasket": "Add to Basket",
     "price": "Price",
     "quantity": "Quantity",
+    "qty": "Qty",
     "description": "Description",
     "details": "Details",
     "inStock": "In Stock",
-    "outOfStock": "Out of Stock"
+    "outOfStock": "Out of Stock",
+    "limitedEdition": "Limited Edition",
+    "newDrop": "New Drop",
+    "secureCheckout": "Secure Checkout & Worldwide Shipping",
+    "craftLabel": "Craft",
+    "craftValue": "Gender-Neutral",
+    "formatLabel": "Format",
+    "formatValue": "Layered PDF",
+    "backToAtelier": "Back to Atelier",
+    "digitalDownload": "Digital Download",
+    "physicalDrop": "Physical Drop",
+    "archived": "Archived"
+  },
+  "user": {
+    "signIn": "Sign In",
+    "welcome": "Welcome",
+    "myOrders": "My Orders",
+    "admin": "Admin"
   },
   "cart": {
     "title": "Shopping Cart",
@@ -65,7 +83,12 @@
     "newsletter": {
       "title": "Stay Updated",
       "description": "Get inspired with gender-neutral DIY ideas and workshop news.",
-      "button": "Join"
+      "button": "Join",
+      "placeholder": "your@email.com",
+      "success": "Check your email to confirm your subscription!",
+      "conflict": "You're already subscribed.",
+      "invalidEmail": "Please enter a valid email address.",
+      "error": "Something went wrong. Please try again."
     },
     "copyright": "© {year} INTETKØN. ALL RIGHTS RESERVED.",
     "tagline2": "Crafted for Equality"
@@ -80,10 +103,28 @@
       "lifetime": "Lifetime Access"
     },
     "categories": {
-      "allPieces": "All Pieces",
-      "pants": "Pants",
-      "accessories": "Accessories",
-      "shirts": "Shirts"
+      "allPieces": "All Pieces"
+    }
+  },
+  "workshops": {
+    "levels": {
+      "Beginner": "Beginner",
+      "Intermediate": "Intermediate",
+      "Advanced": "Advanced"
+    },
+    "detail": {
+      "backToSessions": "Back to Studio Sessions",
+      "studioSession": "Studio Session",
+      "soldOut": "Sold Out",
+      "spotsRemaining": "{count} Spots Remaining",
+      "materialsIncluded": "Materials Included in Price"
+    },
+    "card": {
+      "soldOut": "Sold Out",
+      "spotsRemaining": "{count} Spots Remaining",
+      "atCapacity": "At Capacity",
+      "viewDetails": "View Details",
+      "materialsIncluded": "Materials Included in Price"
     }
   },
   "shop": {
@@ -96,10 +137,7 @@
     "resultsFor": "Search results for",
     "loading": "Loading...",
     "categories": {
-      "allPieces": "All Pieces",
-      "pants": "Pants",
-      "accessories": "Accessories",
-      "shirts": "Shirts"
+      "allPieces": "All Pieces"
     }
   },
   "success": {
@@ -310,7 +348,8 @@
         "heading": "Questions or Requests?",
         "description": "Our studio team is here to help with any privacy concerns.",
         "email": "info@intetkon.com"
-      }
+      },
+      "marquee": ["Privacy First", "Your Data Your Rules", "Secure Atelier"]
     },
     "returnPolicy": {
       "hero": {
@@ -396,7 +435,8 @@
         "description": "Email us with your order number and photos before sending anything back.",
         "email": "info@intetkon.com",
         "address": "Address: Bentzonsvej 50B, 2000 Frederiksberg, Denmark"
-      }
+      },
+      "marquee": ["Built to Last", "Transparent Policy", "Kindness Always"]
     },
     "terms": {
       "hero": {
@@ -409,7 +449,10 @@
       "operator": {
         "label": "INTETKØN / Emilie Kallager",
         "location": "Frederiksberg, Denmark",
-        "contact": "info@intetkon.com"
+        "contact": "info@intetkon.com",
+        "operatorTitle": "Operator",
+        "locationTitle": "Location",
+        "contactTitle": "Contact"
       },
       "sections": {
         "overview": {
@@ -470,7 +513,14 @@
         "heading": "Questions about the Terms?",
         "description": "Send us an email and our studio team will get back to you.",
         "email": "info@intetkon.com"
-      }
+      },
+      "marquee": ["Terms of Service", "Bound by Choice", "The Studio Rules"]
+    },
+    "underConstruction": {
+      "badge": "Coming Soon",
+      "title": "We're cutting",
+      "titleItalic": "new patterns.",
+      "subtitle": "Something beautiful is being sewn together. Check back soon."
     },
     "careers": {
       "hero": {
@@ -540,7 +590,51 @@
       "tag": "Live Learning",
       "title": "STUDIO",
       "titleItalic": "SESSIONS",
-      "subtitle": "From needle threading to advanced draping. Join us in the atelier to master the craft of genderless fashion."
+      "subtitle": "From needle threading to advanced draping. Join us in the atelier to master the craft of genderless fashion.",
+      "filters": {
+        "all": "All",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "noUpcoming": "No upcoming workshops at this level.",
+      "levels": {
+        "Beginner": "Beginner",
+        "Intermediate": "Intermediate",
+        "Advanced": "Advanced"
+      }
     }
+  },
+  "basket": {
+    "emptyTitle": "Empty Atelier",
+    "emptyMessage": "Your basket is looking a bit light. Time to start your next sewing project.",
+    "browsePatterns": "Browse Patterns",
+    "headerTag": "Review Your Gear",
+    "title": "YOUR",
+    "titleItalic": "BASKET",
+    "workshopTag": "Studio Session",
+    "perUnit": "per unit",
+    "checkoutSummary": "Checkout Summary",
+    "applied": "applied",
+    "promoPlaceholder": "Promo code",
+    "applyPromo": "Apply",
+    "totalItems": "Total Items",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "shipping": "Shipping",
+    "shippingCalculated": "Calculated at next step",
+    "total": "Total",
+    "processing": "Processing...",
+    "completePurchase": "Complete Purchase",
+    "fullName": "Full Name",
+    "namePlaceholder": "Your name",
+    "emailAddress": "Email Address",
+    "emailPlaceholder": "your@email.com",
+    "back": "Back",
+    "continueGuest": "Continue as Guest",
+    "signIn": "Sign In",
+    "stripeText": "Secure checkout powered by Stripe",
+    "footerText": "By purchasing, you support gender-neutral design and local Danish craft. Read our",
+    "returnPolicy": "Return Policy"
   }
 }

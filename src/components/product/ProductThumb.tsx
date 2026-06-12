@@ -1,20 +1,29 @@
+'use client'
+
 import { imageUrl } from '@src/lib/imageUrl'
 import { ArrowUpRight, Layers, Scissors } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import type { Product } from 'sanity.types'
 
-function ProductThumb({ product }: { product: Product }) {
+function ProductThumb({
+  product,
+  locale,
+}: {
+  product: Product
+  locale?: string
+}) {
+  const t = useTranslations()
   const isOutOfStock = product.stock != null && product.stock <= 0
   const isPattern = product.productType === 'digital'
+  const href = locale
+    ? `/${locale}/product/${product.slug?.current}`
+    : `/product/${product.slug?.current}`
 
   return (
-    <Link
-      href={`/product/${product.slug?.current}`}
-      className="group relative flex flex-col w-full"
-    >
+    <Link href={href} className="group relative flex flex-col w-full">
       <div className="relative aspect-3/4 w-full mb-6">
-        {/* Background "Pattern Paper" Layer */}
         <div
           className={`absolute inset-0 rounded-[2.5rem] rotate-1 group-hover:rotate-2 transition-transform duration-500 -z-10
           ${isPattern ? 'bg-secondary/10 border border-dashed border-secondary/20' : 'bg-orange-500/5'}
@@ -61,7 +70,7 @@ function ProductThumb({ product }: { product: Product }) {
           {isOutOfStock && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
               <span className="bg-white text-black px-4 py-1 rounded-full font-black text-[10px] uppercase tracking-widest rotate-3">
-                Archived
+                {t('products.archived')}
               </span>
             </div>
           )}
@@ -83,7 +92,9 @@ function ProductThumb({ product }: { product: Product }) {
             className={`w-1 h-1 rounded-full ${isPattern ? 'bg-secondary' : 'bg-orange-500'}`}
           />
           <p className="text-[9px] text-muted-foreground uppercase tracking-[0.2em] font-bold">
-            {isPattern ? 'Digital Download' : 'Physical Drop'}
+            {isPattern
+              ? t('products.digitalDownload')
+              : t('products.physicalDrop')}
           </p>
         </div>
       </div>
