@@ -7,17 +7,23 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-async function Orders() {
+export const dynamic = 'force-dynamic'
+
+async function Orders({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
   const { userId } = await auth()
 
-  if (!userId) return redirect('/')
+  if (!userId) return redirect(`/${locale}`)
 
-  const orders = await getMyOrders(userId)
+  const orders = await getMyOrders(userId, locale)
 
   return (
     <main className="w-full overflow-x-clip min-h-screen pb-20">
       <div className="container mx-auto px-6 pt-24">
-        {/* --- Header Section --- */}
         <header className="mb-16 relative">
           <div className="bg-orange-500 text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg -rotate-2 border-2 border-white mb-8 w-fit">
             Account Archive
@@ -26,7 +32,7 @@ async function Orders() {
             MY <span className="text-secondary italic font-serif">ORDERS</span>
           </h1>
           <p className="text-muted-foreground font-light italic uppercase tracking-[0.2em] text-[10px]">
-            History of your digital & physical acquisitions
+            History of your digital &amp; physical acquisitions
           </p>
         </header>
 
@@ -40,11 +46,9 @@ async function Orders() {
           <div className="space-y-16">
             {orders.map((order: Record<string, any>) => (
               <div key={order.orderNumber} className="relative group">
-                {/* Asymmetric "Pattern Piece" Frame */}
                 <div className="absolute -top-4 -right-4 w-full h-full bg-orange-500/5 rounded-[3rem] rotate-1 border-2 border-dashed border-orange-500/10 -z-10 group-hover:rotate-2 transition-transform duration-500" />
 
                 <div className="bg-white border-2 border-border rounded-[3rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-                  {/* --- Order Meta Header --- */}
                   <div className="bg-card/50 p-6 lg:p-10 border-b-2 border-border flex flex-col lg:flex-row justify-between gap-8">
                     <div className="space-y-4">
                       <div className="flex flex-wrap gap-4">
@@ -89,39 +93,29 @@ async function Orders() {
                     </div>
                   </div>
 
-                  {/* --- Items Grid --- */}
                   <div className="p-6 lg:p-10">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {(() => {
-                        const items: Record<string, any>[] = []
+                      {[
+                        ...(order.products ?? []).map((item: Record<string, any>) => ({
+                          type: 'product',
+                          product: item.product,
+                          quantity: item.quantity,
+                        })),
+                        ...(order.workshops ?? []).map((workshop: Record<string, any>) => ({
+                          type: 'workshop',
+                          product: workshop,
+                          quantity: 1,
+                        })),
+                      ].map((item: Record<string, any>) => {
+                        const displayName =
+                          item.product?.name ?? item.product?.title ?? 'Item'
+                        const slug = item.product?.slug ?? ''
+                        const href =
+                          item.product?._type === 'workshop'
+                            ? `/${locale}/workshops/${slug}`
+                            : `/${locale}/product/${slug}`
 
-                        // Add products
-                        if (order.products?.length) {
-                          items.push(
-                            ...order.products.map(
-                              (item: Record<string, any>) => ({
-                                type: 'product',
-                                product: item.product,
-                                quantity: item.quantity,
-                              }),
-                            ),
-                          )
-                        }
-
-                        // Add workshops
-                        if (order.workshops?.length) {
-                          items.push(
-                            ...order.workshops.map(
-                              (workshop: Record<string, any>) => ({
-                                type: 'workshop',
-                                product: workshop,
-                                quantity: 1,
-                              }),
-                            ),
-                          )
-                        }
-
-                        return items.map((item: Record<string, any>) => (
+                        return (
                           <div
                             key={item.product?._id}
                             className="flex gap-6 items-center group/item"
@@ -130,7 +124,7 @@ async function Orders() {
                               <div className="relative h-24 w-24 shrink-0 rounded-2xl overflow-hidden border border-border group-hover/item:rotate-3 transition-transform">
                                 <Image
                                   src={imageUrl(item.product.image).url()}
-                                  alt={item.product?.name ?? ''}
+                                  alt={typeof displayName === 'string' ? displayName : ''}
                                   className="object-cover"
                                   fill
                                 />
@@ -138,14 +132,10 @@ async function Orders() {
                             )}
                             <div className="space-y-1">
                               <Link
-                                href={
-                                  item.product?._type === 'workshop'
-                                    ? `/workshops/${item.product?.slug?.current}`
-                                    : `/product/${item.product?.slug?.current}`
-                                }
+                                href={href}
                                 className="text-sm font-black uppercase tracking-tight hover:text-orange-500 transition-colors"
                               >
-                                {item.product?.name ?? item.product?.title}
+                                {typeof displayName === 'string' ? displayName : 'Item'}
                               </Link>
                               <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                                 Quantity: {item.quantity ?? '0'}
@@ -168,47 +158,35 @@ async function Orders() {
                                     Download
                                   </a>
                                 )}
-                              {(item.product?.productType ===
-                                'physical_course' ||
-                                item.product?._type === 'workshop') && (
+                              {item.product?._type === 'workshop' && (
                                 <div className="mt-1 space-y-0.5">
-                                  {(item.product?.courseDate ??
-                                    item.product?.date) && (
+                                  {item.product?.date && (
                                     <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                                      {new Date(
-                                        item.product?.courseDate ??
-                                          item.product?.date,
-                                      ).toLocaleDateString('da-DK', {
+                                      {new Date(item.product.date).toLocaleDateString('da-DK', {
                                         dateStyle: 'long',
                                       })}
                                     </p>
                                   )}
-                                  {(item.product?.courseLocation ??
-                                    item.product?.location) && (
+                                  {item.product?.location && (
                                     <p className="flex items-center gap-1 text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
                                       <MapPin className="w-3 h-3 shrink-0" />
-                                      {item.product?.courseLocation ??
-                                        item.product?.location}
+                                      {item.product.location}
                                     </p>
                                   )}
                                 </div>
                               )}
                             </div>
                           </div>
-                        ))
-                      })()}
+                        )
+                      })}
                     </div>
                   </div>
 
-                  {/* --- Footer Tape --- */}
                   <div className="bg-foreground py-3 px-10 flex justify-between items-center">
                     <span className="text-white text-[9px] font-black uppercase tracking-[0.4em] flex items-center gap-2">
-                      <Receipt className="w-3 h-3 text-orange-500" /> Digital
-                      Receipt Generated
+                      <Receipt className="w-3 h-3 text-orange-500" /> Digital Receipt Generated
                     </span>
-                    <span className="text-white/40 text-[9px] font-mono">
-                      INTETKØN STUDIO LOG v2.6
-                    </span>
+                    <span className="text-white/40 text-[9px] font-mono">INTETKØN STUDIO LOG v2.6</span>
                   </div>
                 </div>
               </div>
