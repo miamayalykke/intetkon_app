@@ -4,10 +4,12 @@ import { Button } from '@ui/button'
 import { ArrowRight, Check, Heart, Scissors, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import useBasketStore from '@store/store'
 
 function SuccessPage() {
+  const t = useTranslations()
   const searchParams = useSearchParams()
   const router = useRouter()
   const orderNumber = searchParams.get('orderNumber')
@@ -29,7 +31,7 @@ function SuccessPage() {
     <main className="relative w-full h-screen overflow-hidden flex flex-col justify-between">
       <div className="pt-8 text-center opacity-40">
         <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-border bg-card/50 text-[9px] font-black uppercase tracking-[0.3em]">
-          <Sparkles className="w-3 h-3 text-orange-500" /> Payment Verified
+          <Sparkles className="w-3 h-3 text-orange-500" /> {t('success.paymentVerified')}
         </div>
       </div>
 
@@ -55,22 +57,18 @@ function SuccessPage() {
         </svg>
 
         <div className="max-w-4xl w-full">
-          {/* Floating Sticker (Smaller) */}
           <div className="inline-block bg-orange-500 text-white px-4 py-1 rounded-full font-bold text-[9px] uppercase tracking-[0.2em] shadow-lg -rotate-2 border-2 border-white mb-6">
-            Confirmed
+            {t('success.confirmed')}
           </div>
 
           <h1 className="text-6xl lg:text-[7rem] font-black text-foreground tracking-tighter leading-[0.8] mb-6">
-            THANK <br />
-            <span className="text-secondary italic font-serif">YOU!</span>
+            {t('success.title')}
           </h1>
 
           <p className="max-w-lg mx-auto text-lg text-muted-foreground font-light leading-relaxed italic mb-8">
-            &ldquo;Your order is being prepped in our studio. Check your inbox
-            for the digital receipt.&rdquo;
+            &ldquo;{t('success.message')}&rdquo;
           </p>
 
-          {/* Condensed Order Card */}
           <div className="relative inline-block group mb-10">
             <div className="absolute -top-3 -right-3 w-full h-full bg-orange-500/5 rounded-3xl rotate-2 border border-dashed border-orange-500/20 -z-10" />
             <div className="relative bg-card border border-border py-4 px-10 rounded-3xl shadow-lg flex items-center gap-6">
@@ -79,7 +77,7 @@ function SuccessPage() {
               </div>
               <div className="text-left">
                 <p className="text-[8px] uppercase font-black tracking-widest text-muted-foreground leading-none mb-1">
-                  Order Ref
+                  {t('success.orderRef')}
                 </p>
                 <p className="font-mono text-base text-orange-500 font-bold tracking-tighter">
                   {orderNumber}
@@ -88,14 +86,13 @@ function SuccessPage() {
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/app/orders">
               <Button
                 size="lg"
                 className="bg-foreground text-white hover:bg-orange-500 font-bold px-10 h-14 rounded-full transition-all hover:scale-105 active:scale-95"
               >
-                My Orders
+                {t('success.myOrders')}
               </Button>
             </Link>
             <Link href="/shop">
@@ -104,7 +101,7 @@ function SuccessPage() {
                 variant="outline"
                 className="border-foreground/20 font-bold px-10 h-14 rounded-full transition-all hover:scale-105"
               >
-                Back to Shop
+                {t('success.backToShop')}
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
@@ -112,20 +109,22 @@ function SuccessPage() {
         </div>
       </section>
 
-      {/* --- Marquee Footer (Fixed at Bottom) --- */}
       <footer className="relative w-full overflow-hidden py-6 bg-foreground -rotate-1 bottom-10 translate-y-2">
         <div className="flex whitespace-nowrap animate-marquee">
-          {[...Array(6)].map((_, i) => (
-            <span
-              key={i}
-              className="text-white text-[9px] font-black uppercase tracking-[0.4em] mx-10 flex items-center gap-4"
-            >
-              Intetkøn Family{' '}
-              <Heart className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
-              Sustainable Craft <Sparkles className="w-2.5 h-2.5" />
-              Genderless Future <Scissors className="w-2.5 h-2.5" />
-            </span>
-          ))}
+          {[...Array(6)].map((_, i) => {
+            const marqueeItems = t.raw('success.marquee')
+            return (
+              <span
+                key={i}
+                className="text-white text-[9px] font-black uppercase tracking-[0.4em] mx-10 flex items-center gap-4"
+              >
+                {marqueeItems[0]}{' '}
+                <Heart className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
+                {marqueeItems[1]} <Sparkles className="w-2.5 h-2.5" />
+                {marqueeItems[2]} <Scissors className="w-2.5 h-2.5" />
+              </span>
+            )
+          })}
         </div>
       </footer>
     </main>

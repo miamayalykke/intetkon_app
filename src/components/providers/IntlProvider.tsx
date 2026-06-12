@@ -6,10 +6,17 @@ import type { ReactNode } from 'react'
 interface IntlProviderProps {
   children: ReactNode
   locale: string
+  messages?: Record<string, any>
 }
 
-export function IntlProvider({ children, locale }: IntlProviderProps) {
+export function IntlProvider({ children, locale, messages }: IntlProviderProps) {
   return (
-    <NextIntlClientProvider locale={locale}>{children}</NextIntlClientProvider>
+    <NextIntlClientProvider
+      locale={locale}
+      messages={messages}
+      timeZone="Europe/Copenhagen"
+    >
+      {children}
+    </NextIntlClientProvider>
   )
 }

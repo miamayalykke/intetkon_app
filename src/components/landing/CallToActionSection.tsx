@@ -3,22 +3,28 @@
 import { Button } from '@ui/button'
 import { ArrowRight, FileText, Heart, Scissors, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 
 const CallToActionSection = () => {
+  const t = useTranslations()
+  const locale = useLocale()
   return (
     <section className="relative w-full py-26 overflow-hidden">
       {/* --- Top Ribbon (Orange) --- */}
       <div className="absolute top-5 left-0 w-full py-3 bg-orange-500 -rotate-1 shadow-md z-10 overflow-hidden border-y border-orange-600">
         <div className="flex whitespace-nowrap animate-marquee">
-          {[...Array(8)].map((_, i) => (
-            <span
-              key={i}
-              className="text-white text-xs font-black uppercase tracking-[0.3em] mx-12 flex items-center gap-4"
-            >
-              Join the Movement <Heart className="w-3 h-3 fill-white" />
-              Creative Freedom <Sparkles className="w-3 h-3" />
-            </span>
-          ))}
+          {[...Array(8)].map((_, i) => {
+            const marqueeItems = t.raw('pages.home.patternTester.marqueeTop')
+            return (
+              <span
+                key={i}
+                className="text-white text-xs font-black uppercase tracking-[0.3em] mx-12 flex items-center gap-4"
+              >
+                {marqueeItems[0]} <Heart className="w-3 h-3 fill-white" />
+                {marqueeItems[1]} <Sparkles className="w-3 h-3" />
+              </span>
+            )
+          })}
         </div>
       </div>
       {/* Soft Decorative Glow */}
@@ -75,18 +81,10 @@ const CallToActionSection = () => {
           </div>
           <div className="space-y-4">
             <h2 className="text-4xl lg:text-6xl font-extrabold tracking-tighter text-foreground leading-tight">
-              Become a{' '}
-              <span className="text-orange-500 italic font-serif">
-                pattern tester
-              </span>
+              {t('pages.home.patternTester.title')}
             </h2>
             <p className="max-w-xl mx-auto text-lg text-muted-foreground leading-relaxed font-light">
-              Help us refine our latest drops. Join a dedicated group of makers
-              who value{' '}
-              <span className="text-foreground font-medium">
-                precision, inclusive fit, and garment craft
-              </span>
-              . Shape the future of our atelier.
+              {t('pages.home.patternTester.description')}
             </p>
           </div>
 
@@ -95,11 +93,11 @@ const CallToActionSection = () => {
             {[
               {
                 icon: <Scissors className="w-3.5 h-3.5" />,
-                text: 'Early Access',
+                text: t('pages.home.patternTester.features.earlyAccess'),
               },
               {
                 icon: <FileText className="w-3.5 h-3.5" />,
-                text: 'Feedback Loop',
+                text: t('pages.home.patternTester.features.feedbackLoop'),
               },
             ].map((feature, i) => (
               <div
@@ -114,12 +112,12 @@ const CallToActionSection = () => {
 
           {/* Call To Action Button */}
           <div className="mt-4">
-            <Link href="/pattern-testing">
+            <Link href={`/${locale}/pattern-testing`}>
               <Button
                 size="4xl"
                 className="rounded-full bg-orange-500 hover:bg-orange-600 text-white font-bold gap-3 group shadow-xl shadow-orange-500/30 transition-all hover:scale-105"
               >
-                Apply to Test
+                {t('pages.home.patternTester.button')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
@@ -130,17 +128,20 @@ const CallToActionSection = () => {
       {/* The Green Banner (Marquee) */}
       <div className="absolute bottom-0 left-0 w-full py-4 bg-secondary shadow-[0_-10px_30px_rgba(34,197,94,0.1)]">
         <div className="flex whitespace-nowrap animate-marquee-reverse">
-          {[...Array(8)].map((_, i) => (
-            <span
-              key={i}
-              className="text-white/90 text-sm font-black uppercase tracking-[0.4em] mx-10 flex items-center gap-4"
-            >
-              Create <span className="w-1 h-1 rounded-full bg-white/40" />
-              Learn <span className="w-1 h-1 rounded-full bg-white/40" />
-              Grow <span className="w-1 h-1 rounded-full bg-white/40" />
-              Together
-            </span>
-          ))}
+          {[...Array(8)].map((_, i) => {
+            const marqueeItems = t.raw('pages.home.patternTester.marqueeBottom')
+            return (
+              <span
+                key={i}
+                className="text-white/90 text-sm font-black uppercase tracking-[0.4em] mx-10 flex items-center gap-4"
+              >
+                {marqueeItems[0]} <span className="w-1 h-1 rounded-full bg-white/40" />
+                {marqueeItems[1]} <span className="w-1 h-1 rounded-full bg-white/40" />
+                {marqueeItems[2]} <span className="w-1 h-1 rounded-full bg-white/40" />
+                {marqueeItems[3]}
+              </span>
+            )
+          })}
         </div>
       </div>
     </section>

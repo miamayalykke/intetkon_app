@@ -1,8 +1,11 @@
 'use client'
 
 import { ArrowRight, Mail, MapPin, Scissors } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const ContactPage = () => {
+  const t = useTranslations('pages.contact')
+
   return (
     <main className="w-full overflow-x-clip">
       {/* --- Section 1: Header --- */}
@@ -30,16 +33,15 @@ const ContactPage = () => {
           </svg>
 
           <div className="bg-orange-500 text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg rotate-2 border-2 border-white mb-8">
-            Get in touch
+            {t('hero.tag')}
           </div>
 
           <h1 className="text-6xl lg:text-[8rem] font-black text-foreground tracking-tighter leading-[0.85] mb-6">
-            CONTACT <br />
-            <span className="text-secondary italic font-serif">STUDIO</span>
+            {t('hero.title')} <br />
+            <span className="text-secondary italic font-serif">{t('hero.titleItalic')}</span>
           </h1>
           <p className="max-w-xl text-lg text-muted-foreground font-light leading-relaxed italic">
-            Questions about a pattern, a bespoke order, or just want to say hi?
-            Our digital atelier is always open.
+            {t('hero.subtitle')}
           </p>
         </div>
       </section>
@@ -50,27 +52,11 @@ const ContactPage = () => {
           {/* Left Side: Email Inquiries */}
           <div className="space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500/5 border border-orange-500/10 text-orange-600 text-xs font-bold uppercase tracking-widest">
-              <Mail className="w-4 h-4" /> Email Inquiries
+              <Mail className="w-4 h-4" /> {t('email.title')}
             </div>
 
             <div className="grid gap-6">
-              {[
-                {
-                  label: 'Customer Service & Bespoke',
-                  email: 'info@intetkon.com',
-                  desc: 'Inquiries about sizing, fit, or custom commissions.',
-                },
-                {
-                  label: 'Press & Loans',
-                  email: 'info@intetkon.com',
-                  desc: 'Editorial features, stylist pulls, and media kits.',
-                },
-                {
-                  label: 'Wholesale & Business',
-                  email: 'info@intetkon.com',
-                  desc: 'Partnering with Intetkøn for retail or collaborations.',
-                },
-              ].map((item, i) => (
+              {t.raw('email.inquiries').map((item: any, i: number) => (
                 <div
                   key={i}
                   className="group p-8 rounded-[2.5rem] bg-card border border-border transition-all hover:border-orange-500/30 hover:shadow-xl"
@@ -107,23 +93,19 @@ const ContactPage = () => {
               <div className="space-y-8">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-secondary font-bold text-xs uppercase tracking-widest">
-                    <MapPin className="w-4 h-4" /> Physical Space
+                    <MapPin className="w-4 h-4" /> {t('studio.label')}
                   </div>
                   <h2 className="text-4xl font-black tracking-tighter">
-                    The Studio
+                    {t('studio.heading')}
                   </h2>
                 </div>
 
                 <div className="space-y-4 text-xl text-muted-foreground font-light leading-relaxed">
                   <p className="text-foreground font-bold italic">
-                    Open by appointment only
+                    {t('studio.status')}
                   </p>
                   <p>
-                    Bentzonsvej 50B
-                    <br />
-                    2000, Frederiksberg
-                    <br />
-                    Denmark
+                    {t('studio.address')}
                   </p>
                 </div>
               </div>
@@ -143,9 +125,9 @@ const ContactPage = () => {
               key={i}
               className="text-[15px] font-black uppercase tracking-[0.4em] mx-12 flex items-center gap-4 opacity-80"
             >
-              Drop by us today
+              {t('marquee')}
               <span className="w-3 h-3 rounded-full bg-primary" />
-              Studio Frederiksberg{' '}
+              {t('marqueeSubtitle')}{' '}
             </span>
           ))}
         </div>

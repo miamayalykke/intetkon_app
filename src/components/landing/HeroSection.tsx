@@ -1,3 +1,5 @@
+'use client'
+
 import HeroImage from '@public/hero.jpeg'
 import { Button } from '@ui/button'
 import {
@@ -8,12 +10,16 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 
-const HeroSection = () => {
+function HeroSection() {
+  const t = useTranslations()
+  const locale = useLocale()
+
   return (
     <div className="w-full pb-4 overflow-x-clip">
       <section
-        className="relative isolate flex h-[calc(100vh-7rem)] w-full items-center  
+        className="relative isolate flex h-[calc(100vh-7rem)] w-full items-center
         rounded-t-[3rem] rounded-bl-[3rem] rounded-br-[8rem]"
       >
         <svg
@@ -44,49 +50,46 @@ const HeroSection = () => {
               {/* Secondary Color Badge */}
               <div className="relative group md:mt-5 animate-bounce-slow">
                 <div className="bg-secondary text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg -rotate-2 border-2 border-white">
-                  Atelier & Studio
+                  {t('pages.home.hero.studio')}
                 </div>
               </div>
 
               <div className="space-y-4">
                 <h1 className="text-5xl font-extrabold tracking-tighter text-foreground sm:text-7xl lg:text-[8rem] leading-[0.85]">
-                  Clothes should <br />
+                  {t('pages.home.hero.taglineLine1')} <br />
                   <span className="text-orange-500 italic font-serif">
-                    fit you,
+                    {t('pages.home.hero.taglineLine2')}
                   </span>
                 </h1>
                 <p className="text-3xl lg:text-5xl font-light text-muted-foreground/80 tracking-tight">
-                  not the other way around.
+                  {t('pages.home.hero.taglineLine3')}
                 </p>
               </div>
 
               <p className="max-w-xl text-lg text-muted-foreground leading-relaxed md:text-xl italic font-light">
-                Sewing, sewing patterns & workshops for those who want to create{' '}
-                <span className="text-foreground font-semibold border-b-2 border-orange-500/20">
-                  something themselves.
-                </span>
+                {t('pages.home.hero.subtitle')}
               </p>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 pt-4">
-                <Link href="/patterns">
+                <Link href={`/${locale}/patterns`}>
                   <Button
                     size="2xl"
                     className="font-bold gap-3 shadow-xl shadow-orange-500/20 transition-all hover:scale-105 active:scale-95"
                   >
                     <Scissors className="w-5 h-5" />
-                    Shop Patterns
+                    {t('pages.home.hero.buttonPatterns')}
                     <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
-                <Link href="/workshops">
+                <Link href={`/${locale}/workshops`}>
                   <Button
                     size="2xl"
                     variant="secondary"
                     className="font-bold gap-3 shadow-xl shadow-black-500/20 transition-all hover:scale-105 active:scale-95"
                   >
                     <GraduationCap className="w-5 h-5" />
-                    Workshops
+                    {t('pages.home.hero.buttonWorkshops')}
                   </Button>
                 </Link>
               </div>
@@ -100,27 +103,14 @@ const HeroSection = () => {
               <div className="relative aspect-4/5 w-full max-w-110 mx-auto overflow-hidden rounded-[4rem] border-12 border-white shadow-2xl transition-transform duration-700 hover:rotate-2">
                 <Image
                   src={HeroImage}
-                  alt="Intetkøn Concept"
+                  alt="Hero"
                   fill
                   priority
-                  className="object-cover"
+                  className="object-cover transition-transform duration-1000 hover:scale-110"
                 />
-
-                <div className="absolute bottom-12 -left-4 bg-secondary text-white py-3 px-6 rounded-2xl font-bold text-xs rotate-[-10deg] shadow-2xl flex items-center gap-2 border-2 border-white">
-                  <HeartHandshake className="w-4 h-4" /> Inclusive Universe
-                </div>
-
-                <div className="absolute top-10 right-6 bg-orange-500 text-white p-4 rounded-full shadow-lg rotate-12">
-                  <Scissors className="w-6 h-6" />
-                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Minimal Scroll Line */}
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-          <div className="w-px h-12 bg-linear-to-b from-orange-500 to-transparent opacity-40" />
         </div>
       </section>
     </div>

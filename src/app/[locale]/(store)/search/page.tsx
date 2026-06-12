@@ -1,39 +1,73 @@
+'use client'
+
 import { searchProductsByName } from '@sanity/lib/products/searchProductsByName'
 import ProductGrid from '@src/components/product/ProductGrid'
+import { useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 
-async function SearchPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ query: string }>
-}) {
-  const { query } = await searchParams
-  const products = await searchProductsByName(query)
+export default function SearchPage() {
+  const t = useTranslations()
+  const searchParams = useSearchParams()
+  const query = searchParams.get('query') || ''
+  const [products, setProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!query) {
+        setProducts([])
+        setLoading(false)
+        return
+      }
+      const result = await searchProductsByName(query)
+      setProducts(result || [])
+      setLoading(false)
+    }
+
+    fetchProducts()
+  }, [query])
+
+  if (loading) {
+    return (
+      <main className="min-h-screen pb-32">
+        <div className="container mx-auto px-6 pt-12">
+          <p className="text-center text-muted-foreground">
+            {t('shop.loading')}
+          </p>
+        </div>
+      </main>
+    )
+  }
 
   if (!products.length) {
     return (
-      <div className="flex flex-col items-center justify-top min-h-screen bg-gray-100 p-4">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
-          <h1 className="text-3xl font-bold mb-5 text-center">
-            No products found for: {query}
-          </h1>
-          <p className="text-gray-600 text-center">
-            Try searching with different keywords
-          </p>
+      <main className="min-h-screen pb-32">
+        <div className="container mx-auto px-6 pt-12">
+          <header className="mb-12 text-center">
+            <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none">
+              {t('shop.noResults')}
+            </h1>
+            <p className="text-muted-foreground font-light italic mt-4 uppercase tracking-[0.2em] text-xs">
+              {t('shop.tryDifferent')}
+            </p>
+          </header>
         </div>
-      </div>
+      </main>
     )
   }
 
   return (
-    <div className="flex flex-col items-center justify-top min-h-screen bg-gray-100 p-4">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">
-          Search results for {query}
-        </h1>
+    <main className="min-h-screen pb-32">
+      <div className="container mx-auto px-6 pt-12">
+        <header className="mb-12">
+          <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none">
+            {t('shop.resultsFor')}: <span className="text-orange-500">{query}</span>
+          </h1>
+        </header>
+
         <ProductGrid products={products} />
       </div>
-    </div>
+    </main>
   )
 }
-
-export default SearchPage

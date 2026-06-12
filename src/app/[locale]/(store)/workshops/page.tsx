@@ -1,5 +1,13 @@
+import { getLocale, getTranslations, setRequestLocale } from 'next-intl/server'
 import { getWorkshops } from '@sanity/lib/workshops/getWorkshops'
+import { locales } from '@src/i18n'
 import LocalizedWorkshopList from '@src/components/workshop/LocalizedWorkshopList'
+
+export const revalidate = 3600
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }))
+}
 
 const WorkshopPage = async ({
   params,
@@ -7,6 +15,9 @@ const WorkshopPage = async ({
   params: Promise<{ locale: string }>
 }) => {
   const { locale } = await params
+  setRequestLocale(locale)
+  
+  const t = await getTranslations()
   const workshops = await getWorkshops()
 
   return (
@@ -14,17 +25,16 @@ const WorkshopPage = async ({
       <section className="container mx-auto px-6 pt-24">
         <header className="mb-20 relative">
           <div className="bg-secondary text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg -rotate-3 border-2 border-white mb-8 w-fit">
-            Live Learning
+            {t('pages.workshops.tag')}
           </div>
 
           <h1 className="text-6xl lg:text-[10rem] font-black tracking-tighter leading-[0.8] mb-8">
-            STUDIO <br />
-            <span className="text-orange-500 italic font-serif">SESSIONS</span>
+            {t('pages.workshops.title')} <br />
+            <span className="text-orange-500 italic font-serif">{t('pages.workshops.titleItalic')}</span>
           </h1>
 
           <p className="max-w-xl text-xl text-muted-foreground font-light italic leading-relaxed">
-            &ldquo;From needle threading to advanced draping. Join us in the
-            atelier to master the craft of genderless fashion.&rdquo;
+            &ldquo;{t('pages.workshops.subtitle')}&rdquo;
           </p>
         </header>
 

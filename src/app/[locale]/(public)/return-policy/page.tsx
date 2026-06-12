@@ -1,3 +1,5 @@
+'use client'
+
 import {
   AlertCircle,
   Calendar,
@@ -9,8 +11,10 @@ import {
   Truck,
   Undo2,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const ReturnPolicyPage = () => {
+  const t = useTranslations('pages.returnPolicy')
   return (
     <main className="w-full overflow-x-clip">
       {/* --- Section 1: Header --- */}
@@ -38,17 +42,16 @@ const ReturnPolicyPage = () => {
           </svg>
 
           <div className="bg-secondary text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg -rotate-2 border-2 border-white mb-8">
-            Returns & Refunds
+            {t('hero.tag')}
           </div>
 
           <h1 className="text-5xl lg:text-[7rem] font-black text-foreground tracking-tighter leading-[0.85] mb-6">
-            KINDNESS & <br />
-            <span className="text-orange-500 italic font-serif">CLARITY</span>
+            {t('hero.title')} <br />
+            <span className="text-orange-500 italic font-serif">{t('hero.titleItalic')}</span>
           </h1>
           <p className="max-w-xl text-muted-foreground font-light italic">
-            Last updated: 19 October 2025. <br />
-            We design for longevity. If something isn&apos;t right, let&apos;s
-            find a solution.
+            {t('hero.effectiveDate')} <br />
+            {t('hero.subtitle')}
           </p>
         </div>
       </section>
@@ -226,21 +229,20 @@ const ReturnPolicyPage = () => {
 
             <Mail className="w-12 h-12 text-secondary mb-6 mx-auto" />
             <h3 className="text-4xl font-black tracking-tighter mb-4">
-              Start a Return
+              {t('footer.heading')}
             </h3>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto font-light italic">
-              Email us with your order number and photos before sending anything
-              back.
+              {t('footer.description')}
             </p>
             <a
               href="mailto:info@intetkon.com"
               className="text-2xl font-bold hover:text-orange-500 transition-colors underline decoration-secondary underline-offset-8 decoration-2"
             >
-              info@intetkon.com
+              {t('footer.email')}
             </a>
 
             <p className="mt-12 text-[10px] uppercase tracking-widest text-muted-foreground font-black">
-              Address: Bentzonsvej 50B, 2000 Frederiksberg, Denmark
+              {t('footer.address')}
             </p>
           </div>
         </div>

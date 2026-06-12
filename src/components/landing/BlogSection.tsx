@@ -1,34 +1,36 @@
+'use client'
+
 import HangaroundBagImage from '@public/hangaroundBag.jpeg'
 import JoinCommunityImage from '@public/joinCommunity.png'
 import workshopImage from '@public/workshop.jpg'
 import { Bookmark, BookOpen, Newspaper } from 'lucide-react'
 import Image from 'next/image'
+import { useTranslations } from 'next-intl'
 
-const featuredPosts = [
-  {
-    title: 'Soon for sale, hangaround bag',
-    excerpt:
-      'A simple, functional, versatile and beginner-friendly sewing pattern design for everyday use..',
-    image: HangaroundBagImage,
-    category: 'Soon for sale!',
-  },
-  {
-    title: 'Something Beautiful Is Coming… Sewing Workshops Soon',
-    excerpt:
-      'A workshop for anyone who wants to start sewing in a safe and creative way, whether you have never held a needle before or already sew professionally.',
-    image: workshopImage,
-    category: 'New dates soon',
-  },
-  {
-    title: 'Join the Community',
-    excerpt:
-      'Be part of the community and become a pattern tester, whether you are just getting started or already have experience with sewing and design.',
-    image: JoinCommunityImage,
-    category: 'Become pattern tester',
-  },
-]
+function BlogSection() {
+  const t = useTranslations()
 
-const BlogSection = () => {
+  const featuredPosts = [
+    {
+      title: t('pages.home.products.hangaroundBag.label'),
+      excerpt: t('pages.home.products.hangaroundBag.description'),
+      image: HangaroundBagImage,
+      category: 'Soon for sale!',
+    },
+    {
+      title: t('pages.home.products.workshops.label'),
+      excerpt: t('pages.home.products.workshops.description'),
+      image: workshopImage,
+      category: 'New dates soon',
+    },
+    {
+      title: t('pages.home.community.title'),
+      excerpt: t('pages.home.community.description'),
+      image: JoinCommunityImage,
+      category: 'Become pattern tester',
+    },
+  ]
+
   return (
     <section className="relative w-full py-24 overflow-hidden">
       {/* --- Background Decorations --- */}
@@ -59,16 +61,19 @@ const BlogSection = () => {
       {/* --- Marquee Ribbon --- */}
       <div className="relative mb-24 py-5 bg-orange-500 rotate-1 shadow-lg overflow-hidden border-y-2 border-orange-600">
         <div className="flex whitespace-nowrap animate-marquee-reverse">
-          {[...Array(8)].map((_, i) => (
-            <span
-              key={i}
-              className="text-white text-2xl lg:text-3xl font-black uppercase tracking-tighter mx-10 flex items-center gap-5"
-            >
-              Explore What's Happening Now <BookOpen className="w-7 h-7" />
-              Atelier Insights <Newspaper className="w-7 h-7" />
-              Latest Creations <Bookmark className="w-7 h-7" />
-            </span>
-          ))}
+          {[...Array(8)].map((_, i) => {
+            const marqueeItems = t.raw('pages.home.newsletter.marquee')
+            return (
+              <span
+                key={i}
+                className="text-white text-2xl lg:text-3xl font-black uppercase tracking-tighter mx-10 flex items-center gap-5"
+              >
+                {marqueeItems[0]} <BookOpen className="w-7 h-7" />
+                {marqueeItems[1]} <Newspaper className="w-7 h-7" />
+                {marqueeItems[2]} <Bookmark className="w-7 h-7" />
+              </span>
+            )
+          })}
         </div>
       </div>
 
@@ -78,18 +83,13 @@ const BlogSection = () => {
           <div className="lg:sticky lg:top-32 flex flex-col gap-10">
             <div className="space-y-6">
               <span className="text-orange-500 font-bold uppercase tracking-widest text-sm">
-                Journal
+                {t('pages.home.newsletter.label')}
               </span>
               <h2 className="text-5xl lg:text-7xl font-extrabold tracking-tighter text-foreground leading-none">
-                Dive into{' '}
-                <span className="text-orange-500 italic font-serif underline decoration-secondary/30 underline-offset-8">
-                  Intetkøn
-                </span>
-                .
+                {t('pages.home.newsletter.heading')}
               </h2>
               <p className="text-xl text-muted-foreground leading-relaxed font-light">
-                Discover the latest techniques, behind-the-scenes stories, and
-                workshop announcements straight from the atelier.
+                {t('pages.home.newsletter.title')}
               </p>
             </div>
           </div>

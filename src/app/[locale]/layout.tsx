@@ -26,12 +26,15 @@ export default async function LocaleLayout({
     ? locale
     : defaultLocale
 
+  // Load messages for the locale
+  const messages = (await import(`@src/messages/${validLocale}.json`)).default
+
   return (
     <html lang={validLocale} suppressHydrationWarning>
       <body className="bg-background">
         <Analytics />
         <SpeedInsights />
-        <IntlProvider locale={validLocale}>
+        <IntlProvider locale={validLocale} messages={messages}>
           <Header locale={validLocale} />
           <main className="pt-22 min-h-svh">{children}</main>
           <PublicFooter />

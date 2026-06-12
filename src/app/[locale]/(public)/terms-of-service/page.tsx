@@ -1,3 +1,5 @@
+'use client'
+
 import {
   CreditCard,
   FileText,
@@ -8,8 +10,10 @@ import {
   ShieldAlert,
   ShoppingBag,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const TermsPage = () => {
+  const t = useTranslations('pages.terms')
   return (
     <main className="w-full overflow-x-clip">
       {/* --- Section 1: Header --- */}
@@ -37,17 +41,16 @@ const TermsPage = () => {
           </svg>
 
           <div className="bg-foreground text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg rotate-1 border-2 border-white mb-8">
-            Usage Agreement
+            {t('hero.tag')}
           </div>
 
           <h1 className="text-5xl lg:text-[7rem] font-black text-foreground tracking-tighter leading-[0.85] mb-6">
-            TERMS OF <br />
-            <span className="text-secondary italic font-serif">SERVICE</span>
+            {t('hero.title')} <br />
+            <span className="text-secondary italic font-serif">{t('hero.titleItalic')}</span>
           </h1>
           <p className="max-w-xl text-muted-foreground font-light italic">
-            Last updated: 19 October 2025. <br />
-            By using our atelier services, you agree to the following rules of
-            the house.
+            {t('hero.effectiveDate')} <br />
+            {t('hero.subtitle')}
           </p>
         </div>
       </section>
@@ -227,16 +230,16 @@ const TermsPage = () => {
             <RefreshCw className="absolute -top-10 -left-10 w-48 h-48 text-white/5 rotate-12" />
             <Mail className="w-12 h-12 text-white mb-6 mx-auto" />
             <h3 className="text-4xl font-black tracking-tighter mb-4">
-              Questions about the Terms?
+              {t('footer.heading')}
             </h3>
             <p className="text-white/80 mb-8 max-w-md mx-auto font-light italic">
-              Send us an email and our studio team will get back to you.
+              {t('footer.description')}
             </p>
             <a
               href="mailto:info@intetkon.com"
               className="text-2xl font-bold hover:text-orange-500 transition-colors underline decoration-white underline-offset-8"
             >
-              info@intetkon.com
+              {t('footer.email')}
             </a>
           </div>
         </div>

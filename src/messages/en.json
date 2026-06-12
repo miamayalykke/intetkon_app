@@ -20,7 +20,10 @@
     "privacyPolicy": "Privacy Policy",
     "returnPolicy": "Return Policy",
     "termsOfService": "Terms of Service",
-    "careers": "Careers"
+    "careers": "Careers",
+    "patterns": "Patterns",
+    "shopUniques": "Shop Uniques",
+    "becomePatternTester": "Become Pattern Tester"
   },
   "products": {
     "addToCart": "Add to Cart",
@@ -35,53 +38,486 @@
   "cart": {
     "title": "Shopping Cart",
     "empty": "Your cart is empty",
+    "emptyMessage": "Your basket is looking a bit light. Time to start your next sewing adventure!",
     "total": "Total",
     "checkout": "Checkout",
-    "continueShopping": "Continue Shopping"
+    "continueShopping": "Continue Shopping",
+    "browsePatterns": "Browse Patterns",
+    "reviewYourGear": "Review Your Gear",
+    "yourBasket": "YOUR BASKET"
   },
   "footer": {
-    "about": "About",
-    "contact": "Contact",
-    "followUs": "Follow Us",
-    "newsletter": "Newsletter",
-    "subscribeNewsletter": "Subscribe to our newsletter"
+    "tagline": "Empowering creativity through professional patterns and inclusive workshops.",
+    "sections": {
+      "atelier": "Atelier",
+      "unikaPieces": "Unika Pieces",
+      "workshops": "Workshops",
+      "patterns": "Patterns",
+      "contact": "Contact",
+      "careers": "Careers"
+    },
+    "support": {
+      "title": "Support",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "returnPolicy": "Return Policy"
+    },
+    "newsletter": {
+      "title": "Stay Updated",
+      "description": "Get inspired with gender-neutral DIY ideas and workshop news.",
+      "button": "Join"
+    },
+    "copyright": "© {year} INTETKØN. ALL RIGHTS RESERVED.",
+    "tagline2": "Crafted for Equality"
+  },
+  "patterns": {
+    "instantDownload": "Instant Download",
+    "title": "DIGITAL",
+    "titleItalic": "PATTERNS",
+    "features": {
+      "pdf": "A4 / US Letter PDF",
+      "projector": "Projector Files",
+      "lifetime": "Lifetime Access"
+    },
+    "categories": {
+      "allPieces": "All Pieces",
+      "pants": "Pants",
+      "accessories": "Accessories",
+      "shirts": "Shirts"
+    }
+  },
+  "shop": {
+    "title": "THE",
+    "titleItalic": "ATELIER",
+    "subtitle": "Hand-picked physical products & limited items",
+    "noPieces": "No pieces found in this collection...",
+    "noResults": "No results found",
+    "tryDifferent": "Try searching with different keywords",
+    "resultsFor": "Search results for",
+    "loading": "Loading...",
+    "categories": {
+      "allPieces": "All Pieces",
+      "pants": "Pants",
+      "accessories": "Accessories",
+      "shirts": "Shirts"
+    }
+  },
+  "success": {
+    "paymentVerified": "Payment Verified",
+    "confirmed": "Confirmed",
+    "title": "THANK YOU!",
+    "message": "Your order is being prepped in our studio. Check your inbox for the digital receipt.",
+    "orderRef": "Order Ref",
+    "myOrders": "My Orders",
+    "backToShop": "Back to Shop",
+    "marquee": ["Intetkøn Family", "Sustainable Craft", "Genderless Future"]
   },
   "pages": {
+    "home": {
+      "hero": {
+        "studio": "Atelier & Studio",
+        "taglineLine1": "Clothes should",
+        "taglineLine2": "fit you,",
+        "taglineLine3": "not the other way around.",
+        "subtitle": "Sewing, sewing patterns & workshops for those who want to create something themselves.",
+        "buttonPatterns": "Shop Patterns",
+        "buttonWorkshops": "Workshops"
+      },
+      "about": {
+        "marqueeAbout": ["Creative Freedom", "Inclusive Universe", "Handmade Aesthetics"],
+        "builtOnPresence": "Built on Presence",
+        "intro": "A creative brand built on craftsmanship, aesthetics, and presence.",
+        "founder": "My name is Emilie, and I'm the founder of Intetkøn. Here, I create patterns, products, and workshops with room for personality, learning, and creative freedom.",
+        "quote": "Intetkøn is an inclusive universe for those who love making things by hand and want to be part of something that feels human, inspiring, and open to everyone.",
+        "cta": "Dive into Intetkøn."
+      },
+      "newsletter": {
+        "title": "Discover the latest techniques, behind-the-scenes stories, and workshop announcements straight from the atelier.",
+        "label": "Journal",
+        "heading": "Dive into Intetkøn.",
+        "marquee": ["Explore What's Happening Now", "Atelier Insights", "Latest Creations"]
+      },
+      "products": {
+        "hangaroundBag": {
+          "label": "Soon for sale, hangaround bag",
+          "description": "A simple, functional, versatile and beginner-friendly sewing pattern design for everyday use."
+        },
+        "workshops": {
+          "label": "Something Beautiful Is Coming… Sewing Workshops Soon",
+          "description": "A workshop for anyone who wants to start sewing in a safe and creative way, whether you have never held a needle before or already sew professionally."
+        }
+      },
+      "community": {
+        "title": "Join the Community",
+        "description": "Be part of the community and become a pattern tester, whether you are just getting started or already have experience with sewing and design."
+      },
+      "patternTester": {
+        "title": "Become a pattern tester",
+        "description": "Help us refine our latest drops. Join a dedicated group of makers who value precision, inclusive fit, and garment craft. Shape the future of our atelier.",
+        "features": {
+          "earlyAccess": "Early Access",
+          "feedbackLoop": "Feedback Loop"
+        },
+        "button": "Apply to test",
+        "marqueeTop": ["Join the Movement", "Creative Freedom"],
+        "marqueeBottom": ["Create", "Learn", "Grow", "Together"]
+      }
+    },
     "about": {
-      "label": "Our Story",
-      "title": "About",
-      "subtitle": "INTETKØN",
-      "description": "Learn about our mission, values, and the stories behind our creations."
+      "hero": {
+        "tag": "Our Story",
+        "title": "ABOUT",
+        "titleItalic": "INTETKØN",
+        "subtitle": "Breaking the binary in fashion through freedom of expression and long-lasting craft."
+      },
+      "mission": {
+        "heading": "Our",
+        "headingItalic": "Mission",
+        "description": "Fast fashion wasn't built for everyone or for the Earth. We started INTETKØN to offer a different path: gender-neutral design, transparent making, and open knowledge.",
+        "why": {
+          "title": "Why we started",
+          "description": "Every piece and pattern is an invitation to create clothes that fit your body, your values, and your vibe, no gender labels needed. By sharing patterns and workshops, we give you the tools to make garments you're proud to wear and repair."
+        },
+        "tags": ["Gender-Neutral", "Open Knowledge", "Eco-Conscious"]
+      },
+      "features": [
+        {
+          "title": "Genderless Design",
+          "description": "Silhouettes and sizing that fit bodies, not boxes. Genderless from the first sketch."
+        },
+        {
+          "title": "Learning Hub",
+          "description": "Step-by-step tutorials and projector-ready files so you can sew confidently at home."
+        },
+        {
+          "title": "Circular Mindset",
+          "description": "We champion upcycling and repair, encouraging re-use long after 'new'."
+        }
+      ],
+      "cta": {
+        "tag": "Join the Sewing Revolution",
+        "headline": "REWRITE THE",
+        "headlineItalic": "Rules",
+        "description": "Pick a pattern. Grab a kit. Upcycle your closet. Let's rewrite the rules of fashion, one stitch at a time.",
+        "buttons": {
+          "patterns": "Get a pattern",
+          "workshops": "Join a Workshop"
+        }
+      },
+      "whatSetsUsApart": "What Sets Us Apart",
+      "marqueeTop": ["No Gender Labels", "Freedom of Expression", "Sustainable Craft"],
+      "marqueeBottom": ["Rewrite the Rules", "One Stitch at a Time", "The Future is Genderless"]
     },
     "contact": {
-      "label": "Get in touch",
-      "title": "Contact",
-      "subtitle": "Studio",
-      "description": "Questions about a pattern, a bespoke order, or just want to say hi? Our digital atelier is always open."
+      "hero": {
+        "tag": "Get in touch",
+        "title": "CONTACT",
+        "titleItalic": "STUDIO",
+        "subtitle": "Questions about a pattern, a bespoke order, or just want to say hi? Our digital atelier is always open."
+      },
+      "email": {
+        "title": "Email Inquiries",
+        "inquiries": [
+          {
+            "label": "Customer Service & Bespoke",
+            "email": "info@intetkon.com",
+            "description": "Inquiries about sizing, fit, or custom commissions."
+          },
+          {
+            "label": "Press & Loans",
+            "email": "info@intetkon.com",
+            "description": "Editorial features, stylist pulls, and media kits."
+          },
+          {
+            "label": "Wholesale & Business",
+            "email": "info@intetkon.com",
+            "description": "Partnering with Intetkøn for retail or collaborations."
+          }
+        ]
+      },
+      "studio": {
+        "label": "Physical Space",
+        "heading": "The Studio",
+        "status": "Open by appointment only",
+        "address": "Bentzonsvej 50B\n2000, Frederiksberg\nDenmark"
+      },
+      "marquee": "Drop by us today",
+      "marqueeSubtitle": "Studio Frederiksberg"
     },
     "privacy": {
-      "label": "Legal & Privacy",
-      "title": "Privacy",
-      "subtitle": "Policy",
-      "description": "Your data is handled with the same care as our garments."
+      "hero": {
+        "tag": "Legal & Privacy",
+        "title": "PRIVACY",
+        "titleItalic": "POLICY",
+        "effectiveDate": "Effective date: 14 March 2026.",
+        "subtitle": "Your data is handled with the same care as our garments."
+      },
+      "whoWeAre": {
+        "heading": "Who we are",
+        "intro": "INTETKØN (\"we\", \"us\", \"our\") takes your privacy seriously. This Policy explains what personal data we collect, how we use it, and your rights under the EU/EEA General Data Protection Regulation (GDPR).",
+        "address": "Address: Bentzonsvej 50B, 2000 Frederiksberg, Denmark",
+        "contact": "Contact: info@intetkon.com"
+      },
+      "dataCollection": {
+        "heading": "Data We Collect",
+        "items": [
+          {
+            "title": "Browsing",
+            "description": "Device usage, IP address, and interaction data via cookies."
+          },
+          {
+            "title": "Shopping",
+            "description": "Name, email, shipping address, and order history."
+          },
+          {
+            "title": "Subscribing",
+            "description": "Email address and preferences for our sewing revolution updates."
+          },
+          {
+            "title": "Workshops",
+            "description": "Registration details, sessions, and accessibility preferences."
+          }
+        ]
+      },
+      "purposes": {
+        "heading": "Purposes & Legal Bases",
+        "description": "We process your data to provide our services (contract necessity), process payments via Stripe (legitimate interests), communicate with you, and ensure legal compliance with tax and accounting obligations."
+      },
+      "rights": {
+        "heading": "Your Rights",
+        "description": "Under GDPR, you have the right to access, correct, delete, or restrict your data. To exercise these rights or lodge a complaint, simply contact our studio team.",
+        "tags": ["Access", "Correction", "Deletion", "Portability", "Objection"]
+      },
+      "payments": {
+        "heading": "Payments (Stripe)",
+        "description": "We use Stripe for secure transactions. They act as a processor and receive identifiers necessary for fraud detection. We do not store your payment card data on our servers."
+      },
+      "cookies": {
+        "heading": "Cookies",
+        "description": "We use cookies for core site functionality, analytics, and performance. You can manage your preferences via our cookie banner or browser settings at any time."
+      },
+      "finalDetails": {
+        "internationalTransfers": {
+          "heading": "International Transfers",
+          "description": "Data transferred outside the EU/EEA relies on Standard Contractual Clauses or recognized frameworks."
+        },
+        "ageOfConsent": {
+          "heading": "Age of Consent",
+          "description": "By using this site, you confirm you are of legal age or have parental consent."
+        }
+      },
+      "footer": {
+        "heading": "Questions or Requests?",
+        "description": "Our studio team is here to help with any privacy concerns.",
+        "email": "info@intetkon.com"
+      }
     },
     "returnPolicy": {
-      "label": "Returns & Exchanges",
-      "title": "Return",
-      "subtitle": "Policy",
-      "description": "We want you to be completely satisfied with your purchase."
+      "hero": {
+        "tag": "Returns & Refunds",
+        "title": "KINDNESS &",
+        "titleItalic": "CLARITY",
+        "effectiveDate": "Last updated: 19 October 2025.",
+        "subtitle": "We design for longevity. If something isn't right, let's find a solution."
+      },
+      "sections": {
+        "scope": {
+          "number": "1",
+          "title": "Scope",
+          "description": "Covers physical products (kits, garments), digital items (patterns, videos), and workshops."
+        },
+        "ethos": {
+          "number": "2",
+          "title": "Our Ethos",
+          "description": "Distance sales rely on good faith. Email us before buying if you are unsure; we seek amicable solutions."
+        },
+        "upcycling": {
+          "number": "3",
+          "title": "Upcycling & Colour",
+          "deadstock": {
+            "label": "Deadstock Materials:",
+            "description": "Some products use upcycled components and may have minor imperfections. We preserve the usable area."
+          },
+          "colourVariance": {
+            "label": "Colour Variance:",
+            "description": "Screen displays vary. Colour variance alone does not qualify for a refund."
+          }
+        },
+        "physicalProducts": {
+          "number": "4",
+          "title": "Physical Products",
+          "eligibilityWindow": {
+            "title": "Eligibility Window",
+            "description": "14 days from delivery (EU withdrawal right). Items must be unused and in original packaging."
+          },
+          "exclusions": {
+            "title": "Exclusions",
+            "description": "Custom/made-to-order items, hygiene-sensitive items (if opened), and used/washed goods."
+          },
+          "faultyItems": {
+            "title": "Faulty Items",
+            "description": "Contact us within 14 days with photos if an item is defective or damaged in transit."
+          },
+          "shipping": {
+            "title": "Shipping",
+            "description": "Customer covers return shipping unless faulty. Original shipping is non-refundable."
+          }
+        },
+        "digitalGoods": {
+          "number": "5",
+          "title": "Digital Goods",
+          "description": "Patterns and videos are non-refundable once delivery begins. Your right of withdrawal ends once access starts."
+        },
+        "workshops": {
+          "number": "6",
+          "title": "Workshops",
+          "description": "Reschedule possible up to 7 days before. Inside 7 days, we cannot refund as materials are committed. No-shows are not refundable."
+        },
+        "taxes": {
+          "number": "7 & 8",
+          "title": "Taxes & Duties",
+          "eu": {
+            "label": "EU Orders",
+            "description": "VAT is charged at checkout. B2B customers with valid VAT numbers may be zero-rated upon verification."
+          },
+          "nonEu": {
+            "label": "Non-EU (UK, etc.)",
+            "description": "Exported without Danish VAT. Import duties and local fees are the customer's responsibility."
+          }
+        },
+        "repairs": {
+          "number": "9",
+          "title": "Repairs (Goodwill)",
+          "description": "We may offer complimentary minor repairs on INTETKØN products. Shipping is the customer's responsibility."
+        }
+      },
+      "footer": {
+        "heading": "Start a Return",
+        "description": "Email us with your order number and photos before sending anything back.",
+        "email": "info@intetkon.com",
+        "address": "Address: Bentzonsvej 50B, 2000 Frederiksberg, Denmark"
+      }
     },
-    "termsOfService": {
-      "label": "Terms & Conditions",
-      "title": "Terms of",
-      "subtitle": "Service",
-      "description": "Please read our terms carefully before placing an order."
+    "terms": {
+      "hero": {
+        "tag": "Usage Agreement",
+        "title": "TERMS OF",
+        "titleItalic": "SERVICE",
+        "effectiveDate": "Last updated: 19 October 2025.",
+        "subtitle": "By using our atelier services, you agree to the following rules of the house."
+      },
+      "operator": {
+        "label": "INTETKØN / Emilie Kallager",
+        "location": "Frederiksberg, Denmark",
+        "contact": "info@intetkon.com"
+      },
+      "sections": {
+        "overview": {
+          "number": "01",
+          "title": "Overview",
+          "description": "By visiting our website and/or purchasing something from us, you engage in our \"Service\" and agree to be bound by these Terms of Service (\"Terms\"), including additional terms, policies and notices referenced here or available by hyperlink."
+        },
+        "storeTerms": {
+          "title": "Store Terms",
+          "description": "You confirm you are of the age of majority. You may not use our products for any unauthorized or illegal purpose, including copyright violations."
+        },
+        "generalConditions": {
+          "title": "General Conditions",
+          "description": "We reserve the right to refuse service. Your content may be transferred unencrypted (excluding payment data which is always encrypted)."
+        },
+        "accuracy": {
+          "number": "4",
+          "title": "Accuracy & Timeliness",
+          "description": "We are not responsible if information on this site is not accurate or current. Material is for general information and reliance is at your own risk."
+        },
+        "modifications": {
+          "number": "5 & 6",
+          "title": "Modifications & Products",
+          "description": "Prices are subject to change without notice. We reserve the right to modify or discontinue services. We have made every effort to display colors accurately, but monitor displays vary."
+        },
+        "billing": {
+          "number": "7 & 8",
+          "title": "Billing & Payments",
+          "description": "We reserve the right to refuse any order. Payments are processed by third-party providers like Stripe. You agree to provide current, complete, and accurate purchase information for all transactions."
+        },
+        "userContent": {
+          "number": "10",
+          "title": "User Content & Feedback",
+          "description": "If you submit creative ideas or comments, we may edit, copy, and distribute them in any medium without obligation to pay compensation or respond."
+        },
+        "prohibitedUses": {
+          "number": "13",
+          "title": "Prohibited Uses",
+          "description": "You are prohibited from using the site for unlawful purposes, infringing on intellectual property, transmitting viruses, or scraping content. Violation results in immediate termination."
+        },
+        "liability": {
+          "number": "14",
+          "title": "Limitation of Liability",
+          "description": "The Service and all products are provided \"as is\" and \"as available\" without warranties of any kind. In no case shall INTETKØN be liable for any injury, loss, claim, or consequential damages arising from your use of the service."
+        },
+        "governingLaw": {
+          "number": "19",
+          "title": "Governing Law",
+          "description": "These Terms shall be governed by and construed in accordance with the laws of Denmark."
+        },
+        "changes": {
+          "number": "20",
+          "title": "Changes to Terms",
+          "description": "We reserve the right to update or replace any part of these Terms by posting updates to our website."
+        }
+      },
+      "footer": {
+        "heading": "Questions about the Terms?",
+        "description": "Send us an email and our studio team will get back to you.",
+        "email": "info@intetkon.com"
+      }
     },
     "careers": {
-      "label": "Join Our Team",
-      "title": "Careers",
-      "subtitle": "Opportunities",
-      "description": "We're always looking for talented, passionate people to join us."
+      "hero": {
+        "tag": "Opportunities",
+        "title": "JOIN THE",
+        "titleItalic": "ATELIER",
+        "subtitle": "Help us rewrite the rules of fashion. We're building a community-driven studio where craft meets inclusivity."
+      },
+      "jobCard": {
+        "status": "Hiring Now",
+        "positionType": "Internship Position",
+        "title": "Motivated Intern",
+        "quote": "If you're passionate about genderless design, upcycling, and learning by doing, we'd love to hear from you.",
+        "howToApply": "How to Apply",
+        "description": "Please send your application, CV, and portfolio to our studio team. We review applications on a rolling basis.",
+        "button": "Apply via Email"
+      },
+      "marquee": ["Join the Revolution", "Rewrite the Rules", "Genderless Future"]
+    },
+    "patternTester": {
+      "hero": {
+        "tag": "Collab with us",
+        "title": "TEST OUR",
+        "titleItalic": "PATTERNS",
+        "subtitle": "Precision is a collective effort. Join our pool of testers and help us create the perfect fit for every body."
+      },
+      "cta": {
+        "button": "APPLY NOW",
+        "description": "Fill out the details below to join the tester pool."
+      },
+      "lookingFor": {
+        "title": "What we look for",
+        "items": [
+          "Intermediate to advanced sewing skills",
+          "Ability to provide detailed fit feedback",
+          "Clear photography of finished garments"
+        ]
+      },
+      "footer": {
+        "text": "By applying, you agree to our privacy policy regarding data handling."
+      }
+    },
+    "workshops": {
+      "tag": "Live Learning",
+      "title": "STUDIO",
+      "titleItalic": "SESSIONS",
+      "subtitle": "From needle threading to advanced draping. Join us in the atelier to master the craft of genderless fashion."
     }
   }
 }

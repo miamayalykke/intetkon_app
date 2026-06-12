@@ -4,9 +4,13 @@ import Logo from '@public/logo.svg'
 import NewsletterForm from '@src/components/newsletter/NewsletterForm'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 import { FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from 'react-icons/fa'
 
 const PublicFooter = () => {
+  const t = useTranslations()
+  const locale = useLocale()
+
   return (
     <footer className="w-full">
       <div className="bg-card overflow-hidden">
@@ -15,7 +19,7 @@ const PublicFooter = () => {
             <div className="lg:col-span-4 space-y-4">
               <Link
                 prefetch={false}
-                href="/"
+                href={`/${locale}`}
                 className="inline-block hover:opacity-80 transition-opacity"
               >
                 <Image
@@ -27,8 +31,7 @@ const PublicFooter = () => {
                 />
               </Link>
               <p className="text-muted-foreground text-xs leading-relaxed max-w-64">
-                Empowering creativity through professional patterns and
-                inclusive workshops.
+                {t('footer.tagline')}
               </p>
               <div className="flex items-center gap-3">
                 {[
@@ -63,86 +66,86 @@ const PublicFooter = () => {
             <div className="lg:col-span-4 grid grid-cols-2 gap-4">
               <div className="space-y-3">
                 <h4 className="font-bold text-sm uppercase tracking-wider">
-                  Atelier
+                  {t('footer.sections.atelier')}
                 </h4>
                 <ul className="space-y-2 text-xs text-muted-foreground">
                   <li>
                     <Link
-                      href="/shop"
+                      href={`/${locale}/shop`}
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Unika Pieces
+                      {t('footer.sections.unikaPieces')}
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/workshops"
+                      href={`/${locale}/workshops`}
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Workshops
+                      {t('footer.sections.workshops')}
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/patterns"
+                      href={`/${locale}/patterns`}
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Patterns
+                      {t('footer.sections.patterns')}
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/contact"
+                      href={`/${locale}/contact`}
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Contact
+                      {t('footer.sections.contact')}
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/careers"
+                      href={`/${locale}/careers`}
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Careers
+                      {t('footer.sections.careers')}
                     </Link>
                   </li>
                 </ul>
               </div>
               <div className="space-y-3">
                 <h4 className="font-bold text-sm uppercase tracking-wider">
-                  Support
+                  {t('footer.support.title')}
                 </h4>
                 <ul className="space-y-2 text-xs text-muted-foreground">
                   <li>
                     <Link
-                      href="/privacy-policy"
+                      href={`/${locale}/privacy-policy`}
                       className="hover:text-orange-500"
                       prefetch={false}
                     >
-                      Privacy Policy
+                      {t('footer.support.privacyPolicy')}
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/terms-of-service"
+                      href={`/${locale}/terms-of-service`}
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Terms of Service
+                      {t('footer.support.termsOfService')}
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/return-policy"
+                      href={`/${locale}/return-policy`}
                       prefetch={false}
                       className="hover:text-orange-500"
                     >
-                      Return Policy
+                      {t('footer.support.returnPolicy')}
                     </Link>
                   </li>
                 </ul>
@@ -152,10 +155,10 @@ const PublicFooter = () => {
             <div className="lg:col-span-4 space-y-4 bg-muted/30 p-5 rounded-3xl border border-border/50">
               <div className="space-y-1">
                 <h4 className="font-bold text-sm tracking-tight">
-                  Stay Updated
+                  {t('footer.newsletter.title')}
                 </h4>
                 <p className="text-[11px] text-muted-foreground leading-snug">
-                  Get inspired with gender-neutral DIY ideas and workshop news.
+                  {t('footer.newsletter.description')}
                 </p>
               </div>
               <NewsletterForm />
@@ -164,15 +167,14 @@ const PublicFooter = () => {
 
           <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-3">
             <p className="text-[10px] text-muted-foreground/70 tracking-wide">
-              © {new Date().getFullYear()} INTETKØN. ALL RIGHTS RESERVED.
+              {t('footer.copyright', { year: new Date().getFullYear() })}
             </p>
             <p className="text-[9px] uppercase tracking-[0.3em] font-black text-secondary/60">
-              Crafted for Equality
+              {t('footer.tagline2')}
             </p>
           </div>
         </div>
 
-        {/* Green Line */}
         <div className="h-1.5 w-full bg-secondary" />
       </div>
     </footer>

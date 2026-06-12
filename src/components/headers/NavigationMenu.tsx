@@ -9,19 +9,23 @@ import {
   navigationMenuTriggerStyle,
 } from '@ui/navigation-menu'
 import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
 import type { ComponentProps } from 'react'
 
 export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
+  const t = useTranslations()
+  const locale = useLocale()
+
   const shopLinks = [
-    { href: '/patterns', label: 'Patterns' },
-    { href: '/workshops', label: 'Workshops' },
-    { href: '/shop', label: 'Shop Uniques' },
+    { href: `/${locale}/patterns`, label: t('navigation.patterns') },
+    { href: `/${locale}/workshops`, label: t('navigation.workshops') },
+    { href: `/${locale}/shop`, label: t('navigation.shopUniques') },
   ]
 
   const infoLinks = [
-    { href: '/about', label: 'About' },
-    { href: '/contact', label: 'Contact' },
-    { href: '/pattern-testing', label: 'Become Pattern Tester' },
+    { href: `/${locale}/about`, label: t('navigation.about') },
+    { href: `/${locale}/contact`, label: t('navigation.contact') },
+    { href: `/${locale}/pattern-testing`, label: t('navigation.becomePatternTester') },
   ]
 
   return (

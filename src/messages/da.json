@@ -3,7 +3,7 @@
     "home": "Hjem",
     "about": "Om os",
     "contact": "Kontakt",
-    "cart": "Indkøbsvogn",
+    "cart": "Kurv",
     "search": "Søg",
     "menu": "Menu",
     "close": "Luk",
@@ -19,69 +19,505 @@
     "contact": "Kontakt",
     "privacyPolicy": "Privatlivspolitik",
     "returnPolicy": "Returpolitik",
-    "termsOfService": "Betingelser",
-    "careers": "Karriere"
+    "termsOfService": "Handelsbetingelser",
+    "careers": "Karriere",
+    "patterns": "Mønstre",
+    "shopUniques": "Køb Unika",
+    "becomePatternTester": "Bliv Mønstertester"
   },
   "products": {
-    "addToCart": "Tilføj til indkøbsvogn",
-    "addToBasket": "Tilføj til kurv",
+    "addToCart": "Tilføj til indkøbskurv",
+    "addToBasket": "Tilføj til indkøbskurv",
     "price": "Pris",
-    "quantity": "Mængde",
+    "quantity": "Antal",
     "description": "Beskrivelse",
     "details": "Detaljer",
     "inStock": "På lager",
     "outOfStock": "Ikke på lager"
   },
   "cart": {
-    "title": "Indkøbsvogn",
-    "empty": "Din indkøbsvogn er tom",
+    "title": "Indkøbskurv",
+    "empty": "Din indkøbskurv er tom",
+    "emptyMessage": "Din indkøbskurv ser lidt tom ud. Tid til at starte dit næste syeabvyktur!",
     "total": "I alt",
     "checkout": "Gå til kasse",
-    "continueShopping": "Fortsæt med at købe"
+    "continueShopping": "Fortsæt med at handle",
+    "browsePatterns": "Gennemse Mønstre",
+    "reviewYourGear": "Gennemse Dine Varer",
+    "yourBasket": "DIN INDKØBSKURV"
   },
   "footer": {
-    "about": "Om os",
-    "contact": "Kontakt",
-    "followUs": "Følg os",
-    "newsletter": "Nyhedsbrev",
-    "subscribeNewsletter": "Abonner på vores nyhedsbrev"
+    "tagline": "Styrk din kreativitet gennem professionelle mønstre og inkluderende workshops.",
+    "sections": {
+      "atelier": "Atelier",
+      "unikaPieces": "Unika stykker",
+      "workshops": "Workshops",
+      "patterns": "Mønstre",
+      "contact": "Kontakt",
+      "careers": "Karriere"
+    },
+    "support": {
+      "title": "Support",
+      "privacyPolicy": "Privatlivspolitik",
+      "termsOfService": "Handelsbetingelser",
+      "returnPolicy": "Returpolitik"
+    },
+    "newsletter": {
+      "title": "Bliv opdateret",
+      "description": "Få inspiration med kønsneutrale DIY-ideer og workshop-nyheder.",
+      "button": "Tilmeld"
+    },
+    "copyright": "© {year} INTETKØN. ALLE RETTIGHEDER FORBEHOLDT.",
+    "tagline2": "Skabt for Lighed"
+  },
+  "patterns": {
+    "instantDownload": "Øjeblikkelig Download",
+    "title": "DIGITALE",
+    "titleItalic": "MØNSTRE",
+    "features": {
+      "pdf": "A4 / US Letter PDF",
+      "projector": "Projektorfiler",
+      "lifetime": "Livstidsadgang"
+    },
+    "categories": {
+      "allPieces": "Alle Stykker",
+      "pants": "Bukser",
+      "accessories": "Tilbehør",
+      "shirts": "Skjorter"
+    }
+  },
+  "shop": {
+    "title": "ATELIERET",
+    "titleItalic": "UNIKA",
+    "subtitle": "Håndplukkede fysiske produkter og begrænsede partier",
+    "noPieces": "Ingen stykker fundet i denne samling...",
+    "noResults": "Ingen resultater fundet",
+    "tryDifferent": "Prøv at søge med andre søgeord",
+    "resultsFor": "Søgeresultater for",
+    "loading": "Indlæser...",
+    "categories": {
+      "allPieces": "Alle Stykker",
+      "pants": "Bukser",
+      "accessories": "Tilbehør",
+      "shirts": "Skjorter"
+    }
+  },
+  "success": {
+    "paymentVerified": "Betaling Bekræftet",
+    "confirmed": "Bekræftet",
+    "title": "TAK skal du have!",
+    "message": "Din ordre bliver forberedt på vores studio. Tjek din indbakke for den digitale kvittering.",
+    "orderRef": "Ordre Ref",
+    "myOrders": "Mine Ordrer",
+    "backToShop": "Tilbage til Butik",
+    "marquee": ["Intetkøn Familie", "Bæredygtigt Håndværk", "Kønsneutralt Fremtid"]
   },
   "pages": {
+    "home": {
+      "hero": {
+        "studio": "Atelier & Studio",
+        "taglineLine1": "Tøj skal",
+        "taglineLine2": "passe til dig",
+        "taglineLine3": "ikke omvendt",
+        "subtitle": "Syning, symønstre og workshops til dig, der vil skabe noget selv.",
+        "buttonPatterns": "Køb Mønstre",
+        "buttonWorkshops": "Workshops"
+      },
+      "about": {
+        "marqueeAbout": ["Kreativ Frihed", "Inklusivt Univers", "Håndlavet Æstetik"],
+        "builtOnPresence": "Bygget på Tilstedeværelse",
+        "intro": "Et kreativt brand bygget på håndværk, æstetik og tilstedeværelse.",
+        "founder": "Mit navn er Emilie, og jeg er grundlægger af Intetkøn. Her skaber jeg mønstre, produkter og workshops med plads til personlighed, læring og kreativ frihed.",
+        "quote": "Intetkøn er et inklusivt univers for dem, der elsker at skabe ting med hænderne og ønsker at være en del af noget, der føles menneskeligt, inspirerende og åbent for alle.",
+        "cta": "Dyk ned i Intetkøn."
+      },
+      "newsletter": {
+        "title": "Opdag de nyeste teknikker, historier fra bag kulisserne og workshop-nyheder direkte fra atelieret.",
+        "label": "Journal",
+        "heading": "Dyk ned i Intetkøn.",
+        "marquee": ["Udforsk hvad der sker nu", "Atelier Indsigter", "Seneste Kreationer"]
+      },
+      "products": {
+        "hangaroundBag": {
+          "label": "Snart til salg, hangaround bag",
+          "description": "Et simpelt, funktionelt, alsidigt og begyndervenlig sysymønster til hverdagsbrug."
+        },
+        "workshops": {
+          "label": "Noget smukt er på vej... Sy-workshops snart",
+          "description": "En workshop for alle, der vil begynde at sy i et trygt og kreativt miljø, uanset om du aldrig har holdt en nål før, eller allerede syr professionelt."
+        }
+      },
+      "community": {
+        "title": "Bliv en del af fællesskabet",
+        "description": "Vær med i fællesskabet og bliv mønstertester, uanset om du lige er startet eller allerede har erfaring med syning og design."
+      },
+      "patternTester": {
+        "title": "Bliv mønstertester",
+        "description": "Hjælp os med at finjustere vores nyeste udgivelser. Tilslut dig en dedikeret gruppe af skabere, der værdsætter præcision, inklusiv pasform og håndværk. Vær med til at forme fremtiden for vores atelier.",
+        "features": {
+          "earlyAccess": "Tidlig Adgang",
+          "feedbackLoop": "Feedback Loop"
+        },
+        "button": "Ansøg om at Teste",
+        "marqueeTop": ["Tilslut dig Bevægelsen", "Kreativ Frihed"],
+        "marqueeBottom": ["Skab", "Lær", "Voks", "Sammen"]
+      }
+    },
     "about": {
-      "label": "Vores Historie",
-      "title": "Om",
-      "subtitle": "INTETKØN",
-      "description": "Lær om vores mission, værdier og historierne bag vores kreationer."
+      "hero": {
+        "tag": "Vores Historie",
+        "title": "Om",
+        "titleItalic": "INTETKØN",
+        "subtitle": "Vi bryder binæret i mode gennem frihed i udtryk og holdbart håndværk."
+      },
+      "mission": {
+        "heading": "Vores",
+        "headingItalic": "Mission",
+        "description": "Fast fashion er ikke skabt for alle eller for Jorden. Vi startede INTETKØN for at tilbyde en anden vej: kønsneutralt design, transparent fremstilling og åben viden.",
+        "why": {
+          "title": "Hvorfor vi startede",
+          "description": "Hvert stykke og mønster er en invitation til at skabe tøj, der passer til din krop, dine værdier og din stil, uden kønslabels. Ved at dele mønstre og workshops giver vi dig redskaberne til at lave tøj, du er stolt af at bære og reparere."
+        },
+        "tags": ["Kønsneutralt", "Åben Viden", "Miljøbevidst"]
+      },
+      "features": [
+        {
+          "title": "Kønsfrit Design",
+          "description": "Silhuetter og størrelser, der passer til kroppe, ikke kasser. Kønsfrit fra første skitse."
+        },
+        {
+          "title": "Lærings-hub",
+          "description": "Trin-for-trin tutorials og projektorklare filer, så du kan sy trygt hjemme."
+        },
+        {
+          "title": "Cirkulær Tankegang",
+          "description": "Vi fremmer genbrug og reparation og opfordrer til genanvendelse længe efter \"nyt\"."
+        }
+      ],
+      "cta": {
+        "tag": "Tilslut dig Sy-revolutionen",
+        "headline": "OMSKRIV",
+        "headlineItalic": "REGLERNE",
+        "description": "Tag et mønster. Grib et kit. Genbrug din garderobe. Lad os omskrive modereglerne, ét stik ad gangen.",
+        "buttons": {
+          "patterns": "Få et mønster",
+          "workshops": "Tilmeld dig en Workshop"
+        }
+      },
+      "whatSetsUsApart": "Hvad adskiller os",
+      "marqueeTop": ["Kønsneutralt", "Frihed i Udtryk", "Bæredygtigt Håndværk"],
+      "marqueeBottom": ["Omskriv Reglerne", "Ét Stik Ad Gangen", "Fremtiden er Kønneutralt"]
     },
     "contact": {
-      "label": "Tag kontakt",
-      "title": "Kontakt",
-      "subtitle": "Studio",
-      "description": "Har du spørgsmål om et mønster, en skabt bestilling, eller vil du bare hilse? Vores digitale atelier er altid åbent."
+      "hero": {
+        "tag": "Tag kontakt",
+        "title": "KONTAKT",
+        "titleItalic": "STUDIET",
+        "subtitle": "Spørgsmål om et mønster, en skræddersyet ordre, eller vil du bare sige hej? Vores digitale atelier er altid åbent."
+      },
+      "email": {
+        "title": "E-mail henvendelser",
+        "inquiries": [
+          {
+            "label": "Kundeservice & Skræddersyet",
+            "email": "info@intetkon.com",
+            "description": "Henvendelser om størrelser, pasform eller specialbestillinger."
+          },
+          {
+            "label": "Presse & Lån",
+            "email": "info@intetkon.com",
+            "description": "Redaktionelle features, stylist-lån og pressemateriale."
+          },
+          {
+            "label": "Engros & Erhverv",
+            "email": "info@intetkon.com",
+            "description": "Samarbejde med Intetkøn om detailhandel eller partnerskaber."
+          }
+        ]
+      },
+      "studio": {
+        "label": "Fysisk Rum",
+        "heading": "STUDIET",
+        "status": "Kun åbent efter aftale",
+        "address": "Bentzonsvej 50B\n2000 Frederiksberg\nDanmark"
+      },
+      "marquee": "Kom forbi os i dag",
+      "marqueeSubtitle": "Studio Frederiksberg"
     },
     "privacy": {
-      "label": "Juridisk & Privatliv",
-      "title": "Privatliv",
-      "subtitle": "Politik",
-      "description": "Dine data behandles med samme omhu som vores tøj."
+      "hero": {
+        "tag": "Juridisk & Privatliv",
+        "title": "PRIVATLIV",
+        "titleItalic": "POLITIK",
+        "effectiveDate": "Gyldig fra: 14. marts 2026.",
+        "subtitle": "Dine data behandles med samme omhu som vores tøj."
+      },
+      "whoWeAre": {
+        "heading": "Om os",
+        "intro": "INTETKØN (\"vi\", \"os\", \"vores\") tager dit privatliv alvorligt. Denne politik forklarer, hvilke personlige data vi indsamler, hvordan vi bruger dem, og dine rettigheder under EU/EØS-forordningen om databeskyttelse (GDPR).",
+        "address": "Adresse: Bentzonsvej 50B, 2000 Frederiksberg, Danmark",
+        "contact": "Kontakt: info@intetkon.com"
+      },
+      "dataCollection": {
+        "heading": "Data vi indsamler",
+        "items": [
+          {
+            "title": "Browsing",
+            "description": "Enhedsanvendelse, IP-adresse og interaktionsdata via cookies."
+          },
+          {
+            "title": "Shopping",
+            "description": "Navn, e-mail, leveringsadresse og ordrehistorie."
+          },
+          {
+            "title": "Abonnement",
+            "description": "E-mailadresse og præferencer for vores sy-revolutionsopdateringer."
+          },
+          {
+            "title": "Workshops",
+            "description": "Registreringsdetaljer, sessioner og tilgængelighedspræferencer."
+          }
+        ]
+      },
+      "purposes": {
+        "heading": "Formål & Juridisk grundlag",
+        "description": "Vi behandler dine data for at levere vores tjenester (kontraktuelt behov), behandle betalinger via Stripe (legitime interesser), kommunikere med dig og sikre juridisk overholdelse af skatte- og regnskabsforpligtelser."
+      },
+      "rights": {
+        "heading": "Dine rettigheder",
+        "description": "Under GDPR har du ret til at få adgang til, rette, slette eller begrænse dine data. For at udøve disse rettigheder eller indgive en klage skal du blot kontakte vores atelierkoncern.",
+        "tags": ["Adgang", "Rettelse", "Sletning", "Portabilitet", "Indsigelse"]
+      },
+      "payments": {
+        "heading": "Betalinger (Stripe)",
+        "description": "Vi bruger Stripe til sikre transaktioner. De fungerer som processorer og modtager identifikatorer, der er nødvendige for bedrageriregistrering. Vi gemmer ikke dine betalingskortdata på vores servere."
+      },
+      "cookies": {
+        "heading": "Cookies",
+        "description": "Vi bruger cookies til kernefunktionalitet, analyser og ydeevne på webstedet. Du kan administrere dine præferencer gennem vores cookie-banner eller browserindstillinger til enhver tid."
+      },
+      "finalDetails": {
+        "internationalTransfers": {
+          "heading": "Internationale overførsler",
+          "description": "Data, der overføres uden for EU/EØS, bygger på Standard Contractual Clauses eller anerkendte rammeværker."
+        },
+        "ageOfConsent": {
+          "heading": "Aldersgrænse",
+          "description": "Ved at bruge dette websted bekræfter du, at du er myndig eller har forældrenes samtykke."
+        }
+      },
+      "footer": {
+        "heading": "Spørgsmål eller anmodninger?",
+        "description": "Vores atelierkoncern er her til at hjælpe med eventuelle privatlivsspørgsmål.",
+        "email": "info@intetkon.com"
+      }
     },
     "returnPolicy": {
-      "label": "Returneringer & Ombytninger",
-      "title": "Retur",
-      "subtitle": "Politik",
-      "description": "Vi ønsker, at du er fuldstændig tilfreds med dit køb."
+      "hero": {
+        "tag": "Returneringer & Refusioner",
+        "title": "VENLIGHED &",
+        "titleItalic": "KLARHED",
+        "effectiveDate": "Sidst opdateret: 19. oktober 2025.",
+        "subtitle": "Vi designer til varighed. Hvis noget ikke er rigtigt, lad os finde en løsning."
+      },
+      "sections": {
+        "scope": {
+          "number": "1",
+          "title": "Omfang",
+          "description": "Dækker fysiske produkter (kits, klæder), digitale varer (mønstre, videoer) og workshops."
+        },
+        "ethos": {
+          "number": "2",
+          "title": "Vores ethos",
+          "description": "Fjernkøb afhænger af god tro. E-mail os før køb, hvis du er usikker; vi søger minnelige løsninger."
+        },
+        "upcycling": {
+          "number": "3",
+          "title": "Genbrug & Farve",
+          "deadstock": {
+            "label": "Deadstock-materialer:",
+            "description": "Nogle produkter bruger genbrugte komponenter og kan have mindre mangler. Vi bevarer det brugbare område."
+          },
+          "colourVariance": {
+            "label": "Farvevariation:",
+            "description": "Skærmvisninger varierer. Farvevariation alene kvalificerer ikke til refusion."
+          }
+        },
+        "physicalProducts": {
+          "number": "4",
+          "title": "Fysiske produkter",
+          "eligibilityWindow": {
+            "title": "Berettigelsesvindue",
+            "description": "14 dage fra levering (EU-tilbagetrækningsret). Varer skal være ubrugte og i original emballage."
+          },
+          "exclusions": {
+            "title": "Udelukker",
+            "description": "Brugerdefinerede/made-to-order varer, hygienefolsomme varer (hvis åbnet) og brugte/tvettede varer."
+          },
+          "faultyItems": {
+            "title": "Defekte varer",
+            "description": "Kontakt os inden for 14 dage med fotos, hvis en vare er defekt eller beskadiget under transit."
+          },
+          "shipping": {
+            "title": "Forsendelse",
+            "description": "Kunden dækker returfragt, medmindre varen er defekt. Oprindelig forsendelse refunderes ikke."
+          }
+        },
+        "digitalGoods": {
+          "number": "5",
+          "title": "Digitale varer",
+          "description": "Mønstre og videoer kan ikke refunderes, når leveringen begynder. Din tilbagetrækningsret ophører, når adgangen starter."
+        },
+        "workshops": {
+          "number": "6",
+          "title": "Workshops",
+          "description": "Omplanlagte mulige op til 7 dage før. Inden for 7 dage kan vi ikke refundere, fordi materialer er forpligtet. Udeblive er ikke refunderbar."
+        },
+        "taxes": {
+          "number": "7 & 8",
+          "title": "Skatter og told",
+          "eu": {
+            "label": "EU-ordrer",
+            "description": "Moms opkræves ved kassen. B2B-kunder med gyldige momsnumre kan være nul-vurderet efter verifikation."
+          },
+          "nonEu": {
+            "label": "Uden for EU (UK osv.)",
+            "description": "Eksporteret uden dansk moms. Importtakster og lokale gebyrer er kundens ansvar."
+          }
+        },
+        "repairs": {
+          "number": "9",
+          "title": "Reparationer (Goodwill)",
+          "description": "Vi kan tilbyde gratis mindre reparationer på INTETKØN-produkter. Forsendelse er kundens ansvar."
+        }
+      },
+      "footer": {
+        "heading": "Start en retur",
+        "description": "Send os en e-mail med dit ordrenummer og fotos, før du sender noget tilbage.",
+        "email": "info@intetkon.com",
+        "address": "Adresse: Bentzonsvej 50B, 2000 Frederiksberg, Danmark"
+      }
     },
-    "termsOfService": {
-      "label": "Vilkår & Betingelser",
-      "title": "Vilkår for",
-      "subtitle": "Service",
-      "description": "Læs venligst vores vilkår omhyggeligt før du afgiver en bestilling."
+    "terms": {
+      "hero": {
+        "tag": "Brugsbetingelser",
+        "title": "VILKÅR FOR",
+        "titleItalic": "SERVICE",
+        "effectiveDate": "Sidst opdateret: 19. oktober 2025.",
+        "subtitle": "Ved at bruge vores atelier-tjenester accepterer du følgende husets regler."
+      },
+      "operator": {
+        "label": "INTETKØN / Emilie Kallager",
+        "location": "Frederiksberg, Danmark",
+        "contact": "info@intetkon.com"
+      },
+      "sections": {
+        "overview": {
+          "number": "01",
+          "title": "Oversigt",
+          "description": "Ved at besøge vores websted og/eller købe noget fra os deltager du i vores \"Service\" og accepterer at være bundet af disse servicevilkår (\"Vilkår\"), herunder yderligere vilkår, politikker og meddelelser, der henvises til her eller er tilgængelige via hyperlink."
+        },
+        "storeTerms": {
+          "title": "Butik vilkår",
+          "description": "Du bekræfter, at du er myndig. Du må ikke bruge vores produkter til noget uautoriseret eller ulovligt formål, herunder krænkelse af ophavsret."
+        },
+        "generalConditions": {
+          "title": "Generelle betingelser",
+          "description": "Vi forbeholder os ret til at nægte service. Dit indhold kan blive overført ukrypteret (ekskl. betalingsdata, som altid er krypteret)."
+        },
+        "accuracy": {
+          "number": "4",
+          "title": "Nøjagtighed & Aktualitet",
+          "description": "Vi er ikke ansvarlige, hvis oplysninger på dette websted ikke er nøjagtige eller aktuelle. Materiale er til generel information, og tillid er på dit eget ansvar."
+        },
+        "modifications": {
+          "number": "5 & 6",
+          "title": "Ændringer & Produkter",
+          "description": "Priserne kan ændres uden varsel. Vi forbeholder os ret til at ændre eller stoppe services. Vi har gjort vores bedste for at vise farver nøjagtigt, men skærmvisninger varierer."
+        },
+        "billing": {
+          "number": "7 & 8",
+          "title": "Fakturering & Betalinger",
+          "description": "Vi forbeholder os ret til at nægte enhver ordre. Betalinger behandles af tredjepartsudbyders som Stripe. Du accepterer at give nuværende, fuldstændig og nøjagtig indkøbsinformation for alle transaktioner."
+        },
+        "userContent": {
+          "number": "10",
+          "title": "Brugerindhold & Feedback",
+          "description": "Hvis du indsender kreative ideer eller kommentarer, kan vi redigere, kopiere og distribuere dem i ethvert medium uden forpligtelse til at betale kompensation eller svare."
+        },
+        "prohibitedUses": {
+          "number": "13",
+          "title": "Forbudt brug",
+          "description": "Det er forbudt at bruge webstedet til ulovlige formål, krænke intellektuel ejendom, overføre vira eller skrabere indhold. Overtrædelse resulterer i øjeblikkelig opsigelse."
+        },
+        "liability": {
+          "number": "14",
+          "title": "Ansvarsbegrænsning",
+          "description": "Servicen og alle produkter leveres \"som er\" og \"som tilgængelig\" uden garantier af nogen art. Under ingen omstændigheder er INTETKØN ansvarlig for nogen skade, tab, krav eller indirekte skader som følge af din brug af servicen."
+        },
+        "governingLaw": {
+          "number": "19",
+          "title": "Gældende lov",
+          "description": "Disse vilkår skal være styret af og fortolkes i overensstemmelse med lovene i Danmark."
+        },
+        "changes": {
+          "number": "20",
+          "title": "Ændringer af vilkår",
+          "description": "Vi forbeholder os ret til at opdatere eller erstatte enhver del af disse vilkår ved at poste opdateringer til vores websted."
+        }
+      },
+      "footer": {
+        "heading": "Spørgsmål om vilkårene?",
+        "description": "Send os en e-mail, og vores atelierkoncern vil kontakte dig.",
+        "email": "info@intetkon.com"
+      }
     },
     "careers": {
-      "label": "Bliv en del af vores team",
-      "title": "Karriere",
-      "subtitle": "Muligheder",
-      "description": "Vi søger altid talentfulde, passionerede mennesker til at joininere os."
+      "hero": {
+        "tag": "Muligheder",
+        "title": "TILSLUT DIG",
+        "titleItalic": "ATELIERET",
+        "subtitle": "Hjælp os med at omskrive mode-reglerne. Vi bygger et gemeenskabsdrevent studie, hvor håndværk møder inklusion."
+      },
+      "jobCard": {
+        "status": "Vi ansætter nu",
+        "positionType": "Praktikplads",
+        "title": "Motiveret praktikant",
+        "quote": "Hvis du er passioneret omkring kønsneutralt design, genbrug og læring ved gørelse, vil vi gerne høre fra dig.",
+        "howToApply": "Sådan ansøger du",
+        "description": "Send venligst din ansøgning, CV og portefølje til vores atelierkoncern. Vi gennemgår ansøgninger løbende.",
+        "button": "Ansøg via e-mail"
+      },
+      "marquee": ["Tilslut dig Revolutionen", "Omskriv Reglerne", "Kønneutralt Fremtid"]
+    },
+    "patternTester": {
+      "hero": {
+        "tag": "Samarbejd med os",
+        "title": "TEST VORES",
+        "titleItalic": "MØNSTRE",
+        "subtitle": "Præcision er en kollektiv indsats. Tilslut dig vores gruppe af testere og hjælp os med at skabe den perfekte pasform til enhver krop."
+      },
+      "cta": {
+        "button": "TILMELD DIG NU",
+        "description": "Udfyld detaljerne nedenfor for at tilmelde dig testerpuljen."
+      },
+      "lookingFor": {
+        "title": "Hvad vi leder efter",
+        "items": [
+          "Mellemliggende til avancerede syningsfærdigheder",
+          "Evne til at give detaljeret feedback på pasform",
+          "Tydelig fotografering af færdige produkter"
+        ]
+      },
+      "footer": {
+        "text": "Når du ansøger, godkender du vores privatpolitik i forhold til vores behandling af data."
+      }
+    },
+    "workshops": {
+      "tag": "Fysisk undervisning",
+      "title": "STUDIO-SESSIONER",
+      "titleItalic": "SESSIONER",
+      "subtitle": "Fra trådning af nål til avanceret drapering. Kom med i atelieret og mestre håndværket bag kønsfri mode."
     }
   }
 }

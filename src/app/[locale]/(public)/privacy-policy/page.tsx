@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Cookie,
   Eye,
@@ -9,8 +11,10 @@ import {
   ShieldCheck,
   UserCheck,
 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const PrivacyPage = () => {
+  const t = useTranslations('pages.privacy')
   return (
     <main className="w-full overflow-x-clip bg-background">
       {/* --- Section 1: Header --- */}
@@ -38,16 +42,16 @@ const PrivacyPage = () => {
           </svg>
 
           <div className="bg-secondary text-white px-5 py-1.5 rounded-full font-bold text-[10px] uppercase tracking-[0.3em] shadow-lg -rotate-2 border-2 border-white mb-8">
-            Legal & Privacy
+            {t('hero.tag')}
           </div>
 
           <h1 className="text-5xl lg:text-[7rem] font-black text-foreground tracking-tighter leading-[0.85] mb-6">
-            PRIVACY <br />
-            <span className="text-orange-500 italic font-serif">POLICY</span>
+            {t('hero.title')} <br />
+            <span className="text-orange-500 italic font-serif">{t('hero.titleItalic')}</span>
           </h1>
           <p className="max-w-xl text-muted-foreground font-light italic">
-            Effective date: 14 March 2026. <br />
-            Your data is handled with the same care as our garments.
+            {t('hero.effectiveDate')} <br />
+            {t('hero.subtitle')}
           </p>
         </div>
       </section>
@@ -59,20 +63,14 @@ const PrivacyPage = () => {
           <div className="p-8 lg:p-12 bg-card border border-border rounded-[3rem] shadow-sm relative overflow-hidden">
             <div className="relative z-10 space-y-4">
               <h2 className="text-2xl font-bold flex items-center gap-2">
-                <ShieldCheck className="text-secondary w-6 h-6" /> Who we are
+                <ShieldCheck className="text-secondary w-6 h-6" /> {t('whoWeAre.heading')}
               </h2>
               <p className="text-muted-foreground leading-relaxed">
-                <strong>INTETKØN</strong> ("we", "us", "our") takes your privacy
-                seriously. This Policy explains what personal data we collect,
-                how we use it, and your rights under the{' '}
-                <strong>
-                  EU/EEA General Data Protection Regulation (GDPR)
-                </strong>
-                .
+                {t('whoWeAre.intro')}
               </p>
               <div className="pt-4 text-sm font-mono text-muted-foreground grid grid-cols-1 md:grid-cols-2 gap-4">
-                <p>Address: Bentzonsvej 50B, 2000 Frederiksberg, Denmark</p>
-                <p>Contact: info@intetkon.com</p>
+                <p>{t('whoWeAre.address')}</p>
+                <p>{t('whoWeAre.contact')}</p>
               </div>
             </div>
             <div className="absolute -bottom-4 -right-4 text-secondary/5 font-black text-8xl italic select-none">
@@ -83,27 +81,10 @@ const PrivacyPage = () => {
           {/* Data Collection Grid */}
           <div className="space-y-8">
             <h3 className="text-3xl font-black tracking-tighter flex items-center gap-3">
-              <Eye className="text-orange-500 w-8 h-8" /> Data We Collect
+              <Eye className="text-orange-500 w-8 h-8" /> {t('dataCollection.heading')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                {
-                  title: 'Browsing',
-                  desc: 'Device usage, IP address, and interaction data via cookies.',
-                },
-                {
-                  title: 'Shopping',
-                  desc: 'Name, email, shipping address, and order history.',
-                },
-                {
-                  title: 'Subscribing',
-                  desc: 'Email address and preferences for our sewing revolution updates.',
-                },
-                {
-                  title: 'Workshops',
-                  desc: 'Registration details, sessions, and accessibility preferences.',
-                },
-              ].map((item, i) => (
+              {t.raw('dataCollection.items').map((item: any, i: number) => (
                 <div
                   key={i}
                   className="p-6 rounded-4xl border border-border bg-background hover:border-secondary transition-colors"
@@ -112,7 +93,7 @@ const PrivacyPage = () => {
                     {item.title}
                   </h4>
                   <p className="text-muted-foreground text-sm font-light">
-                    {item.desc}
+                    {item.description}
                   </p>
                 </div>
               ))}
@@ -122,14 +103,11 @@ const PrivacyPage = () => {
           {/* Purpose & Legal Basis */}
           <div className="space-y-6">
             <h3 className="text-3xl font-black tracking-tighter">
-              Purposes & Legal Bases
+              {t('purposes.heading')}
             </h3>
             <div className="prose prose-orange max-w-none text-muted-foreground font-light leading-relaxed space-y-4">
               <p>
-                We process your data to provide our services (contract
-                necessity), process payments via <strong>Stripe</strong>{' '}
-                (legitimate interests), communicate with you, and ensure legal
-                compliance with tax and accounting obligations.
+                {t('purposes.description')}
               </p>
             </div>
           </div>
@@ -138,22 +116,13 @@ const PrivacyPage = () => {
           <div className="relative p-10 bg-secondary/5 rounded-[3rem] border border-secondary/20">
             <div className="space-y-6">
               <h3 className="text-3xl font-black tracking-tighter flex items-center gap-3">
-                <Scale className="text-secondary w-8 h-8" /> Your Rights
+                <Scale className="text-secondary w-8 h-8" /> {t('rights.heading')}
               </h3>
               <p className="text-muted-foreground font-light">
-                Under GDPR, you have the right to{' '}
-                <strong>access, correct, delete, or restrict</strong> your data.
-                To exercise these rights or lodge a complaint, simply contact
-                our studio team.
+                {t('rights.description')}
               </p>
               <div className="flex flex-wrap gap-3">
-                {[
-                  'Access',
-                  'Correction',
-                  'Deletion',
-                  'Portability',
-                  'Objection',
-                ].map((tag) => (
+                {t.raw('rights.tags').map((tag: string) => (
                   <span
                     key={tag}
                     className="px-4 py-1.5 rounded-full bg-white border border-secondary/20 text-[10px] font-bold uppercase tracking-wider text-secondary"
@@ -169,22 +138,18 @@ const PrivacyPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div className="space-y-4">
               <h4 className="text-xl font-bold flex items-center gap-2">
-                <Lock className="text-orange-500 w-5 h-5" /> Payments (Stripe)
+                <Lock className="text-orange-500 w-5 h-5" /> {t('payments.heading')}
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed font-light">
-                We use Stripe for secure transactions. They act as a processor
-                and receive identifiers necessary for fraud detection. We do not
-                store your payment card data on our servers.
+                {t('payments.description')}
               </p>
             </div>
             <div className="space-y-4">
               <h4 className="text-xl font-bold flex items-center gap-2">
-                <Cookie className="text-secondary w-5 h-5" /> Cookies
+                <Cookie className="text-secondary w-5 h-5" /> {t('cookies.heading')}
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed font-light">
-                We use cookies for core site functionality, analytics, and
-                performance. You can manage your preferences via our cookie
-                banner or browser settings at any time.
+                {t('cookies.description')}
               </p>
             </div>
           </div>
@@ -194,20 +159,18 @@ const PrivacyPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm text-muted-foreground font-light">
               <div className="space-y-2">
                 <h5 className="font-bold text-foreground flex items-center gap-2">
-                  <Globe className="w-4 h-4" /> International Transfers
+                  <Globe className="w-4 h-4" /> {t('finalDetails.internationalTransfers.heading')}
                 </h5>
                 <p>
-                  Data transferred outside the EU/EEA relies on Standard
-                  Contractual Clauses or recognized frameworks.
+                  {t('finalDetails.internationalTransfers.description')}
                 </p>
               </div>
               <div className="space-y-2">
                 <h5 className="font-bold text-foreground flex items-center gap-2">
-                  <UserCheck className="w-4 h-4" /> Age of Consent
+                  <UserCheck className="w-4 h-4" /> {t('finalDetails.ageOfConsent.heading')}
                 </h5>
                 <p>
-                  By using this site, you confirm you are of legal age or have
-                  parental consent.
+                  {t('finalDetails.ageOfConsent.description')}
                 </p>
               </div>
             </div>
@@ -217,16 +180,16 @@ const PrivacyPage = () => {
           <div className="flex flex-col items-center py-16 bg-foreground text-background rounded-[4rem] text-center px-6">
             <Mail className="w-12 h-12 text-orange-500 mb-6" />
             <h3 className="text-4xl font-black tracking-tighter mb-4">
-              Questions or Requests?
+              {t('footer.heading')}
             </h3>
             <p className="text-background/70 mb-8 max-w-md font-light italic">
-              Our studio team is here to help with any privacy concerns.
+              {t('footer.description')}
             </p>
             <a
               href="mailto:info@intetkon.com"
               className="text-2xl font-bold hover:text-orange-500 transition-colors underline decoration-orange-500 underline-offset-8"
             >
-              info@intetkon.com
+              {t('footer.email')}
             </a>
           </div>
         </div>

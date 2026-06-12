@@ -1,6 +1,7 @@
 'use client'
 
 import ProductGrid from '@src/components/product/ProductGrid'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import type { Category, Product } from 'sanity.types'
 
@@ -10,6 +11,7 @@ interface ProductsViewProps {
 }
 
 const ProductsView = ({ products, categories }: ProductsViewProps) => {
+  const t = useTranslations()
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
   const filteredProducts = activeCategory
@@ -36,7 +38,7 @@ const ProductsView = ({ products, categories }: ProductsViewProps) => {
                   : 'bg-card border border-border text-muted-foreground hover:border-orange-500'
               }`}
           >
-            All Pieces
+            {t('patterns.categories.allPieces')}
           </button>
 
           {categories.map((category) => (
@@ -64,7 +66,7 @@ const ProductsView = ({ products, categories }: ProductsViewProps) => {
         ) : (
           <div className="py-24 text-center border-2 border-dashed border-border rounded-[3rem]">
             <p className="text-sm font-serif italic text-muted-foreground">
-              No pieces found in this collection...
+              {t('shop.noPieces')}
             </p>
           </div>
         )}
