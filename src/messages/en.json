@@ -511,7 +511,30 @@
       },
       "footer": {
         "text": "By applying, you agree to our privacy policy regarding data handling."
-      }
+      },
+      "form": {
+        "applyNow": "APPLY NOW",
+        "description": "Fill out the details below to join the tester pool.",
+        "firstName": "First Name",
+        "firstNamePlaceholder": "Emilie",
+        "emailAddress": "Email Address",
+        "emailPlaceholder": "info@intetkon.com",
+        "sewingLevel": "Sewing Level",
+        "selectLevel": "Select level",
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "tellUsAbout": "Tell us about your style",
+        "stylePlaceholder": "Tell us about the machines you use and your favorite fabrics...",
+        "submitButton": "Submit Application",
+        "submitting": "Submitting…",
+        "youreInPool": "You're in the pool!",
+        "successMessage": "We'll reach out when a new pattern is ready for testing. Keep an eye on your inbox.",
+        "alreadyInPool": "You're already in our tester pool - we've updated your details.",
+        "error": "Something went wrong. Please try again.",
+        "privacy": "By applying, you agree to our privacy policy regarding data handling."
+      },
+      "marqueeBottom": ["Feedback Loop", "Perfecting the Fit", "Community Craft"]
     },
     "workshops": {
       "tag": "Live Learning",

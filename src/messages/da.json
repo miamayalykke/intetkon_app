@@ -511,7 +511,30 @@
       },
       "footer": {
         "text": "Når du ansøger, godkender du vores privatpolitik i forhold til vores behandling af data."
-      }
+      },
+      "form": {
+        "applyNow": "ANSØG NU",
+        "description": "Udfyld detaljerne nedenfor for at tilmelde dig testerpuljen.",
+        "firstName": "Fornavn",
+        "firstNamePlaceholder": "Emilie",
+        "emailAddress": "E-mailadresse",
+        "emailPlaceholder": "info@intetkon.com",
+        "sewingLevel": "Syningsniveau",
+        "selectLevel": "Vælg niveau",
+        "beginner": "Begynder",
+        "intermediate": "Mellemliggende",
+        "advanced": "Avanceret",
+        "tellUsAbout": "Fortæl os om din stil",
+        "stylePlaceholder": "Fortæl os om de maskiner, du bruger, og dine yndlingsstoffer...",
+        "submitButton": "Indsend Ansøgning",
+        "submitting": "Sender…",
+        "youreInPool": "Du er nu i puljen!",
+        "successMessage": "Vi kontakter dig, når et nyt mønster er klar til test. Husk at tjekke din indbakke.",
+        "alreadyInPool": "Du er allerede i vores testerpulje - vi har opdateret dine oplysninger.",
+        "error": "Noget gik galt. Prøv igen.",
+        "privacy": "Når du ansøger, godkender du vores privatpolitik i forhold til vores behandling af data."
+      },
+      "marqueeBottom": ["Feedback Loop", "Perfecting the Fit", "Community Craft"]
     },
     "workshops": {
       "tag": "Fysisk undervisning",

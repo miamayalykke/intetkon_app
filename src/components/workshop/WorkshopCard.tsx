@@ -4,6 +4,7 @@ import { Button } from '@ui/button'
 import { addMinutes, format } from 'date-fns'
 import { ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale } from 'next-intl'
 import type { WORKSHOPS_QUERYResult } from '../../../sanity.types'
 
 type WorkshopItem = WORKSHOPS_QUERYResult[number]
@@ -17,6 +18,7 @@ const parseDuration = (duration: string): number => {
 }
 
 const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
+  const locale = useLocale()
   const signUps = workshop.currentSignUps ?? 0
   const maxSpots = workshop.maxAllocation ?? 0
   const isFull = signUps >= maxSpots
@@ -77,7 +79,7 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
           </div>
 
           <Link
-            href={`/workshops/${workshop.slug?.current}`}
+            href={`/${locale}/workshops/${workshop.slug?.current}`}
             className="w-full"
           >
             <Button
