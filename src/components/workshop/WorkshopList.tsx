@@ -44,7 +44,7 @@ export default function WorkshopList({
 
       {filtered.length === 0 ? (
         <p className="text-center text-muted-foreground italic py-24">
-          {t('workshops.noUpcoming')}
+          {t('pages.workshops.noUpcoming')}
         </p>
       ) : (
         <div className="grid grid-cols-1 gap-12">

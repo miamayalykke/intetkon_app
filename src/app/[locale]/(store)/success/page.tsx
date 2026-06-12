@@ -4,12 +4,13 @@ import { Button } from '@ui/button'
 import { ArrowRight, Check, Heart, Scissors, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { useEffect, useState } from 'react'
 import useBasketStore from '@store/store'
 
 function SuccessPage() {
   const t = useTranslations()
+  const locale = useLocale()
   const searchParams = useSearchParams()
   const router = useRouter()
   const orderNumber = searchParams.get('orderNumber')
@@ -18,12 +19,12 @@ function SuccessPage() {
 
   useEffect(() => {
     if (!orderNumber) {
-      router.replace('/basket')
+      router.replace(`/${locale}/basket`)
       return
     }
     clearBasket()
     setIsHydrated(true)
-  }, [orderNumber, clearBasket, router])
+  }, [orderNumber, clearBasket, router, locale])
 
   if (!orderNumber || !isHydrated) return null
 

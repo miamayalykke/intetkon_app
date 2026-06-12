@@ -1,12 +1,21 @@
 'use client'
 
+import {
+  createCheckoutSession,
+  type Metadata,
+} from '@actions/createCheckoutSession'
+import { generateOrderNumber } from '@actions/generateOrderNumber'
+import {
+  type ItemForValidation,
+  type PromoValidationResult,
+  validatePromoCode,
+} from '@actions/validatePromoCode'
 import { SignInButton, useAuth, useUser } from '@clerk/nextjs'
 import BasketItemControls from '@src/components/BasketItemControls'
 import Loader from '@src/components/Loader'
 import { imageUrl } from '@src/lib/imageUrl'
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
-import { useTranslations } from 'next-intl'
-import { usePathname } from 'next/navigation'
+import useBasketStore from '@store/store'
 import { Button } from '@ui/button'
 import {
   ArrowRight,
@@ -18,18 +27,9 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import {
-  createCheckoutSession,
-  type Metadata,
-} from '@actions/createCheckoutSession'
-import { generateOrderNumber } from '@actions/generateOrderNumber'
-import {
-  type ItemForValidation,
-  type PromoValidationResult,
-  validatePromoCode,
-} from '@actions/validatePromoCode'
-import useBasketStore from '@store/store'
 
 const BasketPage = () => {
   const t = useTranslations()
@@ -56,7 +56,6 @@ const BasketPage = () => {
   const [guestName, setGuestName] = useState('')
   const [guestFormError, setGuestFormError] = useState<string | null>(null)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
-
 
   useEffect(() => {
     setIsClient(true)
@@ -183,6 +182,7 @@ const BasketPage = () => {
         groupedItems,
         metadata,
         appliedPromo?.stripePromoCodeId,
+        locale,
       )
       if (checkoutUrl) window.location.href = checkoutUrl
     } catch (error) {
@@ -221,7 +221,9 @@ const BasketPage = () => {
         </div>
         <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none">
           {t('basket.title')}{' '}
-          <span className="text-orange-500 italic font-serif">{t('basket.titleItalic')}</span>
+          <span className="text-orange-500 italic font-serif">
+            {t('basket.titleItalic')}
+          </span>
         </h1>
       </header>
 
@@ -232,20 +234,28 @@ const BasketPage = () => {
             const id = item.data._id
             const name =
               item.itemType === 'product'
-                ? (getLocalizedField<string>(item.data.name as any, locale) ?? 'Unnamed Product')
-                : (getLocalizedField<string>(item.data.title as any, locale) ?? 'Workshop')
+                ? (getLocalizedField<string>(item.data.name as any, locale) ??
+                  'Unnamed Product')
+                : (getLocalizedField<string>(item.data.title as any, locale) ??
+                  'Workshop')
             const price = item.data.price ?? 0
             const image = item.data.image
             const rawSlug = item.data.slug
             const slugCurrent =
-              typeof rawSlug === 'object' && rawSlug !== null && !Array.isArray(rawSlug)
+              typeof rawSlug === 'object' &&
+              rawSlug !== null &&
+              !Array.isArray(rawSlug)
                 ? (rawSlug as any).current
-                : (getLocalizedField<{ current: string }>(rawSlug as any, locale)?.current ?? '')
+                : (getLocalizedField<{ current: string }>(
+                    rawSlug as any,
+                    locale,
+                  )?.current ?? '')
             const href =
               item.itemType === 'product'
                 ? `/${locale}/product/${slugCurrent}`
                 : `/${locale}/workshops/${slugCurrent}`
-            const tag = item.itemType === 'workshop' ? t('basket.workshopTag') : null
+            const tag =
+              item.itemType === 'workshop' ? t('basket.workshopTag') : null
 
             return (
               <div
@@ -303,7 +313,8 @@ const BasketPage = () => {
             </div>
 
             <h3 className="text-2xl font-black tracking-tighter uppercase mb-8 flex items-center gap-2">
-              <Lock className="w-4 h-4 text-orange-500" /> {t('basket.checkoutSummary')}
+              <Lock className="w-4 h-4 text-orange-500" />{' '}
+              {t('basket.checkoutSummary')}
             </h3>
 
             {/* --- Promo Code Input --- */}
@@ -375,7 +386,9 @@ const BasketPage = () => {
                     </span>
                   </div>
                   <div className="flex justify-between text-green-600 font-bold">
-                    <span>{t('basket.discount')} ({appliedPromo.label})</span>
+                    <span>
+                      {t('basket.discount')} ({appliedPromo.label})
+                    </span>
                     <span>
                       -
                       {(Number(totalPrice) - Number(discountedTotal)).toFixed(
@@ -389,7 +402,9 @@ const BasketPage = () => {
               {!appliedPromo && (
                 <div className="flex justify-between text-muted-foreground font-light">
                   <span>{t('basket.shipping')}</span>
-                  <span className="italic">{t('basket.shippingCalculated')}</span>
+                  <span className="italic">
+                    {t('basket.shippingCalculated')}
+                  </span>
                 </div>
               )}
               <div className="pt-6 border-t border-dashed border-border flex justify-between items-baseline">
@@ -410,11 +425,15 @@ const BasketPage = () => {
                   size="4xl"
                   className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
                 >
-                  {isLoading ? t('basket.processing') : t('basket.completePurchase')}
+                  {isLoading
+                    ? t('basket.processing')
+                    : t('basket.completePurchase')}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 {checkoutError && (
-                  <p className="text-sm text-red-500 font-bold text-center">{checkoutError}</p>
+                  <p className="text-sm text-red-500 font-bold text-center">
+                    {checkoutError}
+                  </p>
                 )}
               </div>
             ) : showGuestForm ? (
@@ -468,7 +487,9 @@ const BasketPage = () => {
                   size="4xl"
                   className="w-full rounded-full bg-foreground hover:bg-orange-500 text-white font-bold h-20 text-xl transition-all shadow-xl shadow-orange-500/10 group"
                 >
-                  {isLoading ? t('basket.processing') : t('basket.completePurchase')}
+                  {isLoading
+                    ? t('basket.processing')
+                    : t('basket.completePurchase')}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Button>
                 <button
@@ -507,7 +528,10 @@ const BasketPage = () => {
           <div className="mt-8 p-6 text-center">
             <p className="text-xs text-muted-foreground font-light italic leading-relaxed">
               {t('basket.footerText')}{' '}
-              <Link href={`/${locale}/return-policy`} className="underline hover:text-orange-500">
+              <Link
+                href={`/${locale}/return-policy`}
+                className="underline hover:text-orange-500"
+              >
                 {t('basket.returnPolicy')}
               </Link>
               .

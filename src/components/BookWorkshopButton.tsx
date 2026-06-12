@@ -2,8 +2,8 @@
 
 import { Button } from '@ui/button'
 import { ShoppingBag } from 'lucide-react'
+import { useLocale, useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { useTranslations } from 'next-intl'
 import type { WorkshopCartData } from '../../store/store'
 import useBasketStore from '../../store/store'
 
@@ -16,11 +16,12 @@ export function BookWorkshopButton({ workshop, isFull }: Props) {
   const addWorkshop = useBasketStore((state) => state.addWorkshop)
   const router = useRouter()
   const t = useTranslations()
+  const locale = useLocale()
 
   const handleAddToCart = () => {
     if (isFull) return
     addWorkshop(workshop)
-    router.push('/basket')
+    router.push(`/${locale}/basket`)
   }
 
   const buttonClass = `w-full h-16 rounded-full font-black uppercase tracking-widest transition-all ${

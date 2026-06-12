@@ -1,11 +1,12 @@
 'use client'
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs'
 import { Button } from '@ui/button'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 export const UserMenu = () => {
   const { isSignedIn, user, isLoaded } = useUser()
   const t = useTranslations('user')
+  const locale = useLocale()
 
   if (!isLoaded)
     return <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
@@ -35,13 +36,13 @@ export const UserMenu = () => {
           <UserButton.Link
             label={t('myOrders')}
             labelIcon={<span>📦</span>}
-            href="/app/orders"
+            href={`/${locale}/app/orders`}
           />
           {isAdmin && (
             <UserButton.Link
               label={t('admin')}
               labelIcon={<span>⚙️</span>}
-              href="/app"
+              href={`/${locale}/app`}
             />
           )}
         </UserButton.MenuItems>

@@ -17,6 +17,7 @@ export async function createCheckoutSession(
   items: CartItem[],
   metadata: Metadata,
   promoCodeId?: string,
+  locale = 'en',
 ) {
   try {
     const customers = await stripe.customers.list({
@@ -84,8 +85,8 @@ export async function createCheckoutSession(
       ...(promoCodeId
         ? { discounts: [{ promotion_code: promoCodeId }] }
         : { allow_promotion_codes: true }),
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
-      cancel_url: `${baseUrl}/basket`,
+      success_url: `${baseUrl}/${locale}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
+      cancel_url: `${baseUrl}/${locale}/basket`,
       line_items: lineItems,
     })
     return session.url
