@@ -546,6 +546,20 @@
       "titleItalic": "nye mønstre.",
       "subtitle": "Noget smukt er ved at blive syet sammen. Kig forbi snart."
     },
+    "orders": {
+      "tag": "Kontoarkiv",
+      "title": "MINE",
+      "titleItalic": "ORDRER",
+      "subtitle": "Historik over dine digitale og fysiske køb",
+      "empty": "Dit arkiv er i øjeblikket tomt...",
+      "logReference": "Ordrenummer",
+      "totalValuation": "Samlet beløb",
+      "discountApplied": "Rabat anvendt",
+      "quantity": "Antal",
+      "download": "Download",
+      "receiptGenerated": "Digital kvittering genereret",
+      "studioLog": "INTETKØN STUDIE LOG v2.6"
+    },
     "careers": {
       "hero": {
         "tag": "Muligheder",

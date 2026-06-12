@@ -522,6 +522,20 @@
       "titleItalic": "new patterns.",
       "subtitle": "Something beautiful is being sewn together. Check back soon."
     },
+    "orders": {
+      "tag": "Account Archive",
+      "title": "MY",
+      "titleItalic": "ORDERS",
+      "subtitle": "History of your digital & physical acquisitions",
+      "empty": "Your archive is currently empty...",
+      "logReference": "Log Reference",
+      "totalValuation": "Total Valuation",
+      "discountApplied": "Discount Applied",
+      "quantity": "Quantity",
+      "download": "Download",
+      "receiptGenerated": "Digital Receipt Generated",
+      "studioLog": "INTETKØN STUDIO LOG v2.6"
+    },
     "careers": {
       "hero": {
         "tag": "Opportunities",
