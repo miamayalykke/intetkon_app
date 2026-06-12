@@ -17,23 +17,14 @@ async function syncDocToStripe(
   doc: SyncableDocument,
 ): Promise<{ ok: boolean; id: string; error?: string }> {
   try {
-    const resolveLocalized = (field: any): string => {
-      if (typeof field === 'string') return field
-      if (Array.isArray(field)) {
-        const en = field.find((f: any) => f.language === 'en')
-        return en?.value ?? field[0]?.value ?? ''
-      }
-      return ''
-    }
-
     let name: string
     if (doc._type === 'product') {
-      name = resolveLocalized(doc.name) || 'Product'
+      name = doc.name || 'Product'
     } else {
       const dateStr = doc.date
         ? new Date(doc.date).toLocaleDateString('da-DK')
         : 'No date'
-      name = `${resolveLocalized(doc.title) || 'Workshop'} - ${dateStr}`
+      name = `${doc.title || 'Workshop'} - ${dateStr}`
     }
 
     if (doc.stripeProductId) {
@@ -44,7 +35,6 @@ async function syncDocToStripe(
         })
         return { ok: true, id: doc.stripeProductId }
       } catch (updateError: any) {
-        // Stale ID from a different Stripe environment — clear it and create fresh
         if (updateError?.code === 'resource_missing') {
           await backendClient
             .patch(doc._id)
@@ -78,8 +68,8 @@ async function runSync() {
     *[_type in ["product", "workshop"]] {
       _id,
       _type,
-      name,
-      title,
+      "name": name[language == "en"][0].value,
+      "title": title[language == "en"][0].value,
       price,
       stripeProductId,
       date,
