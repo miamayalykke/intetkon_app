@@ -15,8 +15,8 @@ const intlMiddleware = createMiddleware({
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl
 
-  // Skip i18n routing for studio and admin routes
-  if (pathname.startsWith('/studio') || pathname.startsWith('/app')) {
+  // Skip i18n routing for API routes, studio and admin routes
+  if (pathname.startsWith('/api') || pathname.startsWith('/studio') || pathname.startsWith('/app')) {
     return
   }
 
