@@ -117,7 +117,8 @@
       "studioSession": "Studio Session",
       "soldOut": "Udsolgt",
       "spotsRemaining": "{count} pladser tilbage",
-      "materialsIncluded": "Materialer inkluderet i prisen"
+      "materialsIncluded": "Materialer inkluderet i prisen",
+      "online": "Online"
     },
     "card": {
       "soldOut": "Udsolgt",

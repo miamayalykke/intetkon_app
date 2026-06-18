@@ -22,7 +22,7 @@ export interface OrderProduct {
   quantity: number
   price: number
   productType: 'digital' | 'physical_course' | 'physical'
-  downloadUrl?: string
+  downloadUrls?: { label: string; url: string }[]
   courseDate?: string
   courseLocation?: string
   courseDuration?: string
@@ -50,8 +50,10 @@ const translations = {
     dateLabel: 'Date',
     sessionDetailsLabel: 'Your session details',
     downloadNote:
-      'Your download link is valid for 48 hours. You can always generate a fresh one from your orders page.',
+      'Your download links are valid for 48 hours. You can always generate fresh ones from your orders page.',
     downloadButton: 'Download now',
+    downloadEn: 'Download (English)',
+    downloadDa: 'Download (Danish)',
     courseNote:
       'Materials are included in the price. Please arrive 10 minutes before the session starts.',
     shippingNote:
@@ -70,8 +72,10 @@ const translations = {
     dateLabel: 'Dato',
     sessionDetailsLabel: 'Dine sessionsdetaljer',
     downloadNote:
-      'Dit downloadlink er gyldigt i 48 timer. Du kan altid generere et nyt fra din ordrehistorik.',
+      'Dine downloadlinks er gyldige i 48 timer. Du kan altid generere nye fra din ordrehistorik.',
     downloadButton: 'Download nu',
+    downloadEn: 'Download (Engelsk)',
+    downloadDa: 'Download (Dansk)',
     courseNote:
       'Materialer er inkluderet i prisen. Vær venlig at ankomme 10 minutter inden sessionen starter.',
     shippingNote:
@@ -137,12 +141,14 @@ export default function OrderConfirmationEmail({
                   </Text>
                 )}
 
-                {item.productType === 'digital' && item.downloadUrl && (
+                {item.productType === 'digital' && item.downloadUrls && item.downloadUrls.length > 0 && (
                   <>
                     <Text style={note}>{t.downloadNote}</Text>
-                    <Button style={button} href={item.downloadUrl}>
-                      {t.downloadButton}
-                    </Button>
+                    {item.downloadUrls.map((dl) => (
+                      <Button key={dl.label} style={{ ...button, marginRight: '8px' }} href={dl.url}>
+                        {dl.label}
+                      </Button>
+                    ))}
                   </>
                 )}
 

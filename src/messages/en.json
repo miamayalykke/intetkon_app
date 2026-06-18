@@ -117,7 +117,8 @@
       "studioSession": "Studio Session",
       "soldOut": "Sold Out",
       "spotsRemaining": "{count} Spots Remaining",
-      "materialsIncluded": "Materials Included in Price"
+      "materialsIncluded": "Materials Included in Price",
+      "online": "Online"
     },
     "card": {
       "soldOut": "Sold Out",

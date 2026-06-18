@@ -1,6 +1,7 @@
 import { getProductBySlug } from '@sanity/lib/products/getProductBySlug'
 import AddToBasketButton from '@src/components/AddToBasketButton'
 import { imageUrl } from '@src/lib/imageUrl'
+import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 import { ArrowLeft, Info, Ruler, Scissors, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -22,6 +23,7 @@ const ProductPage = async ({
 
   if (!product) notFound()
 
+  const productName = getLocalizedField<string>(product.name as any, locale) ?? 'Product'
   const isOutOfStock = product.stock != null && product.stock <= 0
 
   return (
@@ -44,7 +46,7 @@ const ProductPage = async ({
               {product.image && (
                 <Image
                   src={imageUrl(product.image).url()}
-                  alt={product.name ?? 'Product image'}
+                  alt={productName}
                   fill
                   priority
                   className="object-cover transition-transform duration-700 hover:scale-105"
@@ -69,9 +71,9 @@ const ProductPage = async ({
                 <Sparkles className="w-3 h-3" /> {t('newDrop')}
               </div>
               <h1 className="text-4xl lg:text-6xl font-black tracking-tighter leading-[0.9] text-foreground">
-                {product.name?.split(' ').slice(0, -1).join(' ')} <br />
+                {productName.split(' ').slice(0, -1).join(' ')} <br />
                 <span className="text-orange-500 italic font-serif">
-                  {product.name?.split(' ').pop()}
+                  {productName.split(' ').pop()}
                 </span>
               </h1>
               <div className="text-3xl font-black tracking-tighter text-foreground/90">

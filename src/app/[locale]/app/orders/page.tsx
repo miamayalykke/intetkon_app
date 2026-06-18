@@ -168,7 +168,7 @@ async function Orders({ params }: { params: Promise<{ locale: string }> }) {
                               {item.product?.productType === 'digital' &&
                                 item.product?._id && (
                                   <a
-                                    href={`/api/download/${item.product._id}`}
+                                    href={`/api/download/${item.product._id}?locale=${locale}`}
                                     className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors mt-1"
                                   >
                                     <Download className="w-3 h-3" />

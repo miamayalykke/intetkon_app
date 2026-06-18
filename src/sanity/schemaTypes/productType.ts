@@ -60,7 +60,6 @@ export const productType = defineType({
       options: {
         list: [
           { title: 'Digital (PDF / file)', value: 'digital' },
-          { title: 'Physical Course', value: 'physical_course' },
           { title: 'Physical Item', value: 'physical' },
         ],
         layout: 'radio',
@@ -88,9 +87,18 @@ export const productType = defineType({
     }),
     defineField({
       name: 's3Key',
-      title: 'S3 File Key',
+      title: 'S3 File Key (English)',
       description:
-        'The S3 object key for the downloadable file (digital products only)',
+        'The S3 object key for the English downloadable file (digital products only)',
+      type: 'string',
+      components: { input: S3FileUpload },
+      hidden: ({ document }) => document?.productType !== 'digital',
+    }),
+    defineField({
+      name: 's3KeyDa',
+      title: 'S3 File Key (Danish)',
+      description:
+        'The S3 object key for the Danish downloadable file. Falls back to the English file if not set.',
       type: 'string',
       components: { input: S3FileUpload },
       hidden: ({ document }) => document?.productType !== 'digital',

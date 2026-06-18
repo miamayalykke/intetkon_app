@@ -2,7 +2,7 @@ import { SendEmailCommand } from '@aws-sdk/client-sesv2'
 import { render } from '@react-email/render'
 import { backendClient } from '@sanity/lib/backendClient'
 import { blockContentToHtml } from '@src/lib/blockContentToHtml'
-import { getPresignedDownloadUrl } from '@src/lib/s3-client'
+
 import { ORDER_FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
 import stripe from '@src/lib/stripe'
 import { headers } from 'next/headers'
@@ -178,6 +178,7 @@ async function sendOrderConfirmationEmail(
       price: number
       productType?: 'digital' | 'physical_course' | 'physical'
       s3Key?: string
+      s3KeyDa?: string
       courseDate?: string
       courseLocation?: string
       date?: string
@@ -194,6 +195,7 @@ async function sendOrderConfirmationEmail(
       price,
       productType,
       s3Key,
+      s3KeyDa,
       courseDate,
       courseLocation,
       date,
@@ -211,9 +213,23 @@ async function sendOrderConfirmationEmail(
 
     const isWorkshop = detail._type === 'workshop'
 
-    let downloadUrl: string | undefined
-    if (!isWorkshop && detail.productType === 'digital' && detail.s3Key) {
-      downloadUrl = await getPresignedDownloadUrl(detail.s3Key)
+    const downloadUrls: { label: string; url: string }[] = []
+    if (!isWorkshop && detail.productType === 'digital') {
+      const enLabel = locale === 'da' ? 'Download (Engelsk)' : 'Download (English)'
+      const daLabel = locale === 'da' ? 'Download (Dansk)' : 'Download (Danish)'
+      const sessionId = session.id
+      if (detail.s3Key) {
+        downloadUrls.push({
+          label: enLabel,
+          url: `${baseUrl}/api/download/${detail._id}?session=${sessionId}&locale=en`,
+        })
+      }
+      if (detail.s3KeyDa) {
+        downloadUrls.push({
+          label: daLabel,
+          url: `${baseUrl}/api/download/${detail._id}?session=${sessionId}&locale=da`,
+        })
+      }
     }
 
     products.push({
@@ -225,12 +241,12 @@ async function sendOrderConfirmationEmail(
       productType: isWorkshop
         ? 'physical_course'
         : (detail.productType ?? 'physical'),
-      downloadUrl,
+      downloadUrls: downloadUrls.length > 0 ? downloadUrls : undefined,
       courseDate: isWorkshop ? detail.date : detail.courseDate,
       courseLocation: isWorkshop ? detail.location : detail.courseLocation,
       courseDuration: isWorkshop ? detail.duration : undefined,
       productUrl: detail.slug?.current
-        ? `${baseUrl}${isWorkshop ? '/workshops' : '/product'}/${detail.slug.current}`
+        ? `${baseUrl}/${locale}${isWorkshop ? '/workshops' : '/product'}/${detail.slug.current}`
         : undefined,
     })
   }
@@ -248,7 +264,7 @@ async function sendOrderConfirmationEmail(
       totalPrice: amount_total ? amount_total / 100 : 0,
       currency: currency ?? 'dkk',
       products,
-      ordersPageUrl: `${baseUrl}/app/orders`,
+      ordersPageUrl: `${baseUrl}/${locale}/app/orders`,
       locale,
     }),
   )
