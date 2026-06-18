@@ -75,6 +75,12 @@ export const internationalizedArraySlug = defineType({
           name: 'value',
           type: 'slug',
           options: {
+            source: (doc: any, context: any) => {
+              const language = context.parent?.language
+              const nameOrTitle = doc.name || doc.title || []
+              const match = nameOrTitle.find((n: any) => n.language === language)
+              return match?.value ?? ''
+            },
             slugify: (input: string) =>
               input
                 .toLowerCase()
@@ -84,6 +90,15 @@ export const internationalizedArraySlug = defineType({
                 .replace(/[^a-z0-9]+/g, '-')
                 .replace(/^-+|-+$/g, ''),
           },
+          validation: (Rule) =>
+            Rule.custom((value: any) => {
+              const current = value?.current
+              if (!current) return true
+              if (/[\sæøå]/i.test(current)) {
+                return 'Slug must not contain spaces or Danish characters (æ, ø, å) — use ae, o, a instead.'
+              }
+              return true
+            }),
         }),
       ],
     } as any,
