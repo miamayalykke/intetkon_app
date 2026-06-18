@@ -74,6 +74,16 @@ export const internationalizedArraySlug = defineType({
         defineField({
           name: 'value',
           type: 'slug',
+          options: {
+            slugify: (input: string) =>
+              input
+                .toLowerCase()
+                .replace(/æ/g, 'ae')
+                .replace(/ø/g, 'o')
+                .replace(/å/g, 'a')
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, ''),
+          },
         }),
       ],
     } as any,
