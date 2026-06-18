@@ -177,7 +177,7 @@ async function sendOrderConfirmationEmail(
       title?: string
       price: number
       productType?: 'digital' | 'physical_course' | 'physical'
-      s3Key?: string
+      s3KeyEn?: string
       s3KeyDa?: string
       courseDate?: string
       courseLocation?: string
@@ -194,7 +194,7 @@ async function sendOrderConfirmationEmail(
       "title": title[language == $locale][0].value,
       price,
       productType,
-      s3Key,
+      s3KeyEn,
       s3KeyDa,
       courseDate,
       courseLocation,
@@ -218,7 +218,7 @@ async function sendOrderConfirmationEmail(
       const enLabel = locale === 'da' ? 'Download (Engelsk)' : 'Download (English)'
       const daLabel = locale === 'da' ? 'Download (Dansk)' : 'Download (Danish)'
       const sessionId = session.id
-      if (detail.s3Key) {
+      if (detail.s3KeyEn) {
         downloadUrls.push({
           label: enLabel,
           url: `${baseUrl}/api/download/${detail._id}?session=${sessionId}&locale=en`,

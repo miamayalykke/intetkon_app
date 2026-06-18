@@ -23,6 +23,8 @@ export async function getMyOrders(
           price,
           productType,
           image,
+          "hasEnFile": defined(s3KeyEn),
+          "hasDaFile": defined(s3KeyDa),
         }
       },
       workshops[]->{

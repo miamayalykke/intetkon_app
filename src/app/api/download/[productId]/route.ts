@@ -38,10 +38,10 @@ export async function GET(
 
   const product = await backendClient.fetch<{
     productType: string
-    s3Key?: string
+    s3KeyEn?: string
     s3KeyDa?: string
   } | null>(
-    `*[_type == "product" && _id == $productId][0]{ productType, s3Key, s3KeyDa }`,
+    `*[_type == "product" && _id == $productId][0]{ productType, s3KeyEn, s3KeyDa }`,
     { productId },
   )
 
@@ -52,7 +52,7 @@ export async function GET(
     )
   }
 
-  const s3Key = (locale === 'da' && product.s3KeyDa) ? product.s3KeyDa : product.s3Key
+  const s3Key = (locale === 'da' && product.s3KeyDa) ? product.s3KeyDa : product.s3KeyEn
 
   if (!s3Key) {
     return NextResponse.json(

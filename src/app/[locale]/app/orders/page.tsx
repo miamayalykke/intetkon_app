@@ -167,13 +167,26 @@ async function Orders({ params }: { params: Promise<{ locale: string }> }) {
                               )}
                               {item.product?.productType === 'digital' &&
                                 item.product?._id && (
-                                  <a
-                                    href={`/api/download/${item.product._id}?locale=${locale}`}
-                                    className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors mt-1"
-                                  >
-                                    <Download className="w-3 h-3" />
-                                    {t('download')}
-                                  </a>
+                                  <div className="flex flex-col gap-1 mt-1">
+                                    {item.product?.hasEnFile && (
+                                      <a
+                                        href={`/api/download/${item.product._id}?locale=en`}
+                                        className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors"
+                                      >
+                                        <Download className="w-3 h-3" />
+                                        {t('download')} (EN)
+                                      </a>
+                                    )}
+                                    {item.product?.hasDaFile && (
+                                      <a
+                                        href={`/api/download/${item.product._id}?locale=da`}
+                                        className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors"
+                                      >
+                                        <Download className="w-3 h-3" />
+                                        {t('download')} (DA)
+                                      </a>
+                                    )}
+                                  </div>
                                 )}
                               {item.product?._type === 'workshop' && (
                                 <div className="mt-1 space-y-0.5">

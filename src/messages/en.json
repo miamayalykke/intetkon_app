@@ -163,7 +163,11 @@
         "buttonWorkshops": "Workshops"
       },
       "about": {
-        "marqueeAbout": ["Creative Freedom", "Inclusive Universe", "Handmade Aesthetics"],
+        "marqueeAbout": [
+          "Creative Freedom",
+          "Inclusive Universe",
+          "Handmade Aesthetics"
+        ],
         "builtOnPresence": "Built on Presence",
         "intro": "A creative brand built on craftsmanship, aesthetics, and presence.",
         "founder": "My name is Emilie, and I'm the founder of Intetkøn. Here, I create patterns, products, and workshops with room for personality, learning, and creative freedom.",
@@ -174,7 +178,11 @@
         "title": "Discover the latest techniques, behind-the-scenes stories, and workshop announcements straight from the atelier.",
         "label": "Journal",
         "heading": "Dive into Intetkøn.",
-        "marquee": ["Explore What's Happening Now", "Atelier Insights", "Latest Creations"]
+        "marquee": [
+          "Explore What's Happening Now",
+          "Atelier Insights",
+          "Latest Creations"
+        ]
       },
       "products": {
         "hangaroundBag": {
@@ -244,8 +252,16 @@
         }
       },
       "whatSetsUsApart": "What Sets Us Apart",
-      "marqueeTop": ["No Gender Labels", "Freedom of Expression", "Sustainable Craft"],
-      "marqueeBottom": ["Rewrite the Rules", "One Stitch at a Time", "The Future is Genderless"]
+      "marqueeTop": [
+        "No Gender Labels",
+        "Freedom of Expression",
+        "Sustainable Craft"
+      ],
+      "marqueeBottom": [
+        "Rewrite the Rules",
+        "One Stitch at a Time",
+        "The Future is Genderless"
+      ]
     },
     "contact": {
       "hero": {
@@ -529,7 +545,7 @@
       "titleItalic": "ORDERS",
       "subtitle": "History of your digital & physical acquisitions",
       "empty": "Your archive is currently empty...",
-      "logReference": "Log Reference",
+      "logReference": "Order Number",
       "totalValuation": "Total Valuation",
       "discountApplied": "Discount Applied",
       "quantity": "Quantity",
@@ -553,7 +569,11 @@
         "description": "Please send your application, CV, and portfolio to our studio team. We review applications on a rolling basis.",
         "button": "Apply via Email"
       },
-      "marquee": ["Join the Revolution", "Rewrite the Rules", "Genderless Future"]
+      "marquee": [
+        "Join the Revolution",
+        "Rewrite the Rules",
+        "Genderless Future"
+      ]
     },
     "patternTester": {
       "hero": {
@@ -599,7 +619,11 @@
         "error": "Something went wrong. Please try again.",
         "privacy": "By applying, you agree to our privacy policy regarding data handling."
       },
-      "marqueeBottom": ["Feedback Loop", "Perfecting the Fit", "Community Craft"]
+      "marqueeBottom": [
+        "Feedback Loop",
+        "Perfecting the Fit",
+        "Community Craft"
+      ]
     },
     "workshops": {
       "tag": "Live Learning",

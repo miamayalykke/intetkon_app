@@ -86,7 +86,7 @@ export const productType = defineType({
       hidden: ({ document }) => document?.productType !== 'physical',
     }),
     defineField({
-      name: 's3Key',
+      name: 's3KeyEn',
       title: 'S3 File Key (English)',
       description:
         'The S3 object key for the English downloadable file (digital products only)',
