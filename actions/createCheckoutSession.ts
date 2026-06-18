@@ -9,6 +9,7 @@ export type Metadata = {
   customerName: string
   customerEmail: string
   clerkUserId: string
+  locale: string
   workshopIds?: string
   productIds?: string
 }
@@ -80,6 +81,7 @@ export async function createCheckoutSession(
         ...(workshopIds ? { workshopIds } : {}),
         ...(productIds ? { productIds } : {}),
       },
+      locale: (locale === 'da' ? 'da' : 'en') as any,
       mode: 'payment',
       payment_method_configuration: 'pmc_1SDjXTJoZ0voIfvhegmhzz3s',
       ...(promoCodeId

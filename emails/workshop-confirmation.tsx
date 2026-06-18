@@ -11,7 +11,7 @@ import {
 } from '@react-email/components'
 import { blockContentToHtml } from '@src/lib/blockContentToHtml'
 import { format } from 'date-fns'
-import { da } from 'date-fns/locale'
+import { da as daLocale, enGB } from 'date-fns/locale'
 import { toZonedTime } from 'date-fns-tz'
 
 const TIMEZONE = 'Europe/Copenhagen'
@@ -27,6 +27,48 @@ interface WorkshopConfirmationEmailProps {
   price: number
   currency: string
   mailInformation?: any
+  locale?: string
+}
+
+const translations = {
+  en: {
+    preview: (title: string) => `Your spot is confirmed — ${title}`,
+    heading: "You're booked in!",
+    greeting: (name: string) => `Hi ${name},`,
+    intro: (title: string) =>
+      `Your spot for <strong>${title}</strong> is confirmed. We're looking forward to seeing you in the studio.`,
+    bookingRefLabel: 'Booking reference',
+    workshopLabel: 'Workshop',
+    dateTimeLabel: 'Date & Time',
+    durationLabel: 'Duration',
+    locationLabel: 'Location',
+    levelLabel: 'Level',
+    totalPaidLabel: 'Total paid',
+    materialsNote:
+      'All materials are included in the price. Please arrive 10 minutes before the session begins.',
+    additionalInfoLabel: 'Additional Information',
+    at: 'at',
+    dateLocale: enGB,
+  },
+  da: {
+    preview: (title: string) => `Din plads er bekræftet — ${title}`,
+    heading: 'Du er tilmeldt!',
+    greeting: (name: string) => `Hej ${name},`,
+    intro: (title: string) =>
+      `Din plads til <strong>${title}</strong> er bekræftet. Vi glæder os til at se dig i studiet.`,
+    bookingRefLabel: 'Bookingsnummer',
+    workshopLabel: 'Workshop',
+    dateTimeLabel: 'Dato & Tidspunkt',
+    durationLabel: 'Varighed',
+    locationLabel: 'Sted',
+    levelLabel: 'Niveau',
+    totalPaidLabel: 'Betalt i alt',
+    materialsNote:
+      'Alle materialer er inkluderet i prisen. Vær venlig at ankomme 10 minutter inden sessionen starter.',
+    additionalInfoLabel: 'Yderligere information',
+    at: 'kl.',
+    dateLocale: daLocale,
+  },
 }
 
 export default function WorkshopConfirmationEmail({
@@ -40,14 +82,22 @@ export default function WorkshopConfirmationEmail({
   price,
   currency,
   mailInformation,
+  locale = 'en',
 }: WorkshopConfirmationEmailProps) {
+  const t = translations[locale as keyof typeof translations] ?? translations.en
+
   const zonedDate = toZonedTime(new Date(workshopDate), TIMEZONE)
-  const formattedDate = format(zonedDate, 'EEEE, d MMMM yyyy', { locale: da })
+  const formattedDate = format(zonedDate, 'EEEE, d MMMM yyyy', {
+    locale: t.dateLocale,
+  })
   const formattedTime = format(zonedDate, 'HH:mm')
-  const formattedPrice = new Intl.NumberFormat('da-DK', {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  }).format(price)
+  const formattedPrice = new Intl.NumberFormat(
+    locale === 'da' ? 'da-DK' : 'en-GB',
+    {
+      style: 'currency',
+      currency: currency.toUpperCase(),
+    },
+  ).format(price)
 
   const mailInformationHtml = mailInformation
     ? blockContentToHtml(mailInformation)
@@ -56,64 +106,55 @@ export default function WorkshopConfirmationEmail({
   return (
     <Html>
       <Head />
-      <Preview>Your spot is confirmed - {workshopTitle}</Preview>
+      <Preview>{t.preview(workshopTitle)}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={box}>
-            <Heading style={heading}>You're booked in!</Heading>
-            <Text style={paragraph}>Hi {customerName},</Text>
-            <Text style={paragraph}>
-              Your spot for <strong>{workshopTitle}</strong> is confirmed. We're
-              looking forward to seeing you in the studio.
-            </Text>
+            <Heading style={heading}>{t.heading}</Heading>
+            <Text style={paragraph}>{t.greeting(customerName)}</Text>
+            <Text
+              style={paragraph}
+              dangerouslySetInnerHTML={{ __html: t.intro(workshopTitle) }}
+            />
 
             <Hr style={hr} />
 
-            <Text style={label}>Booking reference</Text>
+            <Text style={label}>{t.bookingRefLabel}</Text>
             <Text style={mono}>{orderNumber}</Text>
 
             <Hr style={hr} />
 
-            <Text style={label}>Workshop</Text>
+            <Text style={label}>{t.workshopLabel}</Text>
             <Text style={workshopName}>{workshopTitle}</Text>
 
-            <Text style={label}>Date & Time</Text>
+            <Text style={label}>{t.dateTimeLabel}</Text>
             <Text style={detail}>
-              {formattedDate} at {formattedTime}
+              {formattedDate} {t.at} {formattedTime}
             </Text>
 
-            <Text style={label}>Duration</Text>
+            <Text style={label}>{t.durationLabel}</Text>
             <Text style={detail}>{workshopDuration}</Text>
 
-            <Text style={label}>Location</Text>
+            <Text style={label}>{t.locationLabel}</Text>
             <Text style={detail}>{workshopLocation}</Text>
 
-            <Text style={label}>Level</Text>
+            <Text style={label}>{t.levelLabel}</Text>
             <Text style={detail}>{workshopLevel}</Text>
 
             <Hr style={hr} />
 
-            <Text style={label}>Total paid</Text>
+            <Text style={label}>{t.totalPaidLabel}</Text>
             <Text style={total}>{formattedPrice}</Text>
 
-            <Text style={note}>
-              All materials are included in the price. Please arrive 10 minutes
-              before the session begins.
-            </Text>
+            <Text style={note}>{t.materialsNote}</Text>
 
             {mailInformationHtml && (
               <>
                 <Hr style={hr} />
-                <Text style={label}>Additional Information</Text>
+                <Text style={label}>{t.additionalInfoLabel}</Text>
                 <div
-                  dangerouslySetInnerHTML={{
-                    __html: mailInformationHtml,
-                  }}
-                  style={{
-                    fontSize: '14px',
-                    color: '#444',
-                    lineHeight: '20px',
-                  }}
+                  dangerouslySetInnerHTML={{ __html: mailInformationHtml }}
+                  style={{ fontSize: '14px', color: '#444', lineHeight: '20px' }}
                 />
               </>
             )}

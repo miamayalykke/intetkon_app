@@ -12,7 +12,7 @@ import {
   Text,
 } from '@react-email/components'
 import { format } from 'date-fns'
-import { da } from 'date-fns/locale'
+import { da as daLocale, enGB } from 'date-fns/locale'
 import { toZonedTime } from 'date-fns-tz'
 
 const TIMEZONE = 'Europe/Copenhagen'
@@ -37,6 +37,50 @@ interface OrderConfirmationEmailProps {
   currency: string
   products: OrderProduct[]
   ordersPageUrl: string
+  locale?: string
+}
+
+const translations = {
+  en: {
+    preview: (n: string) => `Order confirmed: ${n}`,
+    heading: 'Order Confirmed',
+    greeting: (name: string) => `Hi ${name},`,
+    intro: "Thank you for your order! Here's a summary of what you purchased.",
+    orderRefLabel: 'Order reference',
+    dateLabel: 'Date',
+    sessionDetailsLabel: 'Your session details',
+    downloadNote:
+      'Your download link is valid for 48 hours. You can always generate a fresh one from your orders page.',
+    downloadButton: 'Download now',
+    courseNote:
+      'Materials are included in the price. Please arrive 10 minutes before the session starts.',
+    shippingNote:
+      "We'll send you a shipping notification once your order is on its way.",
+    totalLabel: 'Total',
+    viewOrdersButton: 'View my orders',
+    at: 'at',
+    dateLocale: enGB,
+  },
+  da: {
+    preview: (n: string) => `Ordre bekræftet: ${n}`,
+    heading: 'Ordre bekræftet',
+    greeting: (name: string) => `Hej ${name},`,
+    intro: 'Tak for din ordre! Her er en oversigt over det du har købt.',
+    orderRefLabel: 'Ordrenummer',
+    dateLabel: 'Dato',
+    sessionDetailsLabel: 'Dine sessionsdetaljer',
+    downloadNote:
+      'Dit downloadlink er gyldigt i 48 timer. Du kan altid generere et nyt fra din ordrehistorik.',
+    downloadButton: 'Download nu',
+    courseNote:
+      'Materialer er inkluderet i prisen. Vær venlig at ankomme 10 minutter inden sessionen starter.',
+    shippingNote:
+      'Vi sender dig en forsendelsesnotifikation, når din ordre er afsendt.',
+    totalLabel: 'I alt',
+    viewOrdersButton: 'Se mine ordrer',
+    at: 'kl.',
+    dateLocale: daLocale,
+  },
 }
 
 export default function OrderConfirmationEmail({
@@ -47,8 +91,11 @@ export default function OrderConfirmationEmail({
   currency,
   products,
   ordersPageUrl,
+  locale = 'en',
 }: OrderConfirmationEmailProps) {
-  const formattedTotal = new Intl.NumberFormat('da-DK', {
+  const t = translations[locale as keyof typeof translations] ?? translations.en
+
+  const formattedTotal = new Intl.NumberFormat(locale === 'da' ? 'da-DK' : 'en-GB', {
     style: 'currency',
     currency: currency.toUpperCase(),
   }).format(totalPrice)
@@ -56,31 +103,29 @@ export default function OrderConfirmationEmail({
   return (
     <Html>
       <Head />
-      <Preview>Order confirmed: {orderNumber}</Preview>
+      <Preview>{t.preview(orderNumber)}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={box}>
-            <Heading style={heading}>Order Confirmed</Heading>
-            <Text style={paragraph}>Hi {customerName},</Text>
-            <Text style={paragraph}>
-              Thank you for your order! Here's a summary of what you purchased.
-            </Text>
+            <Heading style={heading}>{t.heading}</Heading>
+            <Text style={paragraph}>{t.greeting(customerName)}</Text>
+            <Text style={paragraph}>{t.intro}</Text>
 
             <Hr style={hr} />
 
-            <Text style={label}>Order reference</Text>
+            <Text style={label}>{t.orderRefLabel}</Text>
             <Text style={mono}>{orderNumber}</Text>
-            <Text style={label}>Date</Text>
+            <Text style={label}>{t.dateLabel}</Text>
             <Text style={paragraph}>
-              {new Date(orderDate).toLocaleDateString('en-GB', {
-                dateStyle: 'long',
-              })}
+              {new Date(orderDate).toLocaleDateString(
+                locale === 'da' ? 'da-DK' : 'en-GB',
+                { dateStyle: 'long' },
+              )}
             </Text>
 
             <Hr style={hr} />
 
             {products.map((item, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: email template
               <Section key={i} style={productRow}>
                 {item.productUrl ? (
                   <Link href={item.productUrl} style={productNameLink}>
@@ -94,19 +139,16 @@ export default function OrderConfirmationEmail({
 
                 {item.productType === 'digital' && item.downloadUrl && (
                   <>
-                    <Text style={note}>
-                      Your download link is valid for 48 hours. You can always
-                      generate a fresh one from your orders page.
-                    </Text>
+                    <Text style={note}>{t.downloadNote}</Text>
                     <Button style={button} href={item.downloadUrl}>
-                      Download now
+                      {t.downloadButton}
                     </Button>
                   </>
                 )}
 
                 {item.productType === 'physical_course' && (
                   <Section style={workshopBox}>
-                    <Text style={workshopLabel}>Your session details</Text>
+                    <Text style={workshopLabel}>{t.sessionDetailsLabel}</Text>
                     {item.courseDate && (
                       <>
                         <Text style={workshopDetail}>
@@ -114,11 +156,11 @@ export default function OrderConfirmationEmail({
                           {format(
                             toZonedTime(new Date(item.courseDate), TIMEZONE),
                             'EEEE, d MMMM yyyy',
-                            { locale: da },
+                            { locale: t.dateLocale },
                           )}
                         </Text>
                         <Text style={workshopDetail}>
-                          🕐{' '}
+                          🕐 {t.at}{' '}
                           {format(
                             toZonedTime(new Date(item.courseDate), TIMEZONE),
                             'HH:mm',
@@ -136,31 +178,25 @@ export default function OrderConfirmationEmail({
                         ⏱ {item.courseDuration}
                       </Text>
                     )}
-                    <Text style={workshopNote}>
-                      Materials are included in the price. Please arrive 10
-                      minutes before the session starts.
-                    </Text>
+                    <Text style={workshopNote}>{t.courseNote}</Text>
                   </Section>
                 )}
 
                 {item.productType === 'physical' && (
-                  <Text style={note}>
-                    We'll send you a shipping notification once your order is on
-                    its way.
-                  </Text>
+                  <Text style={note}>{t.shippingNote}</Text>
                 )}
               </Section>
             ))}
 
             <Hr style={hr} />
 
-            <Text style={label}>Total</Text>
+            <Text style={label}>{t.totalLabel}</Text>
             <Text style={total}>{formattedTotal}</Text>
 
             <Hr style={hr} />
 
             <Button style={secondaryButton} href={ordersPageUrl}>
-              View my orders
+              {t.viewOrdersButton}
             </Button>
 
             <Hr style={hr} />

@@ -68,11 +68,12 @@ export async function POST(req: NextRequest) {
       const productIds = meta.productIds
         ? meta.productIds.split(',').filter(Boolean)
         : []
+      const locale = meta.locale ?? 'en'
 
       if (workshopIds.length > 0 && productIds.length === 0) {
-        await sendWorkshopConfirmationEmails(session, workshopIds)
+        await sendWorkshopConfirmationEmails(session, workshopIds, locale)
       } else {
-        await sendOrderConfirmationEmail(session, order.sanityProductIds)
+        await sendOrderConfirmationEmail(session, order.sanityProductIds, locale)
       }
 
       try {
@@ -158,6 +159,7 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
 async function sendOrderConfirmationEmail(
   session: Stripe.Checkout.Session,
   sanityProductIds: { id: string; quantity: number }[],
+  locale: string,
 ) {
   const { metadata, amount_total, currency } = session
   const { orderNumber, customerName, customerEmail } = metadata as Metadata
@@ -181,8 +183,22 @@ async function sendOrderConfirmationEmail(
       slug?: { current: string }
     }[]
   >(
-    `*[_id in $ids]{ _id, _type, name, title, price, productType, s3Key, courseDate, courseLocation, date, location, duration, slug }`,
-    { ids: sanityProductIds.map((p) => p.id) },
+    `*[_id in $ids]{
+      _id,
+      _type,
+      "name": name[language == $locale][0].value,
+      "title": title[language == $locale][0].value,
+      price,
+      productType,
+      s3Key,
+      courseDate,
+      courseLocation,
+      date,
+      location,
+      duration,
+      "slug": slug[language == $locale][0].value
+    }`,
+    { ids: sanityProductIds.map((p) => p.id), locale },
   )
 
   const products: OrderProduct[] = []
@@ -216,6 +232,11 @@ async function sendOrderConfirmationEmail(
     })
   }
 
+  const subject =
+    locale === 'da'
+      ? `Ordre bekræftet — ${orderNumber}`
+      : `Order confirmed — ${orderNumber}`
+
   const html = await render(
     OrderConfirmationEmail({
       customerName,
@@ -225,6 +246,7 @@ async function sendOrderConfirmationEmail(
       currency: currency ?? 'dkk',
       products,
       ordersPageUrl: `${baseUrl}/app/orders`,
+      locale,
     }),
   )
 
@@ -234,7 +256,7 @@ async function sendOrderConfirmationEmail(
       Destination: { ToAddresses: [customerEmail] },
       Content: {
         Simple: {
-          Subject: { Data: `Order confirmed - ${orderNumber}` },
+          Subject: { Data: subject },
           Body: { Html: { Data: html } },
         },
       },
@@ -267,7 +289,19 @@ async function sendAdminOrderNotification(
       duration?: string
     }[]
   >(
-    `*[_id in $ids]{ _id, _type, name, title, price, productType, courseDate, courseLocation, date, location, duration }`,
+    `*[_id in $ids]{
+      _id,
+      _type,
+      "name": name[language == "en"][0].value,
+      "title": title[language == "en"][0].value,
+      price,
+      productType,
+      courseDate,
+      courseLocation,
+      date,
+      location,
+      duration
+    }`,
     { ids: order.sanityProductIds.map((p: any) => p.id) },
   )
 
@@ -328,6 +362,7 @@ async function sendAdminOrderNotification(
 async function sendWorkshopConfirmationEmails(
   session: Stripe.Checkout.Session,
   workshopIds: string[],
+  locale: string,
 ) {
   const { metadata, currency } = session
   const { orderNumber, customerName, customerEmail } = metadata as Metadata
@@ -344,9 +379,23 @@ async function sendWorkshopConfirmationEmails(
       mailInformation?: any
     }[]
   >(
-    `*[_id in $ids]{ _id, title, date, duration, location, level, price, mailInformation }`,
-    { ids: workshopIds },
+    `*[_id in $ids]{
+      _id,
+      "title": title[language == $locale][0].value,
+      date,
+      duration,
+      location,
+      level,
+      price,
+      "mailInformation": mailInformation[language == $locale][0].value
+    }`,
+    { ids: workshopIds, locale },
   )
+
+  const subject =
+    locale === 'da'
+      ? `Workshop bekræftet — ${orderNumber}`
+      : `Workshop confirmed — ${orderNumber}`
 
   for (const workshop of workshops) {
     const html = await render(
@@ -361,6 +410,7 @@ async function sendWorkshopConfirmationEmails(
         price: workshop.price,
         currency: currency ?? 'dkk',
         mailInformation: workshop.mailInformation,
+        locale,
       }),
     )
 
@@ -370,7 +420,7 @@ async function sendWorkshopConfirmationEmails(
         Destination: { ToAddresses: [customerEmail] },
         Content: {
           Simple: {
-            Subject: { Data: `Workshop confirmed - ${orderNumber}` },
+            Subject: { Data: subject },
             Body: { Html: { Data: html } },
           },
         },

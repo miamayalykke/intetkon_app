@@ -177,6 +177,7 @@ const BasketPage = () => {
         customerName: checkoutName,
         customerEmail: checkoutEmail,
         clerkUserId: userId ?? '',
+        locale,
       }
       const checkoutUrl = await createCheckoutSession(
         groupedItems,
