@@ -36,8 +36,8 @@ async function fetchDocFromSanity(
     `*[_id == $id && _type in ["product", "workshop"]][0]{
       _id,
       _type,
-      name,
-      title,
+      "name": name[language == "en"][0].value,
+      "title": title[language == "en"][0].value,
       price,
       stripeProductId,
       date,
