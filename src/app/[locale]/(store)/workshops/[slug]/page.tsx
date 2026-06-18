@@ -140,10 +140,17 @@ const WorkshopDetailPage = async ({
               <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
                 <Clock className="w-3 h-3 text-secondary" /> {timeRange}
               </span>
-              <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                <MapPin className="w-3 h-3 text-secondary" /> Bentzonzvej 50b,
-                2000 Frederiksberg
-              </span>
+              {workshop.location === 'studio' && (
+                <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  <MapPin className="w-3 h-3 text-secondary" /> Bentzonzvej 50b,
+                  2000 Frederiksberg
+                </span>
+              )}
+              {workshop.location === 'online' && (
+                <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                  <MapPin className="w-3 h-3 text-secondary" /> {t('workshops.detail.online')}
+                </span>
+              )}
               <span
                 className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest ${isFull ? 'text-red-500' : 'text-orange-500'}`}
               >
