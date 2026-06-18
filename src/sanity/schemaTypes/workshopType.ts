@@ -34,7 +34,13 @@ export const workshopType = defineType({
       name: 'location',
       title: 'Location',
       type: 'string',
-      placeholder: 'e.g. Copenhagen Studio or Online / Zoom',
+      options: {
+        list: [
+          { title: 'Studio in Copenhagen', value: 'studio' },
+          { title: 'Online', value: 'online' },
+        ],
+        layout: 'radio',
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({

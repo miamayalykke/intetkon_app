@@ -1,6 +1,7 @@
 import { SendEmailCommand } from '@aws-sdk/client-sesv2'
 import { render } from '@react-email/render'
 import { backendClient } from '@sanity/lib/backendClient'
+import { blockContentToHtml } from '@src/lib/blockContentToHtml'
 import { getPresignedDownloadUrl } from '@src/lib/s3-client'
 import { ORDER_FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
 import stripe from '@src/lib/stripe'
@@ -14,6 +15,7 @@ import AdminOrderNotification, {
 import OrderConfirmationEmail, {
   type OrderProduct,
 } from '../../../../../emails/order-confirmation'
+import WorkshopAdditionalInfoEmail from '../../../../../emails/workshop-additional-info'
 import WorkshopConfirmationEmail from '../../../../../emails/workshop-confirmation'
 
 export async function POST(req: NextRequest) {
@@ -104,7 +106,7 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
     total_details,
   } = session
 
-  const { orderNumber, customerName, customerEmail, clerkUserId } =
+  const { orderNumber, customerName, customerEmail, clerkUserId, locale } =
     metadata as Metadata & { clerkUserId?: string }
 
   const lineItemsWithProduct = await stripe.checkout.sessions.listLineItems(id)
@@ -146,6 +148,7 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
     totalPrice: amount_total ? amount_total / 100 : 0,
     status: 'paid',
     orderDate: new Date().toISOString(),
+    locale: locale ?? 'en',
   })
 
   return {
@@ -398,18 +401,19 @@ async function sendWorkshopConfirmationEmails(
       : `Workshop confirmed — ${orderNumber}`
 
   for (const workshop of workshops) {
+    const workshopTitle = workshop.title ?? 'Workshop'
+
     const html = await render(
       WorkshopConfirmationEmail({
         customerName,
         orderNumber,
-        workshopTitle: workshop.title ?? 'Workshop',
+        workshopTitle,
         workshopDate: workshop.date ?? '',
         workshopDuration: workshop.duration ?? '',
         workshopLocation: workshop.location ?? '',
         workshopLevel: workshop.level ?? '',
         price: workshop.price,
         currency: currency ?? 'dkk',
-        mailInformation: workshop.mailInformation,
         locale,
       }),
     )
@@ -426,5 +430,38 @@ async function sendWorkshopConfirmationEmails(
         },
       }),
     )
+
+    const additionalInfoHtml = workshop.mailInformation
+      ? blockContentToHtml(workshop.mailInformation)
+      : null
+
+    if (additionalInfoHtml) {
+      const additionalSubject =
+        locale === 'da'
+          ? `Yderligere information — ${workshopTitle}`
+          : `Additional information — ${workshopTitle}`
+
+      const additionalHtml = await render(
+        WorkshopAdditionalInfoEmail({
+          customerName,
+          workshopTitle,
+          contentHtml: additionalInfoHtml,
+          locale,
+        }),
+      )
+
+      await sesv2.send(
+        new SendEmailCommand({
+          FromEmailAddress: ORDER_FROM_EMAIL,
+          Destination: { ToAddresses: [customerEmail] },
+          Content: {
+            Simple: {
+              Subject: { Data: additionalSubject },
+              Body: { Html: { Data: additionalHtml } },
+            },
+          },
+        }),
+      )
+    }
   }
 }

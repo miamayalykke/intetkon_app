@@ -130,6 +130,12 @@ export const orderType = defineType({
       type: 'datetime',
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: 'locale',
+      title: 'Locale',
+      type: 'string',
+      hidden: true,
+    }),
   ],
   preview: {
     select: {

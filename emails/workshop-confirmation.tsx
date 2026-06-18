@@ -35,13 +35,17 @@ const translations = {
     preview: (title: string) => `Your spot is confirmed — ${title}`,
     heading: "You're booked in!",
     greeting: (name: string) => `Hi ${name},`,
-    intro: (title: string) =>
-      `Your spot for <strong>${title}</strong> is confirmed. We're looking forward to seeing you in the studio.`,
+    intro: (title: string, online: boolean) =>
+      online
+        ? `Your spot for <strong>${title}</strong> is confirmed. We're looking forward to seeing you online.`
+        : `Your spot for <strong>${title}</strong> is confirmed. We're looking forward to seeing you in the studio.`,
     bookingRefLabel: 'Booking reference',
     workshopLabel: 'Workshop',
     dateTimeLabel: 'Date & Time',
     durationLabel: 'Duration',
     locationLabel: 'Location',
+    locationDisplay: (loc: string) =>
+      loc === 'online' ? 'Online' : 'Studio in Copenhagen',
     levelLabel: 'Level',
     totalPaidLabel: 'Total paid',
     materialsNote:
@@ -54,13 +58,17 @@ const translations = {
     preview: (title: string) => `Din plads er bekræftet — ${title}`,
     heading: 'Du er tilmeldt!',
     greeting: (name: string) => `Hej ${name},`,
-    intro: (title: string) =>
-      `Din plads til <strong>${title}</strong> er bekræftet. Vi glæder os til at se dig i studiet.`,
-    bookingRefLabel: 'Bookingsnummer',
+    intro: (title: string, online: boolean) =>
+      online
+        ? `Din plads til <strong>${title}</strong> er bekræftet. Vi glæder os til at se dig online.`
+        : `Din plads til <strong>${title}</strong> er bekræftet. Vi glæder os til at se dig i studiet.`,
+    bookingRefLabel: 'Bookingnummer',
     workshopLabel: 'Workshop',
     dateTimeLabel: 'Dato & Tidspunkt',
     durationLabel: 'Varighed',
     locationLabel: 'Sted',
+    locationDisplay: (loc: string) =>
+      loc === 'online' ? 'Online' : 'Studio i København',
     levelLabel: 'Niveau',
     totalPaidLabel: 'Betalt i alt',
     materialsNote:
@@ -85,6 +93,7 @@ export default function WorkshopConfirmationEmail({
   locale = 'en',
 }: WorkshopConfirmationEmailProps) {
   const t = translations[locale as keyof typeof translations] ?? translations.en
+  const isOnline = workshopLocation === 'online'
 
   const zonedDate = toZonedTime(new Date(workshopDate), TIMEZONE)
   const formattedDate = format(zonedDate, 'EEEE, d MMMM yyyy', {
@@ -114,7 +123,9 @@ export default function WorkshopConfirmationEmail({
             <Text style={paragraph}>{t.greeting(customerName)}</Text>
             <Text
               style={paragraph}
-              dangerouslySetInnerHTML={{ __html: t.intro(workshopTitle) }}
+              dangerouslySetInnerHTML={{
+                __html: t.intro(workshopTitle, isOnline),
+              }}
             />
 
             <Hr style={hr} />
@@ -136,7 +147,7 @@ export default function WorkshopConfirmationEmail({
             <Text style={detail}>{workshopDuration}</Text>
 
             <Text style={label}>{t.locationLabel}</Text>
-            <Text style={detail}>{workshopLocation}</Text>
+            <Text style={detail}>{t.locationDisplay(workshopLocation)}</Text>
 
             <Text style={label}>{t.levelLabel}</Text>
             <Text style={detail}>{workshopLevel}</Text>
@@ -154,7 +165,11 @@ export default function WorkshopConfirmationEmail({
                 <Text style={label}>{t.additionalInfoLabel}</Text>
                 <div
                   dangerouslySetInnerHTML={{ __html: mailInformationHtml }}
-                  style={{ fontSize: '14px', color: '#444', lineHeight: '20px' }}
+                  style={{
+                    fontSize: '14px',
+                    color: '#444',
+                    lineHeight: '20px',
+                  }}
                 />
               </>
             )}

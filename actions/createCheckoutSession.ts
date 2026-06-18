@@ -1,7 +1,7 @@
 'use server'
 
-import stripe from '@src/lib/stripe'
 import 'server-only'
+import stripe from '@src/lib/stripe'
 import type { CartItem } from '../store/store'
 
 export type Metadata = {
@@ -43,34 +43,32 @@ export async function createCheckoutSession(
       .map((item) => item.data._id)
       .join(',')
 
-    const lineItems = await Promise.all(
-      items.map(async (item) => {
-        const stripeProductId = (item.data as any).stripeProductId
+    const lineItems = items.map((item) => {
+      const rawField =
+        item.itemType === 'product'
+          ? (item.data as any).name
+          : (item.data as any).title
 
-        if (!stripeProductId) {
-          throw new Error(
-            `Product "${item.itemType === 'product' ? (item.data as any).name : (item.data as any).title}" is missing Stripe ID. Please sync products first.`,
-          )
-        }
+      const localized = Array.isArray(rawField)
+        ? (rawField.find((f: any) => f.language === locale)?.value ??
+          rawField.find((f: any) => f.language === 'en')?.value ??
+          '')
+        : (rawField ?? '')
 
-        const prices = await stripe.prices.list({
-          product: stripeProductId,
-          active: true,
-          limit: 1,
-        })
+      const displayName =
+        item.itemType === 'workshop' && (item.data as any).date
+          ? `${localized} - ${new Date((item.data as any).date).toLocaleDateString('da-DK')}`
+          : localized
 
-        if (!prices.data.length) {
-          throw new Error(
-            `No price found for product "${item.itemType === 'product' ? (item.data as any).name : (item.data as any).title}". Please sync products first.`,
-          )
-        }
-
-        return {
-          price: prices.data[0].id,
-          quantity: item.quantity,
-        }
-      }),
-    )
+      return {
+        price_data: {
+          currency: 'dkk',
+          product_data: { name: displayName },
+          unit_amount: Math.round((item.data.price ?? 0) * 100),
+        },
+        quantity: item.quantity,
+      }
+    })
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
