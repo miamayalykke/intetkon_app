@@ -26,6 +26,7 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
     return <div className="w-48 h-10 animate-pulse bg-gray-100 rounded-full" />
   }
 
+  const isDigital = product.productType === 'digital'
   const totalStock = product.stock ?? 0
   const isAtMaxStock = totalStock > 0 && quantity >= totalStock
 
@@ -33,6 +34,25 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
     for (let i = 0; i < quantity; i++) {
       addItem(product)
     }
+  }
+
+  if (isDigital) {
+    return (
+      <button
+        type="button"
+        onClick={handleAddToCart}
+        disabled={disabled}
+        className={`flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-[11px] uppercase tracking-widest transition-all duration-200 shadow-sm
+          ${
+            disabled
+              ? 'bg-gray-100 text-muted-foreground cursor-not-allowed opacity-50'
+              : 'bg-orange-500 text-white hover:bg-orange-600 active:scale-95 shadow-orange-500/20 shadow-md'
+          }`}
+      >
+        <ShoppingBag className="w-3.5 h-3.5" />
+        {t('addToCart')}
+      </button>
+    )
   }
 
   return (
@@ -58,8 +78,12 @@ const AddToBasketButton = ({ product, disabled }: AddToBasketButtonProps) => {
           </span>
           <div className="flex items-baseline gap-1 font-black tabular-nums tracking-tighter">
             <span className="text-orange-500 text-sm">{quantity}</span>
-            <span className="text-muted-foreground/40 text-[10px]">/</span>
-            <span className="text-muted-foreground text-xs">{totalStock}</span>
+            {totalStock > 0 && (
+              <>
+                <span className="text-muted-foreground/40 text-[10px]">/</span>
+                <span className="text-muted-foreground text-xs">{totalStock}</span>
+              </>
+            )}
           </div>
         </div>
 
