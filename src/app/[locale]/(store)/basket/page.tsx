@@ -400,7 +400,7 @@ const BasketPage = () => {
                   </div>
                 </>
               )}
-              {!appliedPromo && (
+              {!appliedPromo && groupedItems.some((item) => item.itemType === 'product' && (item.data as any).productType === 'physical') && (
                 <div className="flex justify-between text-muted-foreground font-light">
                   <span>{t('basket.shipping')}</span>
                   <span className="italic">
