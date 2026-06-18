@@ -1,4 +1,15 @@
 import { SendEmailCommand } from '@aws-sdk/client-sesv2'
+
+function formatEndTime(endDate: string | undefined | null): string {
+  if (!endDate) return ''
+  const { format: dateFnsFormat } = require('date-fns')
+  const { toZonedTime } = require('date-fns-tz')
+  return dateFnsFormat(
+    toZonedTime(new Date(endDate), 'Europe/Copenhagen'),
+    'HH:mm',
+  )
+}
+
 import { render } from '@react-email/render'
 import { backendClient } from '@sanity/lib/backendClient'
 import { blockContentToHtml } from '@src/lib/blockContentToHtml'
@@ -75,7 +86,11 @@ export async function POST(req: NextRequest) {
       if (workshopIds.length > 0 && productIds.length === 0) {
         await sendWorkshopConfirmationEmails(session, workshopIds, locale)
       } else {
-        await sendOrderConfirmationEmail(session, order.sanityProductIds, locale)
+        await sendOrderConfirmationEmail(
+          session,
+          order.sanityProductIds,
+          locale,
+        )
       }
 
       try {
@@ -182,8 +197,8 @@ async function sendOrderConfirmationEmail(
       courseDate?: string
       courseLocation?: string
       date?: string
+      endDate?: string
       location?: string
-      duration?: string
       slug?: { current: string }
     }[]
   >(
@@ -199,8 +214,8 @@ async function sendOrderConfirmationEmail(
       courseDate,
       courseLocation,
       date,
+      endDate,
       location,
-      duration,
       "slug": slug[language == $locale][0].value
     }`,
     { ids: sanityProductIds.map((p) => p.id), locale },
@@ -215,7 +230,8 @@ async function sendOrderConfirmationEmail(
 
     const downloadUrls: { label: string; url: string }[] = []
     if (!isWorkshop && detail.productType === 'digital') {
-      const enLabel = locale === 'da' ? 'Download (Engelsk)' : 'Download (English)'
+      const enLabel =
+        locale === 'da' ? 'Download (Engelsk)' : 'Download (English)'
       const daLabel = locale === 'da' ? 'Download (Dansk)' : 'Download (Danish)'
       const sessionId = session.id
       if (detail.s3KeyEn) {
@@ -244,7 +260,9 @@ async function sendOrderConfirmationEmail(
       downloadUrls: downloadUrls.length > 0 ? downloadUrls : undefined,
       courseDate: isWorkshop ? detail.date : detail.courseDate,
       courseLocation: isWorkshop ? detail.location : detail.courseLocation,
-      courseDuration: isWorkshop ? detail.duration : undefined,
+      courseDuration: isWorkshop
+        ? formatEndTime((detail as any).endDate)
+        : undefined,
       productUrl: detail.slug?.current
         ? `${baseUrl}/${locale}${isWorkshop ? '/workshops' : '/product'}/${detail.slug.current}`
         : undefined,
@@ -304,8 +322,8 @@ async function sendAdminOrderNotification(
       courseDate?: string
       courseLocation?: string
       date?: string
+      endDate?: string
       location?: string
-      duration?: string
     }[]
   >(
     `*[_id in $ids]{
@@ -318,8 +336,8 @@ async function sendAdminOrderNotification(
       courseDate,
       courseLocation,
       date,
-      location,
-      duration
+      endDate,
+      location
     }`,
     { ids: order.sanityProductIds.map((p: any) => p.id) },
   )
@@ -342,7 +360,7 @@ async function sendAdminOrderNotification(
         : (detail.productType ?? 'physical'),
       courseDate: isWorkshop ? detail.date : detail.courseDate,
       courseLocation: isWorkshop ? detail.location : detail.courseLocation,
-      courseDuration: isWorkshop ? detail.duration : undefined,
+      courseDuration: isWorkshop ? formatEndTime(detail.endDate) : undefined,
     })
   }
 
@@ -391,7 +409,7 @@ async function sendWorkshopConfirmationEmails(
       _id: string
       title?: string
       date?: string
-      duration?: string
+      endDate?: string
       location?: string
       level?: string
       price: number
@@ -402,7 +420,7 @@ async function sendWorkshopConfirmationEmails(
       _id,
       "title": title[language == $locale][0].value,
       date,
-      duration,
+      endDate,
       location,
       level,
       price,
@@ -425,7 +443,7 @@ async function sendWorkshopConfirmationEmails(
         orderNumber,
         workshopTitle,
         workshopDate: workshop.date ?? '',
-        workshopDuration: workshop.duration ?? '',
+        workshopDuration: formatEndTime(workshop.endDate),
         workshopLocation: workshop.location ?? '',
         workshopLevel: workshop.level ?? '',
         price: workshop.price,

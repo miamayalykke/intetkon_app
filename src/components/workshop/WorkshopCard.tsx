@@ -2,7 +2,8 @@
 
 import { getLocalizedSlug } from '@src/lib/slug-helpers'
 import { Button } from '@ui/button'
-import { addMinutes, format } from 'date-fns'
+import { format } from 'date-fns'
+import { toZonedTime } from 'date-fns-tz'
 import { ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Link from 'next/link'
 import { useLocale, useTranslations } from 'next-intl'
@@ -10,13 +11,7 @@ import type { WORKSHOPS_QUERYResult } from '../../../sanity.types'
 
 type WorkshopItem = WORKSHOPS_QUERYResult[number]
 
-const parseDuration = (duration: string): number => {
-  const match = duration.match(/(\d+\.?\d*)\s*(?:hour|hr)/i)
-  if (match) {
-    return Math.round(parseFloat(match[1]) * 60)
-  }
-  return 0
-}
+const TIMEZONE = 'Europe/Copenhagen'
 
 const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
   const t = useTranslations()
@@ -27,9 +22,12 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
   const spotsLeft = maxSpots - signUps
   const eventDate = new Date(workshop.date ?? '')
 
-  const durationMinutes = parseDuration(workshop.duration ?? '')
-  const endDate = addMinutes(eventDate, durationMinutes)
-  const timeRange = `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
+  const endDate = workshop.endDate
+    ? toZonedTime(new Date(workshop.endDate), TIMEZONE)
+    : null
+  const timeRange = endDate
+    ? `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
+    : format(eventDate, 'HH:mm')
   const workshopSlug = getLocalizedSlug(workshop.slug, locale)
 
   return (

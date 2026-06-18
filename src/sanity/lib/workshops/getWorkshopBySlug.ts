@@ -16,7 +16,7 @@ const WORKSHOP_BY_SLUG_QUERY = defineQuery(`
     title,
     slug,
     date,
-    duration,
+    endDate,
     location,
     level,
     price,

@@ -1,4 +1,15 @@
 import { SendEmailCommand } from '@aws-sdk/client-sesv2'
+
+function formatEndTime(endDate: string | undefined | null): string {
+  if (!endDate) return ''
+  const { format: dateFnsFormat } = require('date-fns')
+  const { toZonedTime } = require('date-fns-tz')
+  return dateFnsFormat(
+    toZonedTime(new Date(endDate), 'Europe/Copenhagen'),
+    'HH:mm',
+  )
+}
+
 import { render } from '@react-email/render'
 import { backendClient } from '@sanity/lib/backendClient'
 import { ORDER_FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
@@ -22,7 +33,7 @@ export async function GET(req: NextRequest) {
       titleDa: string
       date: string
       location: string
-      duration: string
+      endDate: string
     }[]
   >(
     `*[_type == "workshop" && date > $from && date < $to]{
@@ -30,8 +41,8 @@ export async function GET(req: NextRequest) {
       "titleEn": title[language == "en"][0].value,
       "titleDa": title[language == "da"][0].value,
       date,
-      location,
-      duration
+      endDate,
+      location
     }`,
     { from, to },
   )
@@ -62,9 +73,7 @@ export async function GET(req: NextRequest) {
           : workshop.titleEn
 
       const subject =
-        locale === 'da'
-          ? `Påmindelse: ${title}`
-          : `Reminder: ${title}`
+        locale === 'da' ? `Påmindelse: ${title}` : `Reminder: ${title}`
 
       const html = await render(
         WorkshopReminderEmail({
@@ -72,7 +81,7 @@ export async function GET(req: NextRequest) {
           workshopTitle: title,
           workshopDate: workshop.date,
           workshopLocation: workshop.location,
-          workshopDuration: workshop.duration,
+          workshopDuration: formatEndTime(workshop.endDate),
           locale,
         }),
       )

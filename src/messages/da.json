@@ -146,7 +146,7 @@
     "confirmed": "Bekræftet",
     "title": "TAK skal du have!",
     "message": "Din ordre bliver forberedt på vores studio. Tjek din indbakke for den digitale kvittering.",
-    "orderRef": "Ordre Ref",
+    "orderRef": "Ordrenummer",
     "myOrders": "Mine Ordrer",
     "backToShop": "Tilbage til Butik",
     "marquee": [

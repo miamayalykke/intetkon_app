@@ -186,7 +186,7 @@ export type Workshop = {
   title?: string
   slug?: Slug
   date?: string
-  duration?: string
+  endDate?: string
   location?: string
   level?: 'Beginner' | 'Intermediate' | 'Advanced'
   price?: number
@@ -861,7 +861,7 @@ export type WORKSHOP_BY_SLUG_QUERYResult = {
   title: string | null
   slug: Slug | null
   date: string | null
-  duration: string | null
+  endDate: string | null
   location: string | null
   level: 'Advanced' | 'Beginner' | 'Intermediate' | null
   price: number | null
@@ -891,7 +891,7 @@ export type WORKSHOPS_QUERYResult = Array<{
   title: string | null
   slug: Slug | null
   date: string | null
-  duration: string | null
+  endDate: string | null
   location: string | null
   level: 'Advanced' | 'Beginner' | 'Intermediate' | null
   price: number | null

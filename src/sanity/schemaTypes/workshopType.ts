@@ -24,10 +24,9 @@ export const workshopType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'duration',
-      title: 'Duration',
-      type: 'string',
-      placeholder: 'e.g. 4 Hours',
+      name: 'endDate',
+      title: 'End Date & Time',
+      type: 'datetime',
       validation: (Rule) => Rule.required(),
     }),
     defineField({

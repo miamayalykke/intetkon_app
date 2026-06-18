@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
 
     if (!doc) {
       console.log(
-        '[product-sync] Document deleted — deactivating in Stripe:',
+        '[product-sync] Document deleted - deactivating in Stripe:',
         payload._id,
       )
       await deactivateInStripe(payload._id)

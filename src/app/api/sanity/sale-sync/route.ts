@@ -164,7 +164,7 @@ async function getStripeProductIdsFromConditions(
 async function syncToStripe(doc: SaleDocument): Promise<void> {
   if (!doc.couponCode || doc.discountAmount === undefined) {
     console.warn(
-      '[sale-sync] Skipping sync — couponCode or discountAmount missing',
+      '[sale-sync] Skipping sync - couponCode or discountAmount missing',
       { id: doc._id },
     )
     return
@@ -256,7 +256,7 @@ async function syncToStripe(doc: SaleDocument): Promise<void> {
     const redemptionsChanged =
       activePromo.max_redemptions !== (doc.maxRedemptions ?? null)
     if (redemptionsChanged) {
-      // max_redemptions cannot be changed after creation — deactivate and recreate
+      // max_redemptions cannot be changed after creation - deactivate and recreate
       await stripe.promotionCodes.update(activePromo.id, { active: false })
       await stripe.promotionCodes.create({
         promotion: { type: 'coupon', coupon: couponId },

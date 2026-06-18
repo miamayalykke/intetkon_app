@@ -3,7 +3,7 @@ import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
 import { getLocalizedSlug } from '@src/lib/slug-helpers'
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
-import { addMinutes, format } from 'date-fns'
+import { format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
@@ -18,14 +18,6 @@ const LEVEL_COLORS: Record<string, string> = {
   Beginner: 'bg-green-100 text-green-700 border-green-200',
   Intermediate: 'bg-orange-100 text-orange-700 border-orange-200',
   Advanced: 'bg-red-100 text-red-700 border-red-200',
-}
-
-const parseDuration = (duration: string): number => {
-  const match = duration.match(/(\d+\.?\d*)\s*(?:hour|hr)/i)
-  if (match) {
-    return Math.round(parseFloat(match[1]) * 60)
-  }
-  return 0
 }
 
 const TIMEZONE = 'Europe/Copenhagen'
@@ -65,9 +57,12 @@ const WorkshopDetailPage = async ({
     LEVEL_COLORS[workshop.level ?? ''] ??
     'bg-gray-100 text-gray-700 border-gray-200'
 
-  const durationMinutes = parseDuration(workshop.duration ?? '')
-  const endDate = addMinutes(eventDate, durationMinutes)
-  const timeRange = `${format(eventDate, 'HH:mm')} to ${format(endDate, 'HH:mm')}`
+  const endDate = workshop.endDate
+    ? toZonedTime(new Date(workshop.endDate), TIMEZONE)
+    : null
+  const timeRange = endDate
+    ? `${format(eventDate, 'HH:mm')} to ${format(endDate, 'HH:mm')}`
+    : format(eventDate, 'HH:mm')
 
   return (
     <main className="min-h-screen bg-background pb-32">
@@ -148,7 +143,8 @@ const WorkshopDetailPage = async ({
               )}
               {workshop.location === 'online' && (
                 <span className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                  <MapPin className="w-3 h-3 text-secondary" /> {t('workshops.detail.online')}
+                  <MapPin className="w-3 h-3 text-secondary" />{' '}
+                  {t('workshops.detail.online')}
                 </span>
               )}
               <span
