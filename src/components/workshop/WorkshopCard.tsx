@@ -2,7 +2,7 @@
 
 import { getLocalizedSlug } from '@src/lib/slug-helpers'
 import { Button } from '@ui/button'
-import { format } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { ArrowRight, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Link from 'next/link'
@@ -22,9 +22,16 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
   const spotsLeft = maxSpots - signUps
   const eventDate = new Date(workshop.date ?? '')
 
+  const parseLegacyDuration = (d: string | null | undefined): number => {
+    if (!d) return 0
+    const m = d.match(/(\d+\.?\d*)\s*(?:hour|hr)/i)
+    return m ? Math.round(parseFloat(m[1]) * 60) : 0
+  }
   const endDate = workshop.endDate
     ? toZonedTime(new Date(workshop.endDate), TIMEZONE)
-    : null
+    : workshop.duration
+      ? addMinutes(eventDate, parseLegacyDuration(workshop.duration))
+      : null
   const timeRange = endDate
     ? `${format(eventDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
     : format(eventDate, 'HH:mm')

@@ -9,6 +9,7 @@ const WORKSHOPS_QUERY = defineQuery(`
     slug,
     date,
     endDate,
+    duration,
     location,
     level,
     price,

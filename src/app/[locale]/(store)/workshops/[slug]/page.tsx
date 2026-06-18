@@ -3,7 +3,7 @@ import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
 import { getLocalizedSlug } from '@src/lib/slug-helpers'
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
-import { format } from 'date-fns'
+import { addMinutes, format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
 import Image from 'next/image'
@@ -57,9 +57,16 @@ const WorkshopDetailPage = async ({
     LEVEL_COLORS[workshop.level ?? ''] ??
     'bg-gray-100 text-gray-700 border-gray-200'
 
+  const parseLegacyDuration = (d: string | null | undefined): number => {
+    if (!d) return 0
+    const m = d.match(/(\d+\.?\d*)\s*(?:hour|hr)/i)
+    return m ? Math.round(parseFloat(m[1]) * 60) : 0
+  }
   const endDate = workshop.endDate
     ? toZonedTime(new Date(workshop.endDate), TIMEZONE)
-    : null
+    : workshop.duration
+      ? addMinutes(eventDate, parseLegacyDuration(workshop.duration))
+      : null
   const timeRange = endDate
     ? `${format(eventDate, 'HH:mm')} to ${format(endDate, 'HH:mm')}`
     : format(eventDate, 'HH:mm')
