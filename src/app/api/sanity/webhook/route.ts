@@ -75,11 +75,7 @@ export async function POST(req: NextRequest) {
       if (workshopIds.length > 0 && productIds.length === 0) {
         await sendWorkshopConfirmationEmails(session, workshopIds, locale)
       } else {
-        await sendOrderConfirmationEmail(
-          session,
-          order.sanityProductIds,
-          locale,
-        )
+        await sendOrderConfirmationEmail(session, order.sanityProductIds, locale)
       }
 
       try {
@@ -219,8 +215,7 @@ async function sendOrderConfirmationEmail(
 
     const downloadUrls: { label: string; url: string }[] = []
     if (!isWorkshop && detail.productType === 'digital') {
-      const enLabel =
-        locale === 'da' ? 'Download (Engelsk)' : 'Download (English)'
+      const enLabel = locale === 'da' ? 'Download (Engelsk)' : 'Download (English)'
       const daLabel = locale === 'da' ? 'Download (Dansk)' : 'Download (Danish)'
       const sessionId = session.id
       if (detail.s3KeyEn) {
@@ -258,8 +253,8 @@ async function sendOrderConfirmationEmail(
 
   const subject =
     locale === 'da'
-      ? `Ordre bekræftet - ${orderNumber}`
-      : `Order confirmed - ${orderNumber}`
+      ? `Ordre bekræftet — ${orderNumber}`
+      : `Order confirmed — ${orderNumber}`
 
   const html = await render(
     OrderConfirmationEmail({
@@ -418,8 +413,8 @@ async function sendWorkshopConfirmationEmails(
 
   const subject =
     locale === 'da'
-      ? `Workshop bekræftet - ${orderNumber}`
-      : `Workshop confirmed - ${orderNumber}`
+      ? `Workshop bekræftet — ${orderNumber}`
+      : `Workshop confirmed — ${orderNumber}`
 
   for (const workshop of workshops) {
     const workshopTitle = workshop.title ?? 'Workshop'
@@ -459,8 +454,8 @@ async function sendWorkshopConfirmationEmails(
     if (additionalInfoHtml) {
       const additionalSubject =
         locale === 'da'
-          ? `Yderligere information - ${workshopTitle}`
-          : `Additional information - ${workshopTitle}`
+          ? `Yderligere information — ${workshopTitle}`
+          : `Additional information — ${workshopTitle}`
 
       const additionalHtml = await render(
         WorkshopAdditionalInfoEmail({

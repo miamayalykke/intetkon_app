@@ -164,7 +164,7 @@ async function getStripeProductIdsFromConditions(
 async function syncToStripe(doc: SaleDocument): Promise<void> {
   if (!doc.couponCode || doc.discountAmount === undefined) {
     console.warn(
-      '[sale-sync] Skipping sync - couponCode or discountAmount missing',
+      '[sale-sync] Skipping sync — couponCode or discountAmount missing',
       { id: doc._id },
     )
     return
@@ -244,6 +244,8 @@ async function syncToStripe(doc: SaleDocument): Promise<void> {
     }
     const newCoupon = await stripe.coupons.create(couponParams)
     couponId = newCoupon.id
+    console.log('[sale-sync] Created Stripe coupon:', couponId)
+  } else {
     couponId = existingCoupon.id
   }
 
@@ -254,7 +256,7 @@ async function syncToStripe(doc: SaleDocument): Promise<void> {
     const redemptionsChanged =
       activePromo.max_redemptions !== (doc.maxRedemptions ?? null)
     if (redemptionsChanged) {
-      // max_redemptions cannot be changed after creation - deactivate and recreate
+      // max_redemptions cannot be changed after creation — deactivate and recreate
       await stripe.promotionCodes.update(activePromo.id, { active: false })
       await stripe.promotionCodes.create({
         promotion: { type: 'coupon', coupon: couponId },
@@ -263,34 +265,53 @@ async function syncToStripe(doc: SaleDocument): Promise<void> {
         metadata: { sanityId: doc._id },
         ...(doc.maxRedemptions ? { max_redemptions: doc.maxRedemptions } : {}),
       })
-      colse {
-      awonsole.log('[sale-sync] Updated Stripe promotion code:', activePromo.id)
+      console.log(
+        '[sale-sync] Recreated Stripe promotion code (maxRedemptions changed)',
+      )
+    } else {
+      await stripe.promotionCodes.update(activePromo.id, {
+        active: doc.isActive ?? true,
+      })
+      console.log('[sale-sync] Updated Stripe promotion code:', activePromo.id)
     }
   } else {
-    cons
+    const promo = await stripe.promotionCodes.create({
+      promotion: { type: 'coupon', coupon: couponId },
       code: doc.couponCode,
       active: doc.isActive ?? true,
       metadata: { sanityId: doc._id },
-      ..
+      ...(doc.maxRedemptions ? { max_redemptions: doc.maxRedemptions } : {}),
+    })
     console.log('[sale-sync] Created Stripe promotion code:', promo.id)
   }
 }
 
-async 
+async function deactivateInStripe(couponCode: string): Promise<void> {
+  const existingPromo = await findPromotionCode(couponCode)
   if (!existingPromo) return
 
   await stripe.promotionCodes.update(existingPromo.id, { active: false })
   console.log(
-    '[
+    '[sale-sync] Deactivated Stripe promotion code:',
+    existingPromo.id,
   )
 
   const coupon = existingPromo.coupon as Stripe.Coupon
+  await stripe.coupons.del(coupon.id)
+  console.log('[sale-sync] Deleted Stripe coupon:', coupon.id)
+}
+
 export async function POST(req: NextRequest) {
   if (!validateSecret(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
   let payload: WebhookPayload
+  try {
+    payload = await req.json()
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+  }
 
   console.log(
     '[sale-sync] Received webhook for:',
@@ -298,19 +319,34 @@ export async function POST(req: NextRequest) {
     'type:',
     payload._type,
   )
+
   if (!['sale', 'promotion'].includes(payload._type)) {
     return NextResponse.json({
+      ok: true,
+      skipped: 'not a sale or promotion document',
+    })
+  }
+
+  try {
+    // Fetch current document from Sanity — if null, the document was deleted
     const doc = await fetchSaleFromSanity(payload._id)
 
     if (!doc) {
-      // Document deleted - use couponCode from webhook payload for lookup
+      // Document deleted — use couponCode from webhook payload for lookup
       if (!payload.couponCode) {
         console.warn(
-          '[sale-sync] Deleted document has no couponCode in payload - cannot deactivate',
+          '[sale-sync] Deleted document has no couponCode in payload — cannot deactivate',
         )
         return NextResponse.json({ ok: true })
       }
       console.log(
+        '[sale-sync] Document deleted — deactivating in Stripe:',
+        payload.couponCode,
+      )
+      await deactivateInStripe(payload.couponCode)
+    } else {
+      console.log('[sale-sync] Syncing document:', doc._id, doc.couponCode)
+      await syncToStripe(doc)
     }
   } catch (error) {
     console.error('[sale-sync] Error syncing sale to Stripe', {
@@ -320,4 +356,5 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Stripe sync failed' }, { status: 500 })
   }
 
-  retur
+  return NextResponse.json({ ok: true })
+}

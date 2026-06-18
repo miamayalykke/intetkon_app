@@ -12,7 +12,7 @@ import {
 import { CONTACT_LIST_NAME, FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
 
 /** Replace {{variableName}} placeholders with subscriber-specific values.
- *  {{amazonSESUnsubscribeUrl}} is reserved - SES replaces it automatically. */
+ *  {{amazonSESUnsubscribeUrl}} is reserved — SES replaces it automatically. */
 function applyVariables(html: string, vars: Record<string, string>): string {
   return html.replace(/\{\{(\w+)\}\}/g, (match, key) => {
     if (key === 'amazonSESUnsubscribeUrl') return match // leave for SES

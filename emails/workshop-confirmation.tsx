@@ -32,7 +32,7 @@ interface WorkshopConfirmationEmailProps {
 
 const translations = {
   en: {
-    preview: (title: string) => `Your spot is confirmed - ${title}`,
+    preview: (title: string) => `Your spot is confirmed — ${title}`,
     heading: "You're booked in!",
     greeting: (name: string) => `Hi ${name},`,
     intro: (title: string, online: boolean) =>
@@ -55,7 +55,7 @@ const translations = {
     dateLocale: enGB,
   },
   da: {
-    preview: (title: string) => `Din plads er bekræftet - ${title}`,
+    preview: (title: string) => `Din plads er bekræftet — ${title}`,
     heading: 'Du er tilmeldt!',
     greeting: (name: string) => `Hej ${name},`,
     intro: (title: string, online: boolean) =>

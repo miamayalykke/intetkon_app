@@ -78,9 +78,7 @@ export const internationalizedArraySlug = defineType({
             source: (doc: any, context: any) => {
               const language = context.parent?.language
               const nameOrTitle = doc.name || doc.title || []
-              const match = nameOrTitle.find(
-                (n: any) => n.language === language,
-              )
+              const match = nameOrTitle.find((n: any) => n.language === language)
               return match?.value ?? ''
             },
             slugify: (input: string) =>
@@ -97,7 +95,7 @@ export const internationalizedArraySlug = defineType({
               const current = value?.current
               if (!current) return true
               if (/[\sæøå]/i.test(current)) {
-                return 'Slug must not contain spaces or Danish characters (æ, ø, å) - use ae, o, a instead.'
+                return 'Slug must not contain spaces or Danish characters (æ, ø, å) — use ae, o, a instead.'
               }
               return true
             }),
