@@ -19,14 +19,14 @@ interface WorkshopAdditionalInfoEmailProps {
 
 const translations = {
   en: {
-    preview: (title: string) => `Additional information — ${title}`,
+    preview: (title: string) => `Additional information - ${title}`,
     heading: 'Additional Information',
     greeting: (name: string) => `Hi ${name},`,
     intro: (title: string) =>
       `Here is some additional information for your upcoming workshop: ${title}`,
   },
   da: {
-    preview: (title: string) => `Yderligere information — ${title}`,
+    preview: (title: string) => `Yderligere information - ${title}`,
     heading: 'Yderligere information',
     greeting: (name: string) => `Hej ${name},`,
     intro: (title: string) =>
@@ -40,8 +40,7 @@ export default function WorkshopAdditionalInfoEmail({
   contentHtml,
   locale = 'en',
 }: WorkshopAdditionalInfoEmailProps) {
-  const t =
-    translations[locale as keyof typeof translations] ?? translations.en
+  const t = translations[locale as keyof typeof translations] ?? translations.en
 
   return (
     <Html>

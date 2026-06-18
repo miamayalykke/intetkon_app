@@ -64,21 +64,13 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
       name,
       metadata: { sanityId: doc._id },
     })
-    console.log('[product-sync] Updated Stripe product:', doc.stripeProductId)
-    productId = doc.stripeProductId
   } else {
     const product = await stripe.products.create({
       name,
       type: 'good',
       metadata: { sanityId: doc._id },
     })
-    console.log('[product-sync] Created Stripe product:', product.id)
-    productId = product.id
-
-    await backendClient
-      .patch(doc._id)
-      .set({ stripeProductId: product.id })
-      .commit()
+    co.patch(doc._id).set({ stripeProductId: product.id }).commit()
   }
 
   try {
@@ -99,24 +91,20 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
         })
         console.log('[product-sync] Created new price for product:', productId)
       }
-    } else {
       await stripe.prices.create({
-        product: productId,
-        currency: 'dkk',
+        pr
         unit_amount: Math.round(doc.price * 100),
       })
       console.log('[product-sync] Created price for product:', productId)
     }
-  } catch (error) {
-    console.error(
-      '[product-sync] Error creating price for product:',
-      productId,
-      error,
-    )
   }
+  catc
+  '[product-sync] Error creating price for product:', productId, er
+}
 }
 
-async function deactivateInStripe(stripeProductId: string): Promise<void> {
+async
+function deactivateInStripe(stripeProductId: string): Promise<void> {
   if (!stripeProductId) return
 
   await stripe.products.update(stripeProductId, { active: false })
@@ -124,51 +112,35 @@ async function deactivateInStripe(stripeProductId: string): Promise<void> {
 }
 
 export async function POST(req: NextRequest) {
-  if (!validateSecret(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
+  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+}
 
-  let payload: WebhookPayload
-  try {
-    payload = await req.json()
-  } catch {
-    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
-  }
+let payload: WebhookPayload
+payload = await req.json()
+} catch
+{
+  return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
+}
 
-  console.log(
+console.log(
     '[product-sync] Received webhook for:',
     payload._id,
-    'type:',
-    payload._type,
-  )
-
-  if (!['product', 'workshop'].includes(payload._type)) {
-    return NextResponse.json({
-      ok: true,
       skipped: 'not a product or workshop document',
-    })
+})
   }
 
-  try {
-    const doc = await fetchDocFromSanity(payload._id)
-
-    if (!doc) {
-      console.log(
-        '[product-sync] Document deleted — deactivating in Stripe:',
-        payload._id,
-      )
+try {
       await deactivateInStripe(payload._id)
-    } else {
-      console.log('[product-sync] Syncing document:', doc._id)
-      await syncToStripe(doc)
     }
-  } catch (error) {
+else
+{
+  console.log('[product-sync] Syncing document:', doc._id)
+  await syncToStripe(doc)
+}
+} catch (error)
+{
     console.error('[product-sync] Error syncing product to Stripe', {
-      sanityId: payload._id,
-      error,
-    })
-    return NextResponse.json({ error: 'Stripe sync failed' }, { status: 500 })
-  }
+      sanityId:
 
   return NextResponse.json({ ok: true })
 }
