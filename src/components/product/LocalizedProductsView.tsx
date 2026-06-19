@@ -1,4 +1,5 @@
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
+import { Suspense } from 'react'
 
 import ProductsView from './ProductsView'
 
@@ -16,7 +17,6 @@ export default async function LocalizedProductsView({
   categories: any[]
   locale: string
 }) {
-
   // Extract localized fields from products
   const localizedProducts = products.map((product: any) => {
     const name = getLocalizedField(product.name, locale)
@@ -45,5 +45,12 @@ export default async function LocalizedProductsView({
     } as any
   })
 
-  return <ProductsView products={localizedProducts} categories={localizedCategories} />
+  return (
+    <Suspense fallback={null}>
+      <ProductsView
+        products={localizedProducts}
+        categories={localizedCategories}
+      />
+    </Suspense>
+  )
 }

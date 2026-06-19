@@ -104,6 +104,21 @@
     },
     "categories": {
       "allPieces": "All Pieces"
+    },
+    "difficulty": {
+      "label": "Difficulty",
+      "all": "All Levels",
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced"
+    },
+    "sort": {
+      "label": "Sort",
+      "featured": "Featured",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "newest": "Newest",
+      "popularity": "Most Popular"
     }
   },
   "workshops": {

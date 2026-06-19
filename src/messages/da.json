@@ -104,6 +104,21 @@
     },
     "categories": {
       "allPieces": "Alle Items"
+    },
+    "difficulty": {
+      "label": "Sværhedsgrad",
+      "all": "Alle Niveauer",
+      "beginner": "Begynder",
+      "intermediate": "Øvet",
+      "advanced": "Avanceret"
+    },
+    "sort": {
+      "label": "Sortér",
+      "featured": "Udvalgte",
+      "priceAsc": "Pris: Lav til Høj",
+      "priceDesc": "Pris: Høj til Lav",
+      "newest": "Nyeste",
+      "popularity": "Mest Populære"
     }
   },
   "workshops": {

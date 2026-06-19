@@ -47,6 +47,35 @@ export const productType = defineType({
       of: [{ type: 'reference', to: [{ type: 'category' }] }],
     }),
     defineField({
+      name: 'difficulty',
+      title: 'Difficulty',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Beginner', value: 'beginner' },
+          { title: 'Intermediate', value: 'intermediate' },
+          { title: 'Advanced', value: 'advanced' },
+        ],
+        layout: 'radio',
+      },
+    }),
+    defineField({
+      name: 'sortWeight',
+      title: 'Featured Rank',
+      description:
+        'Higher numbers appear first under the "Featured" sort. Leave empty for default ordering.',
+      type: 'number',
+    }),
+    defineField({
+      name: 'salesCount',
+      title: 'Sales Count',
+      description:
+        'Number of times this product has sold. Used for the "Most Popular" sort. Usually updated automatically.',
+      type: 'number',
+      initialValue: 0,
+      readOnly: true,
+    }),
+    defineField({
       name: 'stock',
       title: 'Stock',
       type: 'number',

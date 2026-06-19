@@ -166,6 +166,21 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
     locale: locale ?? 'en',
   })
 
+  // Increment salesCount for each product sold
+  for (const product of sanityProducts) {
+    try {
+      await backendClient
+        .patch(product.product._ref)
+        .inc({ salesCount: product.quantity })
+        .commit()
+    } catch (err) {
+      console.error(
+        `Failed to increment salesCount for product ${product.product._ref}:`,
+        err,
+      )
+    }
+  }
+
   return {
     ...order,
     sanityProductIds: sanityProducts
