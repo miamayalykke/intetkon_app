@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
           workshopTitle: title,
           workshopDate: workshop.date,
           workshopLocation: workshop.location,
-          workshopDuration: formatEndTime(workshop.endDate),
+          workshopEndTime: formatEndTime(workshop.endDate),
           locale,
         }),
       )

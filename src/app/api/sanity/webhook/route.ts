@@ -443,7 +443,7 @@ async function sendWorkshopConfirmationEmails(
         orderNumber,
         workshopTitle,
         workshopDate: workshop.date ?? '',
-        workshopDuration: formatEndTime(workshop.endDate),
+        workshopEndTime: formatEndTime(workshop.endDate),
         workshopLocation: workshop.location ?? '',
         workshopLevel: workshop.level ?? '',
         price: workshop.price,

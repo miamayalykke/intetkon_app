@@ -20,7 +20,7 @@ interface WorkshopReminderEmailProps {
   workshopTitle: string
   workshopDate: string
   workshopLocation: string
-  workshopDuration: string
+  workshopEndTime?: string
   locale?: string
 }
 
@@ -60,7 +60,7 @@ export default function WorkshopReminderEmail({
   workshopTitle,
   workshopDate,
   workshopLocation,
-  workshopDuration,
+  workshopEndTime,
   locale = 'en',
 }: WorkshopReminderEmailProps) {
   const t = translations[locale as keyof typeof translations] ?? translations.en
@@ -88,14 +88,11 @@ export default function WorkshopReminderEmail({
 
             <Text style={label}>{t.dateTimeLabel}</Text>
             <Text style={detail}>
-              {formattedDate} {t.at} {formattedTime}
+              {formattedDate} {t.at} {formattedTime}{workshopEndTime ? ` - ${workshopEndTime}` : ''}
             </Text>
 
             <Text style={label}>{t.locationLabel}</Text>
             <Text style={detail}>{t.locationDisplay(workshopLocation)}</Text>
-
-            <Text style={label}>{t.durationLabel}</Text>
-            <Text style={detail}>{workshopDuration}</Text>
 
             <Hr style={hr} />
 

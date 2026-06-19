@@ -21,7 +21,7 @@ interface WorkshopConfirmationEmailProps {
   orderNumber: string
   workshopTitle: string
   workshopDate: string
-  workshopDuration: string
+  workshopEndTime?: string
   workshopLocation: string
   workshopLevel: string
   price: number
@@ -84,7 +84,7 @@ export default function WorkshopConfirmationEmail({
   orderNumber,
   workshopTitle,
   workshopDate,
-  workshopDuration,
+  workshopEndTime,
   workshopLocation,
   workshopLevel,
   price,
@@ -140,11 +140,8 @@ export default function WorkshopConfirmationEmail({
 
             <Text style={label}>{t.dateTimeLabel}</Text>
             <Text style={detail}>
-              {formattedDate} {t.at} {formattedTime}
+              {formattedDate} {t.at} {formattedTime}{workshopEndTime ? ` - ${workshopEndTime}` : ''}
             </Text>
-
-            <Text style={label}>{t.durationLabel}</Text>
-            <Text style={detail}>{workshopDuration}</Text>
 
             <Text style={label}>{t.locationLabel}</Text>
             <Text style={detail}>{t.locationDisplay(workshopLocation)}</Text>
