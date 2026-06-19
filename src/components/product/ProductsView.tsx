@@ -112,6 +112,15 @@ const ProductsView = ({ products, categories }: ProductsViewProps) => {
       {/* --- Filter / Sort Toolbar (extensible) --- */}
       <div className="flex flex-wrap gap-4 items-center">
         <ToolbarSelect
+          label={t('patterns.sort.label')}
+          value={activeSort}
+          onChange={(v) => setParam('sort', v === DEFAULT_SORT ? '' : v)}
+          options={Object.keys(SORTS).map((key) => ({
+            value: key,
+            label: t(`patterns.sort.${key}`),
+          }))}
+        />
+        <ToolbarSelect
           label={t('patterns.difficulty.label')}
           value={activeDifficulty}
           onChange={(v) => setParam('difficulty', v)}
@@ -119,15 +128,6 @@ const ProductsView = ({ products, categories }: ProductsViewProps) => {
           options={DIFFICULTY_LEVELS.map((level) => ({
             value: level,
             label: t(`patterns.difficulty.${level}`),
-          }))}
-        />
-        <ToolbarSelect
-          label={t('patterns.sort.label')}
-          value={activeSort}
-          onChange={(v) => setParam('sort', v === DEFAULT_SORT ? '' : v)}
-          options={Object.keys(SORTS).map((key) => ({
-            value: key,
-            label: t(`patterns.sort.${key}`),
           }))}
         />
         {/* Future filters/sorts: add more <ToolbarSelect /> here */}
