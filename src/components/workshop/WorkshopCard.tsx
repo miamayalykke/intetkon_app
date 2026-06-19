@@ -77,7 +77,7 @@ const WorkshopCard = ({ workshop }: { workshop: WorkshopItem }) => {
           <h2 className="text-3xl lg:text-5xl font-black tracking-tighter uppercase leading-none">
             {workshop.title}
           </h2>
-          <p className="max-w-md text-sm text-muted-foreground font-light leading-relaxed italic">
+          <p className="text-sm text-muted-foreground font-light leading-relaxed italic">
             {workshop.description}
           </p>
         </div>

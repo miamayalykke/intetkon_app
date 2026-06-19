@@ -118,7 +118,8 @@
       "soldOut": "Sold Out",
       "spotsRemaining": "{count} Spots Remaining",
       "materialsIncluded": "Materials Included in Price",
-      "online": "Online"
+      "online": "Online",
+      "timeRange": "{start} to {end}"
     },
     "card": {
       "soldOut": "Sold Out",

@@ -118,7 +118,8 @@
       "soldOut": "Udsolgt",
       "spotsRemaining": "{count} pladser tilbage",
       "materialsIncluded": "Materialer inkluderet i prisen",
-      "online": "Online"
+      "online": "Online",
+      "timeRange": "{start} til {end}"
     },
     "card": {
       "soldOut": "Udsolgt",

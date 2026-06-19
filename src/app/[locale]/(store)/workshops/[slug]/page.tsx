@@ -41,7 +41,6 @@ const WorkshopDetailPage = async ({
   }
 
   const title = getLocalizedField(workshop.title, locale)
-  const description = getLocalizedField(workshop.description, locale)
   const body = getLocalizedField(workshop.body, locale)
   const levelDisplay = workshop.level
     ? t(`workshops.levels.${workshop.level}`)
@@ -68,7 +67,10 @@ const WorkshopDetailPage = async ({
       ? addMinutes(eventDate, parseLegacyDuration(workshop.duration))
       : null
   const timeRange = endDate
-    ? `${format(eventDate, 'HH:mm')} to ${format(endDate, 'HH:mm')}`
+    ? t('workshops.detail.timeRange', {
+        start: format(eventDate, 'HH:mm'),
+        end: format(endDate, 'HH:mm'),
+      })
     : format(eventDate, 'HH:mm')
 
   return (
@@ -163,11 +165,6 @@ const WorkshopDetailPage = async ({
                   : t('workshops.detail.spotsRemaining', { count: spotsLeft })}
               </span>
             </div>
-
-            {/* Short description */}
-            <p className="text-base text-muted-foreground font-light leading-relaxed italic border-l-2 border-orange-500/30 pl-4">
-              {description}
-            </p>
 
             {/* Rich body content */}
             {Array.isArray(body) && body.length > 0 && (
