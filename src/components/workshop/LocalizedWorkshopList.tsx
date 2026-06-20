@@ -20,12 +20,12 @@ export default async function LocalizedWorkshopList({
       ? typeof slugValue === 'string'
         ? { current: slugValue }
         : slugValue
-      : workshop.slug
+      : null
 
     return {
       ...workshop,
-      ...(title && { title }),
-      ...(description && { description }),
+      title: title || '',
+      description: description || '',
       ...(slug && { slug }),
     } as any
   })
