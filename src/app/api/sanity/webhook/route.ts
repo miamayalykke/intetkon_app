@@ -207,8 +207,8 @@ async function sendOrderConfirmationEmail(
       title?: string
       price: number
       productType?: 'digital' | 'physical_course' | 'physical'
-      s3KeyEn?: string
-      s3KeyDa?: string
+      s3KeyEn?: Array<{ s3Key: string; filename?: string }>
+      s3KeyDa?: Array<{ s3Key: string; filename?: string }>
       courseDate?: string
       courseLocation?: string
       date?: string
@@ -249,16 +249,28 @@ async function sendOrderConfirmationEmail(
         locale === 'da' ? 'Download (Engelsk)' : 'Download (English)'
       const daLabel = locale === 'da' ? 'Download (Dansk)' : 'Download (Danish)'
       const sessionId = session.id
-      if (detail.s3KeyEn) {
-        downloadUrls.push({
-          label: enLabel,
-          url: `${baseUrl}/api/download/${detail._id}?session=${sessionId}&locale=en`,
+
+      if (detail.s3KeyEn && detail.s3KeyEn.length > 0) {
+        detail.s3KeyEn.forEach((file, index) => {
+          const fileName = file.filename?.trim()
+            ? file.filename
+            : `${enLabel} ${index + 1}`
+          downloadUrls.push({
+            label: `${fileName}`,
+            url: `${baseUrl}/api/download/${detail._id}?session=${sessionId}&locale=en&index=${index}`,
+          })
         })
       }
-      if (detail.s3KeyDa) {
-        downloadUrls.push({
-          label: daLabel,
-          url: `${baseUrl}/api/download/${detail._id}?session=${sessionId}&locale=da`,
+
+      if (detail.s3KeyDa && detail.s3KeyDa.length > 0) {
+        detail.s3KeyDa.forEach((file, index) => {
+          const fileName = file.filename?.trim()
+            ? file.filename
+            : `${daLabel} ${index + 1}`
+          downloadUrls.push({
+            label: `${fileName}`,
+            url: `${baseUrl}/api/download/${detail._id}?session=${sessionId}&locale=da&index=${index}`,
+          })
         })
       }
     }

@@ -38,8 +38,8 @@ export async function GET(
 
   const product = await backendClient.fetch<{
     productType: string
-    s3KeyEn?: string
-    s3KeyDa?: string
+    s3KeyEn?: Array<{ s3Key: string; filename?: string }>
+    s3KeyDa?: Array<{ s3Key: string; filename?: string }>
   } | null>(
     `*[_type == "product" && _id == $productId][0]{ productType, s3KeyEn, s3KeyDa }`,
     { productId },
@@ -52,15 +52,27 @@ export async function GET(
     )
   }
 
-  const s3Key = (locale === 'da' && product.s3KeyDa) ? product.s3KeyDa : product.s3KeyEn
+  // Get files for the requested locale, fallback to English
+  const fileArray = locale === 'da' && product.s3KeyDa ? product.s3KeyDa : product.s3KeyEn
 
-  if (!s3Key) {
+  if (!fileArray || fileArray.length === 0) {
     return NextResponse.json(
       { error: 'No downloadable file available for this product' },
       { status: 404 },
     )
   }
 
-  const url = await getPresignedDownloadUrl(s3Key)
+  // Get the first file (user can specify index in query if needed)
+  const fileIndex = parseInt(req.nextUrl.searchParams.get('index') ?? '0', 10)
+  const file = fileArray[fileIndex]
+
+  if (!file || !file.s3Key) {
+    return NextResponse.json(
+      { error: 'Downloadable file not found' },
+      { status: 404 },
+    )
+  }
+
+  const url = await getPresignedDownloadUrl(file.s3Key)
   return NextResponse.redirect(url)
 }

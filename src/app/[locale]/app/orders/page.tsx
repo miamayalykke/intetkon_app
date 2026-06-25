@@ -1,12 +1,13 @@
 import { auth } from '@clerk/nextjs/server'
-import { getMyOrders } from '@sanity/lib/orders/getMyOrders'
+import { DigitalProductFiles } from '@src/components/DigitalProductFiles'
 import { formatCurrency } from '@src/lib/formatCurrency'
 import { imageUrl } from '@src/lib/imageUrl'
-import { Clock, Download, MapPin, Receipt, Sparkles } from 'lucide-react'
+import { Clock, MapPin, Receipt, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
+import { getMyOrders } from '@sanity/lib/orders/getMyOrders'
 
 export const dynamic = 'force-dynamic'
 
@@ -167,26 +168,32 @@ async function Orders({ params }: { params: Promise<{ locale: string }> }) {
                               )}
                               {item.product?.productType === 'digital' &&
                                 item.product?._id && (
-                                  <div className="flex flex-col gap-1 mt-1">
-                                    {item.product?.hasEnFile && (
-                                      <a
-                                        href={`/api/download/${item.product._id}?locale=en`}
-                                        className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors"
-                                      >
-                                        <Download className="w-3 h-3" />
-                                        {t('download')} (EN)
-                                      </a>
-                                    )}
-                                    {item.product?.hasDaFile && (
-                                      <a
-                                        href={`/api/download/${item.product._id}?locale=da`}
-                                        className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-secondary hover:text-secondary/70 transition-colors"
-                                      >
-                                        <Download className="w-3 h-3" />
-                                        {t('download')} (DA)
-                                      </a>
-                                    )}
-                                  </div>
+                                  <>
+                                    {item.product?.s3KeyEn &&
+                                      item.product.s3KeyEn.length > 0 && (
+                                        <DigitalProductFiles
+                                          files={item.product.s3KeyEn}
+                                          locale="en"
+                                          productId={item.product._id}
+                                          t={{
+                                            download: t('download'),
+                                            downloadLabel: () => 'EN',
+                                          }}
+                                        />
+                                      )}
+                                    {item.product?.s3KeyDa &&
+                                      item.product.s3KeyDa.length > 0 && (
+                                        <DigitalProductFiles
+                                          files={item.product.s3KeyDa}
+                                          locale="da"
+                                          productId={item.product._id}
+                                          t={{
+                                            download: t('download'),
+                                            downloadLabel: () => 'DA',
+                                          }}
+                                        />
+                                      )}
+                                  </>
                                 )}
                               {item.product?._type === 'workshop' && (
                                 <div className="mt-1 space-y-0.5">

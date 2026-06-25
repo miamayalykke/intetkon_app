@@ -14,8 +14,11 @@ import {
 import { format } from 'date-fns'
 import { da as daLocale, enGB } from 'date-fns/locale'
 import { toZonedTime } from 'date-fns-tz'
+import { DigitalProductSection } from './components/DigitalProductSection'
 
 const TIMEZONE = 'Europe/Copenhagen'
+// Customize email file display style here: 'default' | 'grouped' | 'compact'
+const DIGITAL_PRODUCT_STYLE = 'default' as const
 
 export interface OrderProduct {
   name: string
@@ -130,66 +133,68 @@ export default function OrderConfirmationEmail({
             <Hr style={hr} />
 
             {products.map((item, i) => (
-              <Section key={i} style={productRow}>
-                {item.productUrl ? (
-                  <Link href={item.productUrl} style={productNameLink}>
-                    {item.name} x {item.quantity}
-                  </Link>
+              <Section key={i}>
+                {item.productType === 'digital' && item.downloadUrls && item.downloadUrls.length > 0 ? (
+                  <DigitalProductSection
+                    productName={item.name}
+                    quantity={item.quantity}
+                    productUrl={item.productUrl}
+                    downloadUrls={item.downloadUrls}
+                    downloadNote={t.downloadNote}
+                    style={DIGITAL_PRODUCT_STYLE}
+                  />
                 ) : (
-                  <Text style={productName}>
-                    {item.name} x {item.quantity}
-                  </Text>
-                )}
-
-                {item.productType === 'digital' && item.downloadUrls && item.downloadUrls.length > 0 && (
                   <>
-                    <Text style={note}>{t.downloadNote}</Text>
-                    {item.downloadUrls.map((dl) => (
-                      <Button key={dl.label} style={{ ...button, marginRight: '8px' }} href={dl.url}>
-                        {dl.label}
-                      </Button>
-                    ))}
+                    {item.productUrl ? (
+                      <Link href={item.productUrl} style={productNameLink}>
+                        {item.name} x {item.quantity}
+                      </Link>
+                    ) : (
+                      <Text style={productName}>
+                        {item.name} x {item.quantity}
+                      </Text>
+                    )}
+
+                    {item.productType === 'physical_course' && (
+                      <Section style={workshopBox}>
+                        <Text style={workshopLabel}>{t.sessionDetailsLabel}</Text>
+                        {item.courseDate && (
+                          <>
+                            <Text style={workshopDetail}>
+                              📅{' '}
+                              {format(
+                                toZonedTime(new Date(item.courseDate), TIMEZONE),
+                                'EEEE, d MMMM yyyy',
+                                { locale: t.dateLocale },
+                              )}
+                            </Text>
+                            <Text style={workshopDetail}>
+                              🕐 {t.at}{' '}
+                              {format(
+                                toZonedTime(new Date(item.courseDate), TIMEZONE),
+                                'HH:mm',
+                              )}
+                            </Text>
+                          </>
+                        )}
+                        {item.courseLocation && (
+                          <Text style={workshopDetail}>
+                            📍 {item.courseLocation}
+                          </Text>
+                        )}
+                        {item.courseDuration && (
+                          <Text style={workshopDetail}>
+                            ⏱ {item.courseDuration}
+                          </Text>
+                        )}
+                        <Text style={workshopNote}>{t.courseNote}</Text>
+                      </Section>
+                    )}
+
+                    {item.productType === 'physical' && (
+                      <Text style={note}>{t.shippingNote}</Text>
+                    )}
                   </>
-                )}
-
-                {item.productType === 'physical_course' && (
-                  <Section style={workshopBox}>
-                    <Text style={workshopLabel}>{t.sessionDetailsLabel}</Text>
-                    {item.courseDate && (
-                      <>
-                        <Text style={workshopDetail}>
-                          📅{' '}
-                          {format(
-                            toZonedTime(new Date(item.courseDate), TIMEZONE),
-                            'EEEE, d MMMM yyyy',
-                            { locale: t.dateLocale },
-                          )}
-                        </Text>
-                        <Text style={workshopDetail}>
-                          🕐 {t.at}{' '}
-                          {format(
-                            toZonedTime(new Date(item.courseDate), TIMEZONE),
-                            'HH:mm',
-                          )}
-                        </Text>
-                      </>
-                    )}
-                    {item.courseLocation && (
-                      <Text style={workshopDetail}>
-                        📍 {item.courseLocation}
-                      </Text>
-                    )}
-                    {item.courseDuration && (
-                      <Text style={workshopDetail}>
-                        ⏱ {item.courseDuration}
-                      </Text>
-                    )}
-                    <Text style={workshopNote}>{t.courseNote}</Text>
-                  </Section>
-                )}
-
-                {item.productType === 'physical' && (
-                  <Text style={note}>{t.shippingNote}</Text>
                 )}
               </Section>
             ))}
@@ -258,8 +263,6 @@ const mono = {
   color: '#f97316',
   fontWeight: 'bold' as const,
 }
-
-const productRow = { marginBottom: '16px' }
 
 const productName = {
   fontSize: '14px',

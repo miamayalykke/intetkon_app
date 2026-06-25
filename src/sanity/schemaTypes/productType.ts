@@ -1,8 +1,6 @@
 import { PackageIcon } from 'lucide-react'
 import { defineField, defineType } from 'sanity'
 
-import { S3FileUpload } from '../components/S3FileUpload'
-
 export const productType = defineType({
   name: 'product',
   title: 'Products',
@@ -116,20 +114,20 @@ export const productType = defineType({
     }),
     defineField({
       name: 's3KeyEn',
-      title: 'S3 File Key (English)',
+      title: 'S3 Files (English)',
       description:
-        'The S3 object key for the English downloadable file (digital products only)',
-      type: 'string',
-      components: { input: S3FileUpload },
+        'Add multiple S3 file keys for the English downloadable files (digital products only)',
+      type: 'array',
+      of: [{ type: 's3FileItem' }],
       hidden: ({ document }) => document?.productType !== 'digital',
     }),
     defineField({
       name: 's3KeyDa',
-      title: 'S3 File Key (Danish)',
+      title: 'S3 Files (Danish)',
       description:
-        'The S3 object key for the Danish downloadable file. Falls back to the English file if not set.',
-      type: 'string',
-      components: { input: S3FileUpload },
+        'Add multiple S3 file keys for the Danish downloadable files. Falls back to the English files if not set.',
+      type: 'array',
+      of: [{ type: 's3FileItem' }],
       hidden: ({ document }) => document?.productType !== 'digital',
     }),
     defineField({
