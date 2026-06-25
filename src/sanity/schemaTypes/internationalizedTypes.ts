@@ -17,6 +17,45 @@ const localizationObject = {
   ],
 }
 
+const validateBothLanguages = (Rule: any) =>
+  Rule.custom((value: any) => {
+    if (!Array.isArray(value) || value.length === 0) {
+      return 'Both English and Danish versions are required'
+    }
+
+    const languages = value.map((item: any) => item?.language).filter(Boolean)
+    const hasEnglish = languages.includes('en')
+    const hasDanish = languages.includes('da')
+
+    if (!hasEnglish) {
+      return 'English version is required'
+    }
+    if (!hasDanish) {
+      return 'Danish version is required'
+    }
+
+    // Check that values exist and are not empty
+    const enValue = value.find((item: any) => item?.language === 'en')?.value
+    const daValue = value.find((item: any) => item?.language === 'da')?.value
+
+    // Handle both strings and arrays (for blockContent)
+    const enHasContent =
+      enValue &&
+      (Array.isArray(enValue) ? enValue.length > 0 : String(enValue).trim())
+    const daHasContent =
+      daValue &&
+      (Array.isArray(daValue) ? daValue.length > 0 : String(daValue).trim())
+
+    if (!enHasContent) {
+      return 'English version must have content'
+    }
+    if (!daHasContent) {
+      return 'Danish version must have content'
+    }
+
+    return true
+  })
+
 export const internationalizedArrayString = defineType({
   name: 'internationalizedArrayString',
   type: 'array',
@@ -24,20 +63,30 @@ export const internationalizedArrayString = defineType({
     {
       ...localizationObject,
       fields: [
-        ...localizationObject.fields,
+        defineField({
+          name: 'language',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'English', value: 'en' },
+              { title: 'Dansk', value: 'da' },
+            ],
+          },
+          validation: (Rule) => Rule.required(),
+        }),
         defineField({
           name: 'value',
           type: 'string',
+          validation: (Rule) => Rule.required(),
         }),
       ],
     } as any,
   ],
   initialValue: [
-    {
-      language: 'en',
-      value: '',
-    },
+    { language: 'en', value: '' },
+    { language: 'da', value: '' },
   ],
+  validation: (Rule) => validateBothLanguages(Rule.required()),
 })
 
 export const internationalizedArrayText = defineType({
@@ -47,20 +96,30 @@ export const internationalizedArrayText = defineType({
     {
       ...localizationObject,
       fields: [
-        ...localizationObject.fields,
+        defineField({
+          name: 'language',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'English', value: 'en' },
+              { title: 'Dansk', value: 'da' },
+            ],
+          },
+          validation: (Rule) => Rule.required(),
+        }),
         defineField({
           name: 'value',
           type: 'text',
+          validation: (Rule) => Rule.required(),
         }),
       ],
     } as any,
   ],
   initialValue: [
-    {
-      language: 'en',
-      value: '',
-    },
+    { language: 'en', value: '' },
+    { language: 'da', value: '' },
   ],
+  validation: (Rule) => validateBothLanguages(Rule.required()),
 })
 
 export const internationalizedArraySlug = defineType({
@@ -70,7 +129,17 @@ export const internationalizedArraySlug = defineType({
     {
       ...localizationObject,
       fields: [
-        ...localizationObject.fields,
+        defineField({
+          name: 'language',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'English', value: 'en' },
+              { title: 'Dansk', value: 'da' },
+            ],
+          },
+          validation: (Rule) => Rule.required(),
+        }),
         defineField({
           name: 'value',
           type: 'slug',
@@ -93,9 +162,9 @@ export const internationalizedArraySlug = defineType({
                 .replace(/^-+|-+$/g, ''),
           },
           validation: (Rule) =>
-            Rule.custom((value: any) => {
+            Rule.required().custom((value: any) => {
               const current = value?.current
-              if (!current) return true
+              if (!current) return 'Slug is required'
               if (/[\sæøå]/i.test(current)) {
                 return 'Slug must not contain spaces or Danish characters (æ, ø, å) - use ae, o, a instead.'
               }
@@ -106,11 +175,10 @@ export const internationalizedArraySlug = defineType({
     } as any,
   ],
   initialValue: [
-    {
-      language: 'en',
-      value: { current: '' },
-    },
+    { language: 'en', value: { current: '' } },
+    { language: 'da', value: { current: '' } },
   ],
+  validation: (Rule) => validateBothLanguages(Rule.required()),
 })
 
 export const internationalizedArrayBlockContent = defineType({
@@ -120,18 +188,28 @@ export const internationalizedArrayBlockContent = defineType({
     {
       ...localizationObject,
       fields: [
-        ...localizationObject.fields,
+        defineField({
+          name: 'language',
+          type: 'string',
+          options: {
+            list: [
+              { title: 'English', value: 'en' },
+              { title: 'Dansk', value: 'da' },
+            ],
+          },
+          validation: (Rule) => Rule.required(),
+        }),
         defineField({
           name: 'value',
           type: 'blockContent',
+          validation: (Rule) => Rule.required(),
         }),
       ],
     } as any,
   ],
   initialValue: [
-    {
-      language: 'en',
-      value: [],
-    },
+    { language: 'en', value: [] },
+    { language: 'da', value: [] },
   ],
+  validation: (Rule) => validateBothLanguages(Rule.required()),
 })

@@ -95,7 +95,29 @@ export const productType = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'sizes',
+      name: 'itemCategory',
+      title: 'Item Category',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Baby', value: 'baby' },
+          { title: 'Toddler', value: 'toddler' },
+          { title: 'Kids', value: 'kids' },
+          { title: 'Adult', value: 'adult' },
+          { title: 'Hats', value: 'hats' },
+        ],
+        layout: 'radio',
+      },
+      hidden: ({ document }) => document?.productType !== 'physical',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          if (context.document?.productType !== 'physical') return true
+          if (!value) return 'Item Category is required for physical products'
+          return true
+        }),
+    }),
+    defineField({
+      name: 'sizesAdult',
       title: 'Available Sizes',
       description: 'Select which sizes are available for this product',
       type: 'array',
@@ -110,7 +132,141 @@ export const productType = defineType({
         ],
         layout: 'grid',
       },
-      hidden: ({ document }) => document?.productType !== 'physical',
+      hidden: ({ document }) =>
+        document?.productType !== 'physical' ||
+        document?.itemCategory !== 'adult',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          if (
+            context.document?.productType !== 'physical' ||
+            context.document?.itemCategory !== 'adult'
+          )
+            return true
+          if (!value || value.length === 0) {
+            return 'At least one size must be selected'
+          }
+          return true
+        }),
+    }),
+    defineField({
+      name: 'sizesKids',
+      title: 'Available Sizes',
+      description: 'Select which sizes are available for this product',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: '2-4', value: '2-4' },
+          { title: '4-6', value: '4-6' },
+          { title: '6-8', value: '6-8' },
+          { title: '8-10', value: '8-10' },
+          { title: '10-12', value: '10-12' },
+        ],
+        layout: 'grid',
+      },
+      hidden: ({ document }) =>
+        document?.productType !== 'physical' ||
+        document?.itemCategory !== 'kids',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          if (
+            context.document?.productType !== 'physical' ||
+            context.document?.itemCategory !== 'kids'
+          )
+            return true
+          if (!value || value.length === 0) {
+            return 'At least one size must be selected'
+          }
+          return true
+        }),
+    }),
+    defineField({
+      name: 'sizesToddler',
+      title: 'Available Sizes',
+      description: 'Select which sizes are available for this product',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: '0-6M', value: '0-6M' },
+          { title: '6-12M', value: '6-12M' },
+          { title: '12-18M', value: '12-18M' },
+          { title: '18-24M', value: '18-24M' },
+        ],
+        layout: 'grid',
+      },
+      hidden: ({ document }) =>
+        document?.productType !== 'physical' ||
+        document?.itemCategory !== 'toddler',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          if (
+            context.document?.productType !== 'physical' ||
+            context.document?.itemCategory !== 'toddler'
+          )
+            return true
+          if (!value || value.length === 0) {
+            return 'At least one size must be selected'
+          }
+          return true
+        }),
+    }),
+    defineField({
+      name: 'sizesBaby',
+      title: 'Available Sizes',
+      description: 'Select which sizes are available for this product',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [
+          { title: 'Newborn', value: 'newborn' },
+          { title: '0-3M', value: '0-3M' },
+          { title: '3-6M', value: '3-6M' },
+          { title: '6-9M', value: '6-9M' },
+        ],
+        layout: 'grid',
+      },
+      hidden: ({ document }) =>
+        document?.productType !== 'physical' ||
+        document?.itemCategory !== 'baby',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          if (
+            context.document?.productType !== 'physical' ||
+            context.document?.itemCategory !== 'baby'
+          )
+            return true
+          if (!value || value.length === 0) {
+            return 'At least one size must be selected'
+          }
+          return true
+        }),
+    }),
+    defineField({
+      name: 'sizesHats',
+      title: 'Available Sizes',
+      description: 'Select which sizes are available for this product',
+      type: 'array',
+      of: [{ type: 'string' }],
+      options: {
+        list: [{ title: 'One Size', value: 'one-size' }],
+        layout: 'grid',
+      },
+      hidden: ({ document }) =>
+        document?.productType !== 'physical' ||
+        document?.itemCategory !== 'hats',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          if (
+            context.document?.productType !== 'physical' ||
+            context.document?.itemCategory !== 'hats'
+          )
+            return true
+          if (!value || value.length === 0) {
+            return 'At least one size must be selected'
+          }
+          return true
+        }),
     }),
     defineField({
       name: 's3KeyEn',
@@ -120,6 +276,15 @@ export const productType = defineType({
       type: 'array',
       of: [{ type: 's3FileItem' }],
       hidden: ({ document }) => document?.productType !== 'digital',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          const productType = context.document?.productType
+          if (productType !== 'digital') return true
+          if (!value || value.length === 0) {
+            return 'At least one English S3 file is required for digital products'
+          }
+          return true
+        }),
     }),
     defineField({
       name: 's3KeyDa',
@@ -129,6 +294,15 @@ export const productType = defineType({
       type: 'array',
       of: [{ type: 's3FileItem' }],
       hidden: ({ document }) => document?.productType !== 'digital',
+      validation: (Rule) =>
+        Rule.custom((value: any, context: any) => {
+          const productType = context.document?.productType
+          if (productType !== 'digital') return true
+          if (!value || value.length === 0) {
+            return 'At least one Danish S3 file is required for digital products'
+          }
+          return true
+        }),
     }),
     defineField({
       name: 'courseDate',
