@@ -84,6 +84,16 @@ export const promotionType = defineType({
           ],
         },
       ],
+      validation: (R) =>
+        R.custom((conditions, context) => {
+          const doc = context.document as { discountAppliesTo?: string }
+          if (doc?.discountAppliesTo === 'matchingItems') {
+            if (!conditions || (conditions as unknown[]).length === 0) {
+              return 'At least one condition is required when "Discount Applies To" is set to "Only Matching Items"'
+            }
+          }
+          return true
+        }),
     }),
   ],
   preview: {
