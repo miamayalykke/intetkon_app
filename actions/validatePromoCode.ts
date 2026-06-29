@@ -125,69 +125,86 @@ export async function validatePromoCode(
   code: string,
   items: ItemForValidation[],
 ): Promise<PromoValidationResult> {
-  if (!code.trim()) return { valid: false, message: 'Enter a promo code' }
+  try {
+    if (!code.trim())
+      return { valid: false, message: 'Enter a promo code' }
 
-  const doc = await backendClient.fetch<PromoDoc | null>(
-    `*[(_type == "promotion" || _type == "sale") && couponCode == $code && isActive == true][0] {
-      _id,
-      _type,
-      discountAmount,
-      discountType,
-      validFrom,
-      validTo,
-      "conditions": conditions[] -> {
+    const doc = await backendClient.fetch<PromoDoc | null>(
+      `*[(_type == "promotion" || _type == "sale") && couponCode == $code && isActive == true][0] {
+        _id,
         _type,
-        "itemIds": items[]._ref,
-        minAmount,
-        minCount,
-        "categoryId": category._ref,
-        "groups": groups[] {
-          label,
-          "itemIds": items[]._ref
+        discountAmount,
+        discountType,
+        validFrom,
+        validTo,
+        "conditions": conditions[] -> {
+          _type,
+          "itemIds": items[]._ref,
+          minAmount,
+          minCount,
+          "categoryId": category._ref,
+          "groups": groups[] {
+            label,
+            "itemIds": items[]._ref
+          }
         }
+      }`,
+      { code },
+    )
+
+    if (!doc)
+      return {
+        valid: false,
+        message: 'This code is invalid or inactive',
       }
-    }`,
-    { code },
-  )
 
-  if (!doc) return { valid: false, message: 'This code is invalid or inactive' }
+    const now = new Date()
+    if (doc.validFrom && new Date(doc.validFrom) > now) {
+      return { valid: false, message: 'This code is not yet valid' }
+    }
+    if (doc.validTo && new Date(doc.validTo) < now) {
+      return { valid: false, message: 'This code has expired' }
+    }
 
-  const now = new Date()
-  if (doc.validFrom && new Date(doc.validFrom) > now) {
-    return { valid: false, message: 'This code is not yet valid' }
-  }
-  if (doc.validTo && new Date(doc.validTo) < now) {
-    return { valid: false, message: 'This code has expired' }
-  }
+    for (const condition of doc.conditions ?? []) {
+      const result = evaluateCondition(condition, items)
+      if (!result.met) return { valid: false, message: result.message }
+    }
 
-  for (const condition of doc.conditions ?? []) {
-    const result = evaluateCondition(condition, items)
-    if (!result.met) return { valid: false, message: result.message }
-  }
+    // Look up the Stripe promotion code
+    const stripeCodes = await stripe.promotionCodes.list({
+      code,
+      limit: 1,
+    })
+    const stripePromo = stripeCodes.data[0]
 
-  // Look up the Stripe promotion code
-  const stripeCodes = await stripe.promotionCodes.list({ code, limit: 1 })
-  const stripePromo = stripeCodes.data[0]
+    if (!stripePromo?.active) {
+      return {
+        valid: false,
+        message:
+          'This code is not yet active in our payment system. Please try again shortly.',
+      }
+    }
 
-  if (!stripePromo?.active) {
+    const discountType = doc.discountType ?? 'percentage'
+    const label =
+      discountType === 'fixed'
+        ? `${doc.discountAmount} DKK off`
+        : `${doc.discountAmount}% off`
+
+    return {
+      valid: true,
+      stripePromoCodeId: stripePromo.id,
+      discountAmount: doc.discountAmount,
+      discountType,
+      label,
+    }
+  } catch (error) {
+    console.error('Error validating promo code:', error)
     return {
       valid: false,
       message:
-        'This code is not yet active in our payment system. Please try again shortly.',
+        'Unable to validate promo code. Please try again or contact us.',
     }
-  }
-
-  const discountType = doc.discountType ?? 'percentage'
-  const label =
-    discountType === 'fixed'
-      ? `${doc.discountAmount} DKK off`
-      : `${doc.discountAmount}% off`
-
-  return {
-    valid: true,
-    stripePromoCodeId: stripePromo.id,
-    discountAmount: doc.discountAmount,
-    discountType,
-    label,
   }
 }

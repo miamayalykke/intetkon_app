@@ -82,8 +82,8 @@ const ProductPage = async ({
             </div>
 
             <div className="prose prose-sm prose-orange max-w-none text-muted-foreground font-light leading-relaxed italic border-l-2 border-orange-500/20 pl-4">
-              {Array.isArray(product.description) && (
-                <PortableText value={product.description} />
+              {product.description && (
+                <PortableText value={getLocalizedField(product.description, locale)} />
               )}
             </div>
 
