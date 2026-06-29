@@ -1,13 +1,15 @@
 import { Button, Stack, Text } from '@sanity/ui'
 import { useCallback, useRef, useState } from 'react'
 import type { StringInputProps } from 'sanity'
-import { set } from 'sanity'
+import { set, useClient } from 'sanity'
 
 export function S3FileUpload(props: StringInputProps) {
   const { onChange, value } = props
   const inputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const client = useClient({ apiVersion: '2024-01-01' })
+  const sanityToken = client.config().token
 
   const handleFileChange = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -18,7 +20,10 @@ export function S3FileUpload(props: StringInputProps) {
       try {
         const res = await fetch('/api/s3-upload', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(sanityToken ? { 'x-sanity-token': sanityToken } : {}),
+          },
           body: JSON.stringify({ filename: file.name, contentType: file.type }),
         })
         if (!res.ok) throw new Error('Failed to get upload URL')
@@ -37,7 +42,7 @@ export function S3FileUpload(props: StringInputProps) {
         if (inputRef.current) inputRef.current.value = ''
       }
     },
-    [onChange],
+    [onChange, sanityToken],
   )
 
   return (
