@@ -139,28 +139,36 @@ const BasketPage = () => {
     setPromoError(null)
     setAppliedPromo(null)
 
-    const items: ItemForValidation[] = groupedItems.map((item) => ({
-      id: item.data._id,
-      itemType: item.itemType,
-      quantity: item.quantity,
-      price: item.data.price ?? 0,
-      categoryIds:
-        item.itemType === 'product'
-          ? (item.data.categories ?? [])
-              .map((c) => ('_ref' in c ? c._ref : ''))
-              .filter(Boolean)
-          : [],
-    }))
+    try {
+      const items: ItemForValidation[] = groupedItems.map((item) => ({
+        id: item.data._id,
+        itemType: item.itemType,
+        quantity: item.quantity,
+        price: item.data.price ?? 0,
+        categoryIds:
+          item.itemType === 'product'
+            ? (item.data.categories ?? [])
+                .map((c) => ('_ref' in c ? c._ref : ''))
+                .filter(Boolean)
+            : [],
+      }))
 
-    const result = await validatePromoCode(promoInput.trim(), items)
+      const result = await validatePromoCode(promoInput.trim(), items)
 
-    if (result.valid) {
-      setAppliedPromo(result)
-      appliedPromoCodeRef.current = promoInput.trim()
-    } else {
-      setPromoError(result.message)
+      if (result.valid) {
+        setAppliedPromo(result)
+        appliedPromoCodeRef.current = promoInput.trim()
+      } else {
+        setPromoError(result.message)
+      }
+    } catch (error) {
+      console.error('Error applying promo code:', error)
+      setPromoError(
+        error instanceof Error ? error.message : 'Failed to apply promo code'
+      )
+    } finally {
+      setPromoLoading(false)
     }
-    setPromoLoading(false)
   }
 
   const handleCheckout = async (email?: string, name?: string) => {

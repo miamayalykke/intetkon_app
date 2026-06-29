@@ -125,10 +125,10 @@ export async function validatePromoCode(
   code: string,
   items: ItemForValidation[],
 ): Promise<PromoValidationResult> {
-  try {
-    if (!code.trim())
-      return { valid: false, message: 'Enter a promo code' }
+  if (!code.trim())
+    return { valid: false, message: 'Enter a promo code' }
 
+  try {
     const doc = await backendClient.fetch<PromoDoc | null>(
       `*[(_type == "promotion" || _type == "sale") && couponCode == $code && isActive == true][0] {
         _id,

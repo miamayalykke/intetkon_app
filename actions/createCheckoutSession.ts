@@ -44,29 +44,39 @@ export async function createCheckoutSession(
       .join(',')
 
     const lineItems = items.map((item) => {
-      const rawField =
-        item.itemType === 'product'
-          ? (item.data as any).name
-          : (item.data as any).title
+      try {
+        const rawField =
+          item.itemType === 'product'
+            ? (item.data as any).name
+            : (item.data as any).title
 
-      const localized = Array.isArray(rawField)
-        ? (rawField.find((f: any) => f.language === locale)?.value ??
-          rawField.find((f: any) => f.language === 'en')?.value ??
-          '')
-        : (rawField ?? '')
+        let localized = ''
+        if (Array.isArray(rawField)) {
+          const localeMatch = rawField.find(
+            (f: any) => f?.language === locale,
+          )
+          const enMatch = rawField.find((f: any) => f?.language === 'en')
+          localized = localeMatch?.value ?? enMatch?.value ?? ''
+        } else if (typeof rawField === 'string') {
+          localized = rawField
+        }
 
-      const displayName =
-        item.itemType === 'workshop' && (item.data as any).date
-          ? `${localized} - ${new Date((item.data as any).date).toLocaleDateString('da-DK')}`
-          : localized
+        const displayName =
+          item.itemType === 'workshop' && (item.data as any).date
+            ? `${localized} - ${new Date((item.data as any).date).toLocaleDateString('da-DK')}`
+            : localized
 
-      return {
-        price_data: {
-          currency: 'dkk',
-          product_data: { name: displayName },
-          unit_amount: Math.round((item.data.price ?? 0) * 100),
-        },
-        quantity: item.quantity,
+        return {
+          price_data: {
+            currency: 'dkk',
+            product_data: { name: displayName || 'Product' },
+            unit_amount: Math.round((item.data.price ?? 0) * 100),
+          },
+          quantity: item.quantity,
+        }
+      } catch (error) {
+        console.error('Error processing line item:', error, item)
+        throw new Error(`Failed to process item: ${error instanceof Error ? error.message : 'Unknown error'}`)
       }
     })
 
