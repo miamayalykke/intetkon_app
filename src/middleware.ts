@@ -15,14 +15,24 @@ const intlMiddleware = createMiddleware({
 export default clerkMiddleware(async (auth, req) => {
   const { pathname } = req.nextUrl
 
+  // Return 410 Gone for old WordPress URLs and unknown manifest requests
+  if (
+    pathname === '/static/create-manifest.json' ||
+    /\/en\/wp-sitemap.*\.xml/.test(pathname)
+  ) {
+    return new NextResponse(null, { status: 410 })
+  }
+
   // Skip i18n routing for API routes, studio and admin routes
   if (pathname.startsWith('/api') || pathname.startsWith('/studio') || pathname.startsWith('/app')) {
     return
   }
 
-  // Handle i18n routing
+  // Handle i18n routing. next-intl always returns a response, so only
+  // return early on redirects/rewrites to another URL (e.g. adding the
+  // locale prefix) — otherwise the auth checks below would never run.
   const intlResponse = intlMiddleware(req)
-  if (intlResponse) {
+  if (intlResponse && intlResponse.status >= 300 && intlResponse.status < 400) {
     return intlResponse
   }
 
@@ -73,8 +83,18 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.redirect(new URL('/', req.url))
     }
   }
+
+  return intlResponse
 })
 
 export const config = {
-  matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!.*\\..*|_next).*)',
+    '/',
+    '/(api|trpc)(.*)',
+    // Dotted paths are excluded above, so match the legacy WordPress/static
+    // URLs explicitly for the 410 handling
+    '/static/:path*',
+    '/en/wp-sitemap(.*)',
+  ],
 }

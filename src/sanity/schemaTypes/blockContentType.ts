@@ -1,6 +1,6 @@
 //sanity/schemaTypes/blockContentType.ts
 
-import { ImageIcon } from '@sanity/icons'
+import { ImageIcon, PlayIcon } from '@sanity/icons'
 import { defineArrayMember, defineType } from 'sanity'
 
 /**
@@ -73,6 +73,28 @@ export const blockContentType = defineType({
           title: 'Alternative Text',
         },
       ],
+    }),
+    defineArrayMember({
+      type: 'object',
+      name: 'youtube',
+      title: 'YouTube Video',
+      icon: PlayIcon,
+      fields: [
+        {
+          name: 'url',
+          type: 'url',
+          title: 'YouTube URL',
+          description: 'Any youtube.com/watch, youtu.be or Shorts link',
+          validation: (Rule: any) => Rule.required(),
+        },
+        { name: 'caption', type: 'string', title: 'Caption (optional)' },
+      ],
+      preview: {
+        select: { url: 'url', caption: 'caption' },
+        prepare({ url, caption }: { url?: string; caption?: string }) {
+          return { title: caption || 'YouTube video', subtitle: url }
+        },
+      },
     }),
   ],
 })

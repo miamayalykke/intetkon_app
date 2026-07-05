@@ -2,7 +2,9 @@
 
 import 'server-only'
 import stripe from '@src/lib/stripe'
+import type Stripe from 'stripe'
 import type { CartItem } from '../store/store'
+import { type ItemForValidation, validatePromoCode } from './validatePromoCode'
 
 export type Metadata = {
   orderNumber: string
@@ -17,7 +19,7 @@ export type Metadata = {
 export async function createCheckoutSession(
   items: CartItem[],
   metadata: Metadata,
-  promoCodeId?: string,
+  promoCode?: string,
   locale = 'en',
 ) {
   try {
@@ -43,6 +45,47 @@ export async function createCheckoutSession(
       .map((item) => item.data._id)
       .join(',')
 
+    // Re-validate the promo server-side so the discount amount can't be
+    // tampered with from the client
+    let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined
+    if (promoCode) {
+      const itemsForValidation: ItemForValidation[] = items.map((item) => ({
+        id: item.data._id,
+        itemType: item.itemType,
+        quantity: item.quantity,
+        price: item.data.price ?? 0,
+        categoryIds:
+          item.itemType === 'product'
+            ? (
+                (item.data as { categories?: { _ref?: string }[] })
+                  .categories ?? []
+              )
+                .map((c) => c?._ref ?? '')
+                .filter(Boolean)
+            : [],
+      }))
+
+      const promo = await validatePromoCode(promoCode, itemsForValidation)
+      if (!promo.valid) {
+        throw new Error(`Promo code is no longer valid: ${promo.message}`)
+      }
+
+      if (promo.appliesTo === 'matchingItems') {
+        const amountOff = Math.round(promo.discountValue * 100)
+        if (amountOff > 0) {
+          const coupon = await stripe.coupons.create({
+            amount_off: amountOff,
+            currency: 'dkk',
+            duration: 'once',
+            name: promoCode.toUpperCase().slice(0, 40),
+          })
+          discounts = [{ coupon: coupon.id }]
+        }
+      } else {
+        discounts = [{ promotion_code: promo.stripePromoCodeId }]
+      }
+    }
+
     const lineItems = items.map((item) => {
       try {
         const rawField =
@@ -52,9 +95,7 @@ export async function createCheckoutSession(
 
         let localized = ''
         if (Array.isArray(rawField)) {
-          const localeMatch = rawField.find(
-            (f: any) => f?.language === locale,
-          )
+          const localeMatch = rawField.find((f: any) => f?.language === locale)
           const enMatch = rawField.find((f: any) => f?.language === 'en')
           localized = localeMatch?.value ?? enMatch?.value ?? ''
         } else if (typeof rawField === 'string') {
@@ -76,7 +117,9 @@ export async function createCheckoutSession(
         }
       } catch (error) {
         console.error('Error processing line item:', error, item)
-        throw new Error(`Failed to process item: ${error instanceof Error ? error.message : 'Unknown error'}`)
+        throw new Error(
+          `Failed to process item: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        )
       }
     })
 
@@ -92,9 +135,7 @@ export async function createCheckoutSession(
       locale: (locale === 'da' ? 'da' : 'en') as any,
       mode: 'payment',
       payment_method_configuration: 'pmc_1SDjXTJoZ0voIfvhegmhzz3s',
-      ...(promoCodeId
-        ? { discounts: [{ promotion_code: promoCodeId }] }
-        : { allow_promotion_codes: true }),
+      ...(discounts ? { discounts } : { allow_promotion_codes: true }),
       success_url: `${baseUrl}/${locale}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
       cancel_url: `${baseUrl}/${locale}/basket`,
       line_items: lineItems,

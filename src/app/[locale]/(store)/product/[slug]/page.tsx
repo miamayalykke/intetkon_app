@@ -1,8 +1,11 @@
 import { getProductBySlug } from '@sanity/lib/products/getProductBySlug'
 import AddToBasketButton from '@src/components/AddToBasketButton'
 import { imageUrl } from '@src/lib/imageUrl'
+import { alternatesFor, BASE_URL, blocksToPlainText } from '@src/lib/seo'
+import { getLocalizedSlug } from '@src/lib/slug-helpers'
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 import { ArrowLeft, Info, Ruler, Scissors, Sparkles } from 'lucide-react'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -11,6 +14,40 @@ import { PortableText } from 'next-sanity'
 
 export const dynamic = 'force-static'
 export const revalidate = 60
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>
+}): Promise<Metadata> {
+  const { slug, locale } = await params
+  const product = await getProductBySlug(slug)
+  if (!product) return {}
+
+  const name =
+    getLocalizedField<string>(product.name as any, locale) ?? 'Product'
+  const description = blocksToPlainText(
+    getLocalizedField(product.description as any, locale),
+  )
+  const enSlug = getLocalizedSlug(product.slug, 'en')
+  const daSlug = getLocalizedSlug(product.slug, 'da')
+
+  return {
+    title: name,
+    description,
+    alternates: alternatesFor(locale, {
+      en: enSlug ? `/product/${enSlug}` : undefined,
+      da: daSlug ? `/product/${daSlug}` : undefined,
+    }),
+    openGraph: {
+      title: name,
+      description,
+      images: product.image
+        ? [{ url: imageUrl(product.image).width(1200).height(630).url() }]
+        : undefined,
+    },
+  }
+}
 
 const ProductPage = async ({
   params,
@@ -23,11 +60,36 @@ const ProductPage = async ({
 
   if (!product) notFound()
 
-  const productName = getLocalizedField<string>(product.name as any, locale) ?? 'Product'
+  const productName =
+    getLocalizedField<string>(product.name as any, locale) ?? 'Product'
   const isOutOfStock = product.stock != null && product.stock <= 0
+
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: productName,
+    description: blocksToPlainText(
+      getLocalizedField(product.description as any, locale),
+      5000,
+    ),
+    image: product.image ? imageUrl(product.image).url() : undefined,
+    offers: {
+      '@type': 'Offer',
+      price: product.price,
+      priceCurrency: 'DKK',
+      availability: isOutOfStock
+        ? 'https://schema.org/OutOfStock'
+        : 'https://schema.org/InStock',
+      url: `${BASE_URL}/${locale}/product/${slug}`,
+    },
+  }
 
   return (
     <main className="w-full overflow-x-clip min-h-screen pt-4 pb-12 lg:pt-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <div className="container mx-auto px-6">
         <Link
           href={`/${locale}/shop`}
@@ -83,7 +145,9 @@ const ProductPage = async ({
 
             <div className="prose prose-sm prose-orange max-w-none text-muted-foreground font-light leading-relaxed italic border-l-2 border-orange-500/20 pl-4">
               {product.description && (
-                <PortableText value={getLocalizedField(product.description, locale)} />
+                <PortableText
+                  value={getLocalizedField(product.description, locale)}
+                />
               )}
             </div>
 

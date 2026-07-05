@@ -26,6 +26,7 @@ type PromoDoc = {
   _type: 'sale' | 'promotion'
   discountAmount: number
   discountType?: 'percentage' | 'fixed'
+  discountAppliesTo?: 'allItems' | 'matchingItems'
   validFrom?: string
   validTo?: string
   conditions?: Condition[]
@@ -37,6 +38,11 @@ export type PromoValidationResult =
       stripePromoCodeId: string
       discountAmount: number
       discountType: 'percentage' | 'fixed'
+      appliesTo: 'allItems' | 'matchingItems'
+      /** DKK subtracted from the cart total, computed for the current cart */
+      discountValue: number
+      /** _ids of the cart items the discount covers */
+      eligibleItemIds: string[]
       label: string
     }
   | { valid: false; message: string }
@@ -121,12 +127,42 @@ function evaluateCondition(
   }
 }
 
+/**
+ * Cart item ids scoped by an item-level condition, or null for cart-level
+ * conditions (subtotal, item count, coupon code) that don't single out items.
+ */
+function itemsMatchingCondition(
+  condition: Condition,
+  items: ItemForValidation[],
+): string[] | null {
+  switch (condition._type) {
+    case 'condCartContainsAll':
+    case 'condCartContainsAny': {
+      const ids = condition.itemIds ?? []
+      return items.filter((i) => ids.includes(i.id)).map((i) => i.id)
+    }
+    case 'condCartContainsOneFromEachGroup': {
+      const ids = new Set(
+        (condition.groups ?? []).flatMap((g) => g.itemIds ?? []),
+      )
+      return items.filter((i) => ids.has(i.id)).map((i) => i.id)
+    }
+    case 'condCategoryCount': {
+      if (!condition.categoryId) return null
+      return items
+        .filter((i) => i.categoryIds.includes(condition.categoryId as string))
+        .map((i) => i.id)
+    }
+    default:
+      return null
+  }
+}
+
 export async function validatePromoCode(
   code: string,
   items: ItemForValidation[],
 ): Promise<PromoValidationResult> {
-  if (!code.trim())
-    return { valid: false, message: 'Enter a promo code' }
+  if (!code.trim()) return { valid: false, message: 'Enter a promo code' }
 
   try {
     const doc = await backendClient.fetch<PromoDoc | null>(
@@ -135,6 +171,7 @@ export async function validatePromoCode(
         _type,
         discountAmount,
         discountType,
+        discountAppliesTo,
         validFrom,
         validTo,
         "conditions": conditions[] -> {
@@ -171,40 +208,79 @@ export async function validatePromoCode(
       if (!result.met) return { valid: false, message: result.message }
     }
 
-    // Look up the Stripe promotion code
-    const stripeCodes = await stripe.promotionCodes.list({
-      code,
-      limit: 1,
-    })
-    const stripePromo = stripeCodes.data[0]
+    // Determine which items the discount covers
+    const appliesTo =
+      doc.discountAppliesTo === 'matchingItems' ? 'matchingItems' : 'allItems'
 
-    if (!stripePromo?.active) {
-      return {
-        valid: false,
-        message:
-          'This code is not yet active in our payment system. Please try again shortly.',
+    let eligibleItems = items
+    if (appliesTo === 'matchingItems') {
+      const matchedIds = new Set<string>()
+      let hasItemScopedCondition = false
+      for (const condition of doc.conditions ?? []) {
+        const ids = itemsMatchingCondition(condition, items)
+        if (ids) {
+          hasItemScopedCondition = true
+          for (const id of ids) matchedIds.add(id)
+        }
+      }
+      // Only cart-level conditions attached → nothing to scope to, keep all items
+      if (hasItemScopedCondition) {
+        eligibleItems = items.filter((i) => matchedIds.has(i.id))
       }
     }
 
+    const eligibleSubtotal = eligibleItems.reduce(
+      (sum, i) => sum + i.price * i.quantity,
+      0,
+    )
     const discountType = doc.discountType ?? 'percentage'
+    const discountValue =
+      discountType === 'fixed'
+        ? Math.min(doc.discountAmount, eligibleSubtotal)
+        : Math.round(eligibleSubtotal * doc.discountAmount) / 100
+
+    // The pre-synced Stripe promotion code applies order-wide, so it is only
+    // usable for allItems promos. matchingItems promos get a one-off coupon
+    // with the exact amount at checkout instead.
+    let stripePromoCodeId = ''
+    if (appliesTo === 'allItems') {
+      const stripeCodes = await stripe.promotionCodes.list({
+        code,
+        limit: 1,
+      })
+      const stripePromo = stripeCodes.data[0]
+
+      if (!stripePromo?.active) {
+        return {
+          valid: false,
+          message:
+            'This code is not yet active in our payment system. Please try again shortly.',
+        }
+      }
+      stripePromoCodeId = stripePromo.id
+    }
+
+    const suffix = appliesTo === 'matchingItems' ? ' selected items' : ''
     const label =
       discountType === 'fixed'
-        ? `${doc.discountAmount} DKK off`
-        : `${doc.discountAmount}% off`
+        ? `${doc.discountAmount} DKK off${suffix}`
+        : `${doc.discountAmount}% off${suffix}`
 
     return {
       valid: true,
-      stripePromoCodeId: stripePromo.id,
+      stripePromoCodeId,
       discountAmount: doc.discountAmount,
       discountType,
+      appliesTo,
+      discountValue,
+      eligibleItemIds: eligibleItems.map((i) => i.id),
       label,
     }
   } catch (error) {
     console.error('Error validating promo code:', error)
     return {
       valid: false,
-      message:
-        'Unable to validate promo code. Please try again or contact us.',
+      message: 'Unable to validate promo code. Please try again or contact us.',
     }
   }
 }

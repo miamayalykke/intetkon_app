@@ -700,5 +700,11 @@
     "checkoutError": "Noget gik galt. Prøv igen eller kontakt os.",
     "footerText": "Ved at købe støtter du kønsvenligt design og lokalt dansk håndværk. Læs vores",
     "returnPolicy": "returpolitik"
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Syguides, tutorials og historier fra atelieret",
+    "empty": "Ingen indlæg endnu — kig forbi snart!",
+    "backToBlog": "Alle indlæg"
   }
 }

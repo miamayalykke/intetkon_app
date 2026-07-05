@@ -1,11 +1,13 @@
 import { getWorkshopBySlug } from '@sanity/lib/workshops/getWorkshopBySlug'
 import { BookWorkshopButton } from '@src/components/BookWorkshopButton'
 import { imageUrl } from '@src/lib/imageUrl'
+import { alternatesFor, BASE_URL } from '@src/lib/seo'
 import { getLocalizedSlug } from '@src/lib/slug-helpers'
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 import { addMinutes, format } from 'date-fns'
 import { toZonedTime } from 'date-fns-tz'
 import { ArrowLeft, Clock, MapPin, Scissors, Users } from 'lucide-react'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
@@ -21,6 +23,38 @@ const LEVEL_COLORS: Record<string, string> = {
 }
 
 const TIMEZONE = 'Europe/Copenhagen'
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; locale: string }>
+}): Promise<Metadata> {
+  const { slug, locale } = await params
+  const workshop = await getWorkshopBySlug(slug)
+  if (!workshop) return {}
+
+  const title = getLocalizedField<string>(workshop.title, locale) ?? 'Workshop'
+  const description =
+    getLocalizedField<string>(workshop.description, locale) ?? ''
+  const enSlug = getLocalizedSlug(workshop.slug, 'en')
+  const daSlug = getLocalizedSlug(workshop.slug, 'da')
+
+  return {
+    title,
+    description,
+    alternates: alternatesFor(locale, {
+      en: enSlug ? `/workshops/${enSlug}` : undefined,
+      da: daSlug ? `/workshops/${daSlug}` : undefined,
+    }),
+    openGraph: {
+      title,
+      description,
+      images: workshop.image
+        ? [{ url: imageUrl(workshop.image).width(1200).height(630).url() }]
+        : undefined,
+    },
+  }
+}
 
 const WorkshopDetailPage = async ({
   params,
@@ -40,7 +74,9 @@ const WorkshopDetailPage = async ({
     redirect(`/${locale}/workshops/${correctSlug}`)
   }
 
-  const title = getLocalizedField(workshop.title, locale)
+  const title = getLocalizedField<string>(workshop.title, locale) ?? ''
+  const description =
+    getLocalizedField<string>(workshop.description, locale) ?? ''
   const body = getLocalizedField(workshop.body, locale)
   const levelDisplay = workshop.level
     ? t(`workshops.levels.${workshop.level}`)
@@ -73,8 +109,47 @@ const WorkshopDetailPage = async ({
       })
     : format(eventDate, 'HH:mm')
 
+  const eventJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: title,
+    description,
+    startDate: workshop.date,
+    endDate: workshop.endDate,
+    eventAttendanceMode:
+      workshop.location === 'online'
+        ? 'https://schema.org/OnlineEventAttendanceMode'
+        : 'https://schema.org/OfflineEventAttendanceMode',
+    location:
+      workshop.location === 'online'
+        ? {
+            '@type': 'VirtualLocation',
+            url: `${BASE_URL}/${locale}/workshops/${slug}`,
+          }
+        : {
+            '@type': 'Place',
+            name: 'Intetkøn Atelier',
+            address: 'Bentzonsvej 50b, 2000 Frederiksberg',
+          },
+    image: workshop.image ? imageUrl(workshop.image).url() : undefined,
+    organizer: { '@type': 'Organization', name: 'Intetkøn', url: BASE_URL },
+    offers: {
+      '@type': 'Offer',
+      price: workshop.price,
+      priceCurrency: 'DKK',
+      availability: isFull
+        ? 'https://schema.org/SoldOut'
+        : 'https://schema.org/InStock',
+      url: `${BASE_URL}/${locale}/workshops/${slug}`,
+    },
+  }
+
   return (
     <main className="min-h-screen bg-background pb-32">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
       <div className="container mx-auto px-6 pt-8">
         <Link
           href={`/${locale}/workshops`}

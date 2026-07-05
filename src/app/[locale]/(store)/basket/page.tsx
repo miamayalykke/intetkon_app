@@ -80,7 +80,9 @@ const BasketPage = () => {
     }))
 
     validatePromoCode(code, items).then((result) => {
-      if (!result.valid) {
+      if (result.valid) {
+        setAppliedPromo(result)
+      } else {
         setAppliedPromo(null)
         appliedPromoCodeRef.current = null
         setPromoError(result.message)
@@ -92,10 +94,7 @@ const BasketPage = () => {
     const subtotal = getTotalPrice
     let discounted = subtotal
     if (appliedPromo) {
-      discounted =
-        appliedPromo.discountType === 'fixed'
-          ? Math.max(0, subtotal - appliedPromo.discountAmount)
-          : subtotal * (1 - appliedPromo.discountAmount / 100)
+      discounted = Math.max(0, subtotal - appliedPromo.discountValue)
     }
     return {
       totalItems: groupedItems.reduce(
@@ -164,7 +163,7 @@ const BasketPage = () => {
     } catch (error) {
       console.error('Error applying promo code:', error)
       setPromoError(
-        error instanceof Error ? error.message : 'Failed to apply promo code'
+        error instanceof Error ? error.message : 'Failed to apply promo code',
       )
     } finally {
       setPromoLoading(false)
@@ -190,7 +189,7 @@ const BasketPage = () => {
       const checkoutUrl = await createCheckoutSession(
         groupedItems,
         metadata,
-        appliedPromo?.stripePromoCodeId,
+        appliedPromoCodeRef.current ?? undefined,
         locale,
       )
       if (checkoutUrl) window.location.href = checkoutUrl
@@ -408,14 +407,19 @@ const BasketPage = () => {
                   </div>
                 </>
               )}
-              {!appliedPromo && groupedItems.some((item) => item.itemType === 'product' && (item.data as any).productType === 'physical') && (
-                <div className="flex justify-between text-muted-foreground font-light">
-                  <span>{t('basket.shipping')}</span>
-                  <span className="italic">
-                    {t('basket.shippingCalculated')}
-                  </span>
-                </div>
-              )}
+              {!appliedPromo &&
+                groupedItems.some(
+                  (item) =>
+                    item.itemType === 'product' &&
+                    (item.data as any).productType === 'physical',
+                ) && (
+                  <div className="flex justify-between text-muted-foreground font-light">
+                    <span>{t('basket.shipping')}</span>
+                    <span className="italic">
+                      {t('basket.shippingCalculated')}
+                    </span>
+                  </div>
+                )}
               <div className="pt-6 border-t border-dashed border-border flex justify-between items-baseline">
                 <span className="text-lg font-black uppercase tracking-tighter">
                   {t('basket.total')}

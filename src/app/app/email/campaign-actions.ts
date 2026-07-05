@@ -4,12 +4,23 @@ import {
   ListContactsCommand,
   SendEmailCommand,
 } from '@aws-sdk/client-sesv2'
+import { auth } from '@clerk/nextjs/server'
 import { backendClient } from '@sanity/lib/backendClient'
 import {
   getAllWorkshopsForCampaign,
   getWorkshopAttendees,
 } from '@sanity/lib/workshops/getWorkshopAttendees'
 import { CONTACT_LIST_NAME, FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
+
+/** Server actions are public endpoints — every export must verify the
+ *  caller is an admin before touching SES or order data. */
+async function requireAdmin(): Promise<void> {
+  const { userId, sessionClaims } = await auth()
+  const role = (sessionClaims?.metadata as { role?: string })?.role
+  if (!userId || role !== 'admin') {
+    throw new Error('Unauthorized')
+  }
+}
 
 /** Replace {{variableName}} placeholders with subscriber-specific values.
  *  {{amazonSESUnsubscribeUrl}} is reserved — SES replaces it automatically. */
@@ -106,6 +117,7 @@ export async function sendTestEmail({
   subject,
   toEmail,
 }: SendTestEmailInput): Promise<{ success: boolean; message: string }> {
+  await requireAdmin()
   try {
     const attrs = await getContactAttributes(toEmail)
     const personalizedHtml = applyVariables(withUnsubscribeFooter(html), attrs)
@@ -142,6 +154,7 @@ interface SendCampaignInput {
 }
 
 export async function getWorkshopsForSelection() {
+  await requireAdmin()
   return getAllWorkshopsForCampaign()
 }
 
@@ -153,6 +166,7 @@ export async function sendCampaign({
   followupTarget,
   workshopId,
 }: SendCampaignInput): Promise<{ success: boolean; message: string }> {
+  await requireAdmin()
   try {
     if (emailType === 'followup') {
       const customers =

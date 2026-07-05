@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Order Success',
   description: 'Your order was successfully completed!',
+  robots: { index: false, follow: false },
 }
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
