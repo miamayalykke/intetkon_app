@@ -676,6 +676,7 @@
     "totalItems": "Total Items",
     "subtotal": "Subtotal",
     "discount": "Discount",
+    "discountAppliesTo": "Applies to {count, plural, one {# item} other {# items}} in your basket",
     "shipping": "Shipping",
     "shippingCalculated": "Calculated at next step",
     "total": "Total",

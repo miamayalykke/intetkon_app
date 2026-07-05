@@ -84,11 +84,35 @@ const ProductPage = async ({
     },
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: locale === 'da' ? 'Forside' : 'Home',
+        item: `${BASE_URL}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Shop',
+        item: `${BASE_URL}/${locale}/shop`,
+      },
+      { '@type': 'ListItem', position: 3, name: productName },
+    ],
+  }
+
   return (
     <main className="w-full overflow-x-clip min-h-screen pt-4 pb-12 lg:pt-8">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="container mx-auto px-6">
         <Link
@@ -201,3 +225,19 @@ const ProductPage = async ({
 }
 
 export default ProductPage
+
+export async function generateStaticParams() {
+  const { client } = await import('@src/sanity/lib/client')
+
+  const PRODUCTS_QUERY = `*[_type == "product"] { slug }`
+  const products = await client.fetch(PRODUCTS_QUERY)
+
+  const params: Array<{ locale: string; slug: string }> = []
+  for (const product of products) {
+    const enSlug = getLocalizedSlug(product.slug, 'en')
+    const daSlug = getLocalizedSlug(product.slug, 'da')
+    if (enSlug) params.push({ locale: 'en', slug: enSlug })
+    if (daSlug) params.push({ locale: 'da', slug: daSlug })
+  }
+  return params
+}

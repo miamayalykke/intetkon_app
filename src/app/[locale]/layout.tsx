@@ -46,18 +46,54 @@ export async function generateMetadata({
       type: 'website',
       siteName: 'Intetkøn',
       locale: l === 'da' ? 'da_DK' : 'en_US',
+      alternateLocale: l === 'da' ? 'en_US' : 'da_DK',
       title: copy.title,
       description: copy.description,
+      images: [{ url: '/og-default.jpg', width: 1200, height: 630 }],
     },
+    twitter: { card: 'summary_large_image' },
     robots: { index: true, follow: true },
   }
 }
 
 const ORG_JSON_LD = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': 'LocalBusiness',
+  '@id': `${BASE_URL}/#business`,
   name: 'Intetkøn',
   url: BASE_URL,
+  image: `${BASE_URL}/og-default.jpg`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Bentzonsvej 50b',
+    postalCode: '2000',
+    addressLocality: 'Frederiksberg',
+    addressCountry: 'DK',
+  },
+  sameAs: [
+    'https://www.facebook.com/profile.php?id=61569961322745',
+    'https://www.instagram.com/_intetkon_/',
+    'https://www.tiktok.com/@intetkon_',
+    'https://www.linkedin.com/company/intetk%C3%B8n/',
+  ],
+}
+
+function websiteJsonLd(locale: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Intetkøn',
+    url: BASE_URL,
+    inLanguage: locale === 'da' ? 'da' : 'en',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${BASE_URL}/${locale}/search?query={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
 }
 
 export default async function LocaleLayout({
@@ -80,6 +116,12 @@ export default async function LocaleLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORG_JSON_LD) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteJsonLd(validLocale)),
+          }}
         />
         <Analytics />
         <SpeedInsights />

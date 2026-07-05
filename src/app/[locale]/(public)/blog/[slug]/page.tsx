@@ -76,11 +76,35 @@ const BlogPostPage = async ({
     mainEntityOfPage: `${BASE_URL}/${locale}/blog/${slug}`,
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: locale === 'da' ? 'Forside' : 'Home',
+        item: `${BASE_URL}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Blog',
+        item: `${BASE_URL}/${locale}/blog`,
+      },
+      { '@type': 'ListItem', position: 3, name: title },
+    ],
+  }
+
   return (
     <main className="container mx-auto px-6 py-16">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <article className="max-w-3xl mx-auto">
         <Link
@@ -108,7 +132,7 @@ const BlogPostPage = async ({
         </p>
 
         {post.mainImage && (
-          <div className="relative aspect-[16/9] overflow-hidden rounded-[2rem] border-4 border-white shadow-xl bg-white mb-12">
+          <div className="relative aspect-video overflow-hidden rounded-4xl border-4 border-white shadow-xl bg-white mb-12">
             <Image
               src={imageUrl(post.mainImage).width(1600).url()}
               alt={post.mainImage.alt ?? title}
@@ -133,3 +157,19 @@ const BlogPostPage = async ({
 }
 
 export default BlogPostPage
+
+export async function generateStaticParams() {
+  const { client } = await import('@src/sanity/lib/client')
+
+  const POSTS_QUERY = `*[_type == "post" && publishedAt <= now()] { slug }`
+  const posts = await client.fetch(POSTS_QUERY)
+
+  const params: Array<{ locale: string; slug: string }> = []
+  for (const post of posts) {
+    const enSlug = getLocalizedSlug(post.slug, 'en')
+    const daSlug = getLocalizedSlug(post.slug, 'da')
+    if (enSlug) params.push({ locale: 'en', slug: enSlug })
+    if (daSlug) params.push({ locale: 'da', slug: daSlug })
+  }
+  return params
+}

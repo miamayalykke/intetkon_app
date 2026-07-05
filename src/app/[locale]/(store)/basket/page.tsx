@@ -106,6 +106,29 @@ const BasketPage = () => {
     }
   }, [groupedItems, getTotalPrice, appliedPromo])
 
+  // Each eligible item's share of the discount, allocated proportionally to
+  // its line total (exact for percentage promos, a fair split for fixed ones)
+  const itemDiscounts = useMemo(() => {
+    const map = new Map<string, number>()
+    if (!appliedPromo || appliedPromo.discountValue <= 0) return map
+
+    const eligible = new Set(appliedPromo.eligibleItemIds)
+    const eligibleSubtotal = groupedItems
+      .filter((item) => eligible.has(item.data._id))
+      .reduce((sum, item) => sum + (item.data.price ?? 0) * item.quantity, 0)
+    if (eligibleSubtotal <= 0) return map
+
+    for (const item of groupedItems) {
+      if (!eligible.has(item.data._id)) continue
+      const lineTotal = (item.data.price ?? 0) * item.quantity
+      map.set(
+        item.data._id,
+        (lineTotal / eligibleSubtotal) * appliedPromo.discountValue,
+      )
+    }
+    return map
+  }, [groupedItems, appliedPromo])
+
   if (!isClient) return <Loader />
 
   if (groupedItems.length === 0) {
@@ -264,6 +287,7 @@ const BasketPage = () => {
                 : `/${locale}/workshops/${slugCurrent}`
             const tag =
               item.itemType === 'workshop' ? t('basket.workshopTag') : null
+            const itemDiscount = itemDiscounts.get(id)
 
             return (
               <div
@@ -297,15 +321,33 @@ const BasketPage = () => {
                     <p className="text-sm text-muted-foreground font-light uppercase tracking-widest">
                       {price.toFixed(2)} DKK {t('basket.perUnit')}
                     </p>
+                    {itemDiscount != null && appliedPromo && (
+                      <p className="inline-flex items-center gap-1.5 w-fit text-[9px] font-black uppercase tracking-widest text-green-700 bg-green-50 border border-green-200 rounded-full px-3 py-1">
+                        <Tag className="w-2.5 h-2.5" />
+                        {appliedPromo.label} · −{itemDiscount.toFixed(2)} DKK
+                      </p>
+                    )}
                   </div>
 
                   <div className="mt-4 flex items-center justify-between sm:justify-start gap-8">
                     <div className="scale-110">
                       <BasketItemControls item={item} />
                     </div>
-                    <p className="text-xl font-bold font-mono">
-                      {(price * item.quantity).toFixed(2)} DKK
-                    </p>
+                    {itemDiscount != null ? (
+                      <div className="flex items-baseline gap-3">
+                        <p className="text-sm font-bold font-mono text-muted-foreground line-through">
+                          {(price * item.quantity).toFixed(2)} DKK
+                        </p>
+                        <p className="text-xl font-bold font-mono text-green-700">
+                          {(price * item.quantity - itemDiscount).toFixed(2)}{' '}
+                          DKK
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xl font-bold font-mono">
+                        {(price * item.quantity).toFixed(2)} DKK
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -405,6 +447,13 @@ const BasketPage = () => {
                       DKK
                     </span>
                   </div>
+                  {appliedPromo.appliesTo === 'matchingItems' && (
+                    <p className="text-xs text-muted-foreground font-light -mt-2">
+                      {t('basket.discountAppliesTo', {
+                        count: appliedPromo.eligibleItemIds.length,
+                      })}
+                    </p>
+                  )}
                 </>
               )}
               {!appliedPromo &&

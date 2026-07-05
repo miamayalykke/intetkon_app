@@ -684,6 +684,7 @@
     "totalItems": "I alt",
     "subtotal": "Subtotal",
     "discount": "Rabat",
+    "discountAppliesTo": "Gælder {count, plural, one {# vare} other {# varer}} i din kurv",
     "shipping": "Forsendelse",
     "shippingCalculated": "Beregnet i næste trin",
     "total": "I alt",

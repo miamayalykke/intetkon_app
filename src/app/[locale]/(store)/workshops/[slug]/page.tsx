@@ -144,11 +144,35 @@ const WorkshopDetailPage = async ({
     },
   }
 
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: locale === 'da' ? 'Forside' : 'Home',
+        item: `${BASE_URL}/${locale}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Workshops',
+        item: `${BASE_URL}/${locale}/workshops`,
+      },
+      { '@type': 'ListItem', position: 3, name: title },
+    ],
+  }
+
   return (
     <main className="min-h-screen bg-background pb-32">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
       />
       <div className="container mx-auto px-6 pt-8">
         <Link
