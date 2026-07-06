@@ -1,10 +1,13 @@
 'use server'
 
 import 'server-only'
+import { backendClient } from '@sanity/lib/backendClient'
 import stripe from '@src/lib/stripe'
 import type Stripe from 'stripe'
 import type { CartItem } from '../store/store'
 import { type ItemForValidation, validatePromoCode } from './validatePromoCode'
+
+type CanonicalPriceDoc = { _id: string; price?: number }
 
 export type Metadata = {
   orderNumber: string
@@ -45,6 +48,29 @@ export async function createCheckoutSession(
       .map((item) => item.data._id)
       .join(',')
 
+    // Prices arrive on `item.data` from the client-persisted basket
+    // (localStorage) and can be tampered with. Re-fetch the canonical price
+    // for every item from Sanity by _id and use that for anything
+    // money-related instead of trusting the client value.
+    const itemIds = items.map((item) => item.data._id)
+    const canonicalDocs = itemIds.length
+      ? await backendClient.fetch<CanonicalPriceDoc[]>(
+          `*[_id in $ids]{ _id, price }`,
+          { ids: itemIds },
+        )
+      : []
+    const canonicalPriceById = new Map(
+      canonicalDocs.map((doc) => [doc._id, doc.price ?? 0]),
+    )
+    for (const item of items) {
+      if (!canonicalPriceById.has(item.data._id)) {
+        throw new Error(
+          `Item is no longer available: ${item.data._id}`,
+        )
+      }
+    }
+    const getCanonicalPrice = (id: string) => canonicalPriceById.get(id) ?? 0
+
     // Re-validate the promo server-side so the discount amount can't be
     // tampered with from the client
     let discounts: Stripe.Checkout.SessionCreateParams.Discount[] | undefined
@@ -53,7 +79,7 @@ export async function createCheckoutSession(
         id: item.data._id,
         itemType: item.itemType,
         quantity: item.quantity,
-        price: item.data.price ?? 0,
+        price: getCanonicalPrice(item.data._id),
         categoryIds:
           item.itemType === 'product'
             ? (
@@ -111,7 +137,7 @@ export async function createCheckoutSession(
           price_data: {
             currency: 'dkk',
             product_data: { name: displayName || 'Product' },
-            unit_amount: Math.round((item.data.price ?? 0) * 100),
+            unit_amount: Math.round(getCanonicalPrice(item.data._id) * 100),
           },
           quantity: item.quantity,
         }
