@@ -1,0 +1,79 @@
+{
+  "hero": {
+    "tag": "Legal & Privacy",
+    "title": "PRIVACY",
+    "titleItalic": "POLICY",
+    "effectiveDate": "Effective date: 14 March 2026.",
+    "subtitle": "Your data is handled with the same care as our garments."
+  },
+  "whoWeAre": {
+    "heading": "Who we are",
+    "intro": "INTETKØN (\"we\", \"us\", \"our\") takes your privacy seriously. This Policy explains what personal data we collect, how we use it, and your rights under the EU/EEA General Data Protection Regulation (GDPR).",
+    "address": "Address: Bentzonsvej 50B, 2000 Frederiksberg, Denmark",
+    "contact": "Contact: info@intetkon.com"
+  },
+  "dataCollection": {
+    "heading": "Data We Collect",
+    "items": [
+      {
+        "title": "Browsing",
+        "description": "Device usage, IP address, and interaction data via cookies."
+      },
+      {
+        "title": "Shopping",
+        "description": "Name, email, shipping address, and order history."
+      },
+      {
+        "title": "Subscribing",
+        "description": "Email address and preferences for our sewing revolution updates."
+      },
+      {
+        "title": "Workshops",
+        "description": "Registration details, sessions, and accessibility preferences."
+      }
+    ]
+  },
+  "purposes": {
+    "heading": "Purposes & Legal Bases",
+    "description": "We process your data to provide our services (contract necessity), process payments via Stripe (legitimate interests), communicate with you, and ensure legal compliance with tax and accounting obligations."
+  },
+  "rights": {
+    "heading": "Your Rights",
+    "description": "Under GDPR, you have the right to access, correct, delete, or restrict your data. To exercise these rights or lodge a complaint, simply contact our studio team.",
+    "tags": [
+      "Access",
+      "Correction",
+      "Deletion",
+      "Portability",
+      "Objection"
+    ]
+  },
+  "payments": {
+    "heading": "Payments (Stripe)",
+    "description": "We use Stripe for secure transactions. They act as a processor and receive identifiers necessary for fraud detection. We do not store your payment card data on our servers."
+  },
+  "cookies": {
+    "heading": "Cookies",
+    "description": "We use cookies for core site functionality, analytics, and performance. You can manage your preferences via our cookie banner or browser settings at any time."
+  },
+  "finalDetails": {
+    "internationalTransfers": {
+      "heading": "International Transfers",
+      "description": "Data transferred outside the EU/EEA relies on Standard Contractual Clauses or recognized frameworks."
+    },
+    "ageOfConsent": {
+      "heading": "Age of Consent",
+      "description": "By using this site, you confirm you are of legal age or have parental consent."
+    }
+  },
+  "footer": {
+    "heading": "Questions or Requests?",
+    "description": "Our studio team is here to help with any privacy concerns.",
+    "email": "info@intetkon.com"
+  },
+  "marquee": [
+    "Privacy First",
+    "Your Data Your Rules",
+    "Secure Atelier"
+  ]
+}

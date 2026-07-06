@@ -2,6 +2,7 @@ import PublicFooter from '@src/components/footers/PublicFooter'
 import Header from '@src/components/headers/Header'
 import { IntlProvider } from '@src/components/providers/IntlProvider'
 import { defaultLocale, locales } from '@src/i18n'
+import { loadMessages } from '@src/i18n/messages'
 import { BASE_URL } from '@src/lib/seo'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
@@ -108,7 +109,7 @@ export default async function LocaleLayout({
     : defaultLocale
 
   // Load messages for the locale
-  const messages = (await import(`@src/messages/${validLocale}.json`)).default
+  const messages = await loadMessages(validLocale)
 
   return (
     <html lang={validLocale} suppressHydrationWarning>

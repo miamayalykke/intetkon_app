@@ -1,0 +1,91 @@
+{
+  "hero": {
+    "tag": "Returns & Refunds",
+    "title": "KINDNESS &",
+    "titleItalic": "CLARITY",
+    "effectiveDate": "Last updated: 19 October 2025.",
+    "subtitle": "We design for longevity. If something isn't right, let's find a solution."
+  },
+  "sections": {
+    "scope": {
+      "number": "1",
+      "title": "Scope",
+      "description": "Covers physical products (kits, garments), digital items (patterns, videos), and workshops."
+    },
+    "ethos": {
+      "number": "2",
+      "title": "Our Ethos",
+      "description": "Distance sales rely on good faith. Email us before buying if you are unsure; we seek amicable solutions."
+    },
+    "upcycling": {
+      "number": "3",
+      "title": "Upcycling & Colour",
+      "deadstock": {
+        "label": "Deadstock Materials:",
+        "description": "Some products use upcycled components and may have minor imperfections. We preserve the usable area."
+      },
+      "colourVariance": {
+        "label": "Colour Variance:",
+        "description": "Screen displays vary. Colour variance alone does not qualify for a refund."
+      }
+    },
+    "physicalProducts": {
+      "number": "4",
+      "title": "Physical Products",
+      "eligibilityWindow": {
+        "title": "Eligibility Window",
+        "description": "14 days from delivery (EU withdrawal right). Items must be unused and in original packaging."
+      },
+      "exclusions": {
+        "title": "Exclusions",
+        "description": "Custom/made-to-order items, hygiene-sensitive items (if opened), and used/washed goods."
+      },
+      "faultyItems": {
+        "title": "Faulty Items",
+        "description": "Contact us within 14 days with photos if an item is defective or damaged in transit."
+      },
+      "shipping": {
+        "title": "Shipping",
+        "description": "Customer covers return shipping unless faulty. Original shipping is non-refundable."
+      }
+    },
+    "digitalGoods": {
+      "number": "5",
+      "title": "Digital Goods",
+      "description": "Patterns and videos are non-refundable once delivery begins. Your right of withdrawal ends once access starts."
+    },
+    "workshops": {
+      "number": "6",
+      "title": "Workshops",
+      "description": "Reschedule possible up to 7 days before. Inside 7 days, we cannot refund as materials are committed. No-shows are not refundable."
+    },
+    "taxes": {
+      "number": "7 & 8",
+      "title": "Taxes & Duties",
+      "eu": {
+        "label": "EU Orders",
+        "description": "VAT is charged at checkout. B2B customers with valid VAT numbers may be zero-rated upon verification."
+      },
+      "nonEu": {
+        "label": "Non-EU (UK, etc.)",
+        "description": "Exported without Danish VAT. Import duties and local fees are the customer's responsibility."
+      }
+    },
+    "repairs": {
+      "number": "9",
+      "title": "Repairs (Goodwill)",
+      "description": "We may offer complimentary minor repairs on INTETKØN products. Shipping is the customer's responsibility."
+    }
+  },
+  "footer": {
+    "heading": "Start a Return",
+    "description": "Email us with your order number and photos before sending anything back.",
+    "email": "info@intetkon.com",
+    "address": "Address: Bentzonsvej 50B, 2000 Frederiksberg, Denmark"
+  },
+  "marquee": [
+    "Built to Last",
+    "Transparent Policy",
+    "Kindness Always"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "tag": "Account Archive",
+  "title": "MY",
+  "titleItalic": "ORDERS",
+  "subtitle": "History of your digital & physical acquisitions",
+  "empty": "Your archive is currently empty...",
+  "logReference": "Order Number",
+  "totalValuation": "Total Valuation",
+  "discountApplied": "Discount Applied",
+  "quantity": "Quantity",
+  "download": "Download",
+  "receiptGenerated": "Digital Receipt Generated",
+  "studioLog": "INTETKØN STUDIO LOG v2.6"
+}

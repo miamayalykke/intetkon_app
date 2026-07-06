@@ -1,0 +1,14 @@
+{
+  "paymentVerified": "Betaling Bekræftet",
+  "confirmed": "Bekræftet",
+  "title": "TAK skal du have!",
+  "message": "Din ordre bliver forberedt på vores studio. Tjek din indbakke for den digitale kvittering.",
+  "orderRef": "Ordrenummer",
+  "myOrders": "Mine Ordrer",
+  "backToShop": "Tilbage til Butik",
+  "marquee": [
+    "Intetkøn Familie",
+    "Bæredygtigt Håndværk",
+    "Kønsneutralt Fremtid"
+  ]
+}

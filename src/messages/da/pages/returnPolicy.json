@@ -1,0 +1,91 @@
+{
+  "hero": {
+    "tag": "Returneringer & Refusioner",
+    "title": "VENLIGHED &",
+    "titleItalic": "KLARHED",
+    "effectiveDate": "Sidst opdateret: 19. oktober 2025.",
+    "subtitle": "Vi designer til varighed. Hvis noget ikke er rigtigt, lad os finde en løsning."
+  },
+  "sections": {
+    "scope": {
+      "number": "1",
+      "title": "Omfang",
+      "description": "Dækker fysiske produkter (kits, klæder), digitale varer (mønstre, videoer) og workshops."
+    },
+    "ethos": {
+      "number": "2",
+      "title": "Vores ethos",
+      "description": "Fjernkøb afhænger af god tro. E-mail os før køb, hvis du er usikker; vi søger minnelige løsninger."
+    },
+    "upcycling": {
+      "number": "3",
+      "title": "Genbrug & Farve",
+      "deadstock": {
+        "label": "Deadstock-materialer:",
+        "description": "Nogle produkter bruger genbrugte komponenter og kan have mindre mangler. Vi bevarer det brugbare område."
+      },
+      "colourVariance": {
+        "label": "Farvevariation:",
+        "description": "Skærmvisninger varierer. Farvevariation alene kvalificerer ikke til refusion."
+      }
+    },
+    "physicalProducts": {
+      "number": "4",
+      "title": "Fysiske produkter",
+      "eligibilityWindow": {
+        "title": "Berettigelsesvindue",
+        "description": "14 dage fra levering (EU-tilbagetrækningsret). Varer skal være ubrugte og i original emballage."
+      },
+      "exclusions": {
+        "title": "Udelukker",
+        "description": "Brugerdefinerede/made-to-order varer, hygienefolsomme varer (hvis åbnet) og brugte/tvettede varer."
+      },
+      "faultyItems": {
+        "title": "Defekte varer",
+        "description": "Kontakt os inden for 14 dage med fotos, hvis en vare er defekt eller beskadiget under transit."
+      },
+      "shipping": {
+        "title": "Forsendelse",
+        "description": "Kunden dækker returfragt, medmindre varen er defekt. Oprindelig forsendelse refunderes ikke."
+      }
+    },
+    "digitalGoods": {
+      "number": "5",
+      "title": "Digitale varer",
+      "description": "Mønstre og videoer kan ikke refunderes, når leveringen begynder. Din tilbagetrækningsret ophører, når adgangen starter."
+    },
+    "workshops": {
+      "number": "6",
+      "title": "Workshops",
+      "description": "Omplanlagte mulige op til 7 dage før. Inden for 7 dage kan vi ikke refundere, fordi materialer er forpligtet. Udeblive er ikke refunderbar."
+    },
+    "taxes": {
+      "number": "7 & 8",
+      "title": "Skatter og told",
+      "eu": {
+        "label": "EU-ordrer",
+        "description": "Moms opkræves ved kassen. B2B-kunder med gyldige momsnumre kan være nul-vurderet efter verifikation."
+      },
+      "nonEu": {
+        "label": "Uden for EU (UK osv.)",
+        "description": "Eksporteret uden dansk moms. Importtakster og lokale gebyrer er kundens ansvar."
+      }
+    },
+    "repairs": {
+      "number": "9",
+      "title": "Reparationer (Goodwill)",
+      "description": "Vi kan tilbyde gratis mindre reparationer på INTETKØN-produkter. Forsendelse er kundens ansvar."
+    }
+  },
+  "footer": {
+    "heading": "Start en retur",
+    "description": "Send os en e-mail med dit ordrenummer og fotos, før du sender noget tilbage.",
+    "email": "info@intetkon.com",
+    "address": "Adresse: Bentzonsvej 50B, 2000 Frederiksberg, Danmark"
+  },
+  "marquee": [
+    "Bygget til at holde",
+    "Gennemsigtig Politik",
+    "Venlighed Altid"
+  ]
+}

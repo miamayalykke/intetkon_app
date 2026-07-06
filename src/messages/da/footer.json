@@ -1,0 +1,31 @@
+{
+  "tagline": "Styrk din kreativitet gennem professionelle mønstre og inkluderende workshops.",
+  "sections": {
+    "atelier": "Atelier",
+    "unikaPieces": "Unika stykker",
+    "workshops": "Workshops",
+    "patterns": "Mønstre",
+    "contact": "Kontakt",
+    "careers": "Karriere",
+    "blog": "Blog",
+    "bookAtelier": "Book ateliéret"
+  },
+  "support": {
+    "title": "Support",
+    "privacyPolicy": "Privatlivspolitik",
+    "termsOfService": "Handelsbetingelser",
+    "returnPolicy": "Returpolitik"
+  },
+  "newsletter": {
+    "title": "Bliv opdateret",
+    "description": "Få inspiration med kønsneutrale DIY-ideer og workshop-nyheder.",
+    "button": "Tilmeld",
+    "placeholder": "din@email.dk",
+    "success": "Tjek din e-mail for at bekræfte dit abonnement!",
+    "conflict": "Du er allerede tilmeldt.",
+    "invalidEmail": "Indtast venligst en gyldig e-mailadresse.",
+    "error": "Noget gik galt. Prøv igen."
+  },
+  "copyright": "© {year} INTETKØN. ALLE RETTIGHEDER FORBEHOLDT.",
+  "tagline2": "Skabt for Lighed"
+}

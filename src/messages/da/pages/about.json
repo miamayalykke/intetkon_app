@@ -1,0 +1,57 @@
+{
+  "hero": {
+    "tag": "Vores Historie",
+    "title": "Om",
+    "titleItalic": "INTETKØN",
+    "subtitle": "Vi bryder binæret i mode gennem frihed i udtryk og holdbart håndværk."
+  },
+  "mission": {
+    "heading": "Vores",
+    "headingItalic": "Mission",
+    "description": "Fast fashion er ikke skabt for alle eller for Jorden. Vi startede INTETKØN for at tilbyde en anden vej: kønsneutralt design, transparent fremstilling og åben viden.",
+    "why": {
+      "title": "Hvorfor vi startede",
+      "description": "Hvert stykke og mønster er en invitation til at skabe tøj, der passer til din krop, dine værdier og din stil, uden kønslabels. Ved at dele mønstre og workshops giver vi dig redskaberne til at lave tøj, du er stolt af at bære og reparere."
+    },
+    "tags": [
+      "Kønsneutralt",
+      "Åben Viden",
+      "Miljøbevidst"
+    ]
+  },
+  "features": [
+    {
+      "title": "Kønsfrit Design",
+      "description": "Silhuetter og størrelser, der passer til kroppe, ikke kasser. Kønsfrit fra første skitse."
+    },
+    {
+      "title": "Lærings-hub",
+      "description": "Trin-for-trin tutorials og projektorklare filer, så du kan sy trygt hjemme."
+    },
+    {
+      "title": "Cirkulær Tankegang",
+      "description": "Vi fremmer genbrug og reparation og opfordrer til genanvendelse længe efter \"nyt\"."
+    }
+  ],
+  "cta": {
+    "tag": "Tilslut dig Sy-revolutionen",
+    "headline": "OMSKRIV",
+    "headlineItalic": "REGLERNE",
+    "description": "Tag et mønster. Grib et kit. Genbrug din garderobe. Lad os omskrive modereglerne, ét stik ad gangen.",
+    "buttons": {
+      "patterns": "Få et mønster",
+      "workshops": "Tilmeld dig en Workshop"
+    }
+  },
+  "whatSetsUsApart": "Hvad adskiller os",
+  "marqueeTop": [
+    "Kønsneutralt",
+    "Frihed i Udtryk",
+    "Bæredygtigt Håndværk"
+  ],
+  "marqueeBottom": [
+    "Omskriv Reglerne",
+    "Ét Stik Ad Gangen",
+    "Fremtiden er Kønneutralt"
+  ]
+}

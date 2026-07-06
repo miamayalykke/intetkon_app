@@ -1,0 +1,74 @@
+{
+  "hero": {
+    "studio": "Atelier & Studio",
+    "taglineLine1": "Tøj skal",
+    "taglineLine2": "passe til dig",
+    "taglineLine3": "ikke omvendt",
+    "subtitle": "Syning, symønstre og workshops til dig, der vil skabe noget selv.",
+    "buttonPatterns": "Køb Mønstre",
+    "buttonWorkshops": "Workshops"
+  },
+  "about": {
+    "marqueeAbout": [
+      "Kreativ Frihed",
+      "Inklusivt Univers",
+      "Håndlavet Æstetik"
+    ],
+    "builtOnPresence": "Bygget på Tilstedeværelse",
+    "intro": "Et kreativt brand bygget på håndværk, æstetik og tilstedeværelse.",
+    "founder": "Mit navn er Emilie, og jeg er grundlægger af Intetkøn. Her skaber jeg mønstre, produkter og workshops med plads til personlighed, læring og kreativ frihed.",
+    "quote": "Intetkøn er et inklusivt univers for dem, der elsker at skabe ting med hænderne og ønsker at være en del af noget, der føles menneskeligt, inspirerende og åbent for alle.",
+    "cta": "Dyk ned i Intetkøn."
+  },
+  "newsletter": {
+    "title": "Opdag de nyeste teknikker, historier fra bag kulisserne og workshop-nyheder direkte fra atelieret.",
+    "label": "Journal",
+    "heading": "Dyk ned i Intetkøn.",
+    "marquee": [
+      "Udforsk hvad der sker nu",
+      "Atelier Indsigter",
+      "Seneste Kreationer"
+    ]
+  },
+  "products": {
+    "hangaroundBag": {
+      "label": "Hangaround Bag",
+      "description": "Et simpelt, funktionelt, alsidigt og begyndervenligt symønster til hverdagsbrug.",
+      "badge": "Til salg nu"
+    },
+    "workshops": {
+      "label": "Syworkshops for Alle Niveauer",
+      "description": "Praktiske syworkshops i vores atelier, uanset om du aldrig har holdt en nål før, eller allerede syr professionelt.",
+      "badge": "Book din plads"
+    }
+  },
+  "community": {
+    "title": "Bliv en del af fællesskabet",
+    "description": "Vær med i fællesskabet og bliv mønstertester, uanset om du lige er startet eller allerede har erfaring med syning og design.",
+    "badge": "Bliv mønstertester"
+  },
+  "patternTester": {
+    "title": "Bliv mønstertester",
+    "description": "Hjælp os med at finjustere vores nyeste udgivelser. Tilslut dig en dedikeret gruppe af skabere, der værdsætter præcision, inklusiv pasform og håndværk. Vær med til at forme fremtiden for vores atelier.",
+    "features": {
+      "earlyAccess": "Tidlig Adgang",
+      "feedbackLoop": "Feedback Loop"
+    },
+    "button": "Ansøg om at Teste",
+    "marqueeTop": [
+      "Tilslut dig Bevægelsen",
+      "Kreativ Frihed"
+    ],
+    "marqueeBottom": [
+      "Skab",
+      "Lær",
+      "Voks",
+      "Sammen"
+    ]
+  },
+  "bookAtelier": {
+    "label": "Book Ateliéret",
+    "description": "Polterabend, fødselsdag, firma-event — få hele ateliéret for jer selv til en guidet syoplevelse. I vælger selv projektet.",
+    "badge": "Private events"
+  }
+}

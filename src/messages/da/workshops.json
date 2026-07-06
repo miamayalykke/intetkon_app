@@ -1,0 +1,23 @@
+{
+  "levels": {
+    "Beginner": "Begynder",
+    "Intermediate": "Øvet",
+    "Advanced": "Avanceret"
+  },
+  "detail": {
+    "backToSessions": "Tilbage til Studio Sessions",
+    "studioSession": "Studio Session",
+    "soldOut": "Udsolgt",
+    "spotsRemaining": "{count} pladser tilbage",
+    "materialsIncluded": "Materialer inkluderet i prisen",
+    "online": "Online",
+    "timeRange": "{start} til {end}"
+  },
+  "card": {
+    "soldOut": "Udsolgt",
+    "spotsRemaining": "{count} pladser tilbage",
+    "atCapacity": "Fuldt booket",
+    "viewDetails": "Se detaljer",
+    "materialsIncluded": "Materialer inkluderet i prisen"
+  }
+}

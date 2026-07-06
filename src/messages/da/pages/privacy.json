@@ -1,0 +1,79 @@
+{
+  "hero": {
+    "tag": "Juridisk & Privatliv",
+    "title": "PRIVATLIV",
+    "titleItalic": "POLITIK",
+    "effectiveDate": "Gyldig fra: 14. marts 2026.",
+    "subtitle": "Dine data behandles med samme omhu som vores tøj."
+  },
+  "whoWeAre": {
+    "heading": "Om os",
+    "intro": "INTETKØN (\"vi\", \"os\", \"vores\") tager dit privatliv alvorligt. Denne politik forklarer, hvilke personlige data vi indsamler, hvordan vi bruger dem, og dine rettigheder under EU/EØS-forordningen om databeskyttelse (GDPR).",
+    "address": "Adresse: Bentzonsvej 50B, 2000 Frederiksberg, Danmark",
+    "contact": "Kontakt: info@intetkon.com"
+  },
+  "dataCollection": {
+    "heading": "Data vi indsamler",
+    "items": [
+      {
+        "title": "Browsing",
+        "description": "Enhedsanvendelse, IP-adresse og interaktionsdata via cookies."
+      },
+      {
+        "title": "Shopping",
+        "description": "Navn, e-mail, leveringsadresse og ordrehistorie."
+      },
+      {
+        "title": "Abonnement",
+        "description": "E-mailadresse og præferencer for vores sy-revolutionsopdateringer."
+      },
+      {
+        "title": "Workshops",
+        "description": "Registreringsdetaljer, sessioner og tilgængelighedspræferencer."
+      }
+    ]
+  },
+  "purposes": {
+    "heading": "Formål & Juridisk grundlag",
+    "description": "Vi behandler dine data for at levere vores tjenester (kontraktuelt behov), behandle betalinger via Stripe (legitime interesser), kommunikere med dig og sikre juridisk overholdelse af skatte- og regnskabsforpligtelser."
+  },
+  "rights": {
+    "heading": "Dine rettigheder",
+    "description": "Under GDPR har du ret til at få adgang til, rette, slette eller begrænse dine data. For at udøve disse rettigheder eller indgive en klage skal du blot kontakte vores atelierkoncern.",
+    "tags": [
+      "Adgang",
+      "Rettelse",
+      "Sletning",
+      "Portabilitet",
+      "Indsigelse"
+    ]
+  },
+  "payments": {
+    "heading": "Betalinger (Stripe)",
+    "description": "Vi bruger Stripe til sikre transaktioner. De fungerer som processorer og modtager identifikatorer, der er nødvendige for bedrageriregistrering. Vi gemmer ikke dine betalingskortdata på vores servere."
+  },
+  "cookies": {
+    "heading": "Cookies",
+    "description": "Vi bruger cookies til kernefunktionalitet, analyser og ydeevne på webstedet. Du kan administrere dine præferencer gennem vores cookie-banner eller browserindstillinger til enhver tid."
+  },
+  "finalDetails": {
+    "internationalTransfers": {
+      "heading": "Internationale overførsler",
+      "description": "Data, der overføres uden for EU/EØS, bygger på Standard Contractual Clauses eller anerkendte rammeværker."
+    },
+    "ageOfConsent": {
+      "heading": "Aldersgrænse",
+      "description": "Ved at bruge dette websted bekræfter du, at du er myndig eller har forældrenes samtykke."
+    }
+  },
+  "footer": {
+    "heading": "Spørgsmål eller anmodninger?",
+    "description": "Vores atelierkoncern er her til at hjælpe med eventuelle privatlivsspørgsmål.",
+    "email": "info@intetkon.com"
+  },
+  "marquee": [
+    "Privatliv Først",
+    "Dine Data, Dine Regler",
+    "Sikkert Atelier"
+  ]
+}

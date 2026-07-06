@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "tag": "Opportunities",
+    "title": "JOIN THE",
+    "titleItalic": "ATELIER",
+    "subtitle": "Help us rewrite the rules of fashion. We're building a community-driven studio where craft meets inclusivity."
+  },
+  "jobCard": {
+    "status": "Hiring Now",
+    "positionType": "Internship Position",
+    "title": "Motivated Intern",
+    "quote": "If you're passionate about genderless design, upcycling, and learning by doing, we'd love to hear from you.",
+    "howToApply": "How to Apply",
+    "description": "Please send your application, CV, and portfolio to our studio team. We review applications on a rolling basis.",
+    "button": "Apply via Email"
+  },
+  "marquee": [
+    "Join the Revolution",
+    "Rewrite the Rules",
+    "Genderless Future"
+  ]
+}

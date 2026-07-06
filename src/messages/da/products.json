@@ -1,0 +1,22 @@
+{
+  "addToCart": "Tilføj til indkøbskurv",
+  "addToBasket": "Tilføj til indkøbskurv",
+  "price": "Pris",
+  "quantity": "Antal",
+  "qty": "Antal",
+  "description": "Beskrivelse",
+  "details": "Detaljer",
+  "inStock": "På lager",
+  "outOfStock": "Ikke på lager",
+  "limitedEdition": "Begrænset udgave",
+  "newDrop": "Nyt produkt",
+  "secureCheckout": "Sikker betaling & levering verden over",
+  "craftLabel": "Håndværk",
+  "craftValue": "Kønsneutralt",
+  "formatLabel": "Format",
+  "formatValue": "Lagdelt PDF",
+  "backToAtelier": "Tilbage til Atelieret",
+  "digitalDownload": "Digital Download",
+  "physicalDrop": "Fysisk produkt",
+  "archived": "Udgået"
+}

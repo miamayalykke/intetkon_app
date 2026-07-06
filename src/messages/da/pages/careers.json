@@ -1,0 +1,22 @@
+{
+  "hero": {
+    "tag": "Muligheder",
+    "title": "TILSLUT DIG",
+    "titleItalic": "ATELIERET",
+    "subtitle": "Hjælp os med at omskrive mode-reglerne. Vi bygger et gemeenskabsdrevent studie, hvor håndværk møder inklusion."
+  },
+  "jobCard": {
+    "status": "Vi ansætter nu",
+    "positionType": "Praktikplads",
+    "title": "Motiveret praktikant",
+    "quote": "Hvis du er passioneret omkring kønsneutralt design, genbrug og læring ved gørelse, vil vi gerne høre fra dig.",
+    "howToApply": "Sådan ansøger du",
+    "description": "Send venligst din ansøgning, CV og portefølje til vores atelierkoncern. Vi gennemgår ansøgninger løbende.",
+    "button": "Ansøg via e-mail"
+  },
+  "marquee": [
+    "Tilslut dig Revolutionen",
+    "Omskriv Reglerne",
+    "Kønneutralt Fremtid"
+  ]
+}

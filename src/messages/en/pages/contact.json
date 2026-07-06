@@ -1,0 +1,36 @@
+{
+  "hero": {
+    "tag": "Get in touch",
+    "title": "CONTACT",
+    "titleItalic": "STUDIO",
+    "subtitle": "Questions about a pattern, a bespoke order, or just want to say hi? Our digital atelier is always open."
+  },
+  "email": {
+    "title": "Email Inquiries",
+    "inquiries": [
+      {
+        "label": "Customer Service & Bespoke",
+        "email": "info@intetkon.com",
+        "description": "Inquiries about sizing, fit, or custom commissions."
+      },
+      {
+        "label": "Press & Loans",
+        "email": "info@intetkon.com",
+        "description": "Editorial features, stylist pulls, and media kits."
+      },
+      {
+        "label": "Wholesale & Business",
+        "email": "info@intetkon.com",
+        "description": "Partnering with Intetkøn for retail or collaborations."
+      }
+    ]
+  },
+  "studio": {
+    "label": "Physical Space",
+    "heading": "The Studio",
+    "status": "Open by appointment only",
+    "address": "Bentzonsvej 50B\n2000, Frederiksberg\nDenmark"
+  },
+  "marquee": "Drop by us today",
+  "marqueeSubtitle": "Studio Frederiksberg"
+}

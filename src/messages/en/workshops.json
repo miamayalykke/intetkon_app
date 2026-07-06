@@ -1,0 +1,23 @@
+{
+  "levels": {
+    "Beginner": "Beginner",
+    "Intermediate": "Intermediate",
+    "Advanced": "Advanced"
+  },
+  "detail": {
+    "backToSessions": "Back to Studio Sessions",
+    "studioSession": "Studio Session",
+    "soldOut": "Sold Out",
+    "spotsRemaining": "{count} Spots Remaining",
+    "materialsIncluded": "Materials Included in Price",
+    "online": "Online",
+    "timeRange": "{start} to {end}"
+  },
+  "card": {
+    "soldOut": "Sold Out",
+    "spotsRemaining": "{count} Spots Remaining",
+    "atCapacity": "At Capacity",
+    "viewDetails": "View Details",
+    "materialsIncluded": "Materials Included in Price"
+  }
+}

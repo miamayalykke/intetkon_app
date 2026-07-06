@@ -1,0 +1,31 @@
+{
+  "tagline": "Empowering creativity through professional patterns and inclusive workshops.",
+  "sections": {
+    "atelier": "Atelier",
+    "unikaPieces": "Unika Pieces",
+    "workshops": "Workshops",
+    "patterns": "Patterns",
+    "contact": "Contact",
+    "careers": "Careers",
+    "blog": "Blog",
+    "bookAtelier": "Book the Atelier"
+  },
+  "support": {
+    "title": "Support",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "returnPolicy": "Return Policy"
+  },
+  "newsletter": {
+    "title": "Stay Updated",
+    "description": "Get inspired with gender-neutral DIY ideas and workshop news.",
+    "button": "Join",
+    "placeholder": "your@email.com",
+    "success": "Check your email to confirm your subscription!",
+    "conflict": "You're already subscribed.",
+    "invalidEmail": "Please enter a valid email address.",
+    "error": "Something went wrong. Please try again."
+  },
+  "copyright": "© {year} INTETKØN. ALL RIGHTS RESERVED.",
+  "tagline2": "Crafted for Equality"
+}

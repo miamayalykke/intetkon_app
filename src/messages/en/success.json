@@ -1,0 +1,14 @@
+{
+  "paymentVerified": "Payment Verified",
+  "confirmed": "Confirmed",
+  "title": "THANK YOU!",
+  "message": "Your order is being prepped in our studio. Check your inbox for the digital receipt.",
+  "orderRef": "Order Ref",
+  "myOrders": "My Orders",
+  "backToShop": "Back to Shop",
+  "marquee": [
+    "Intetkøn Family",
+    "Sustainable Craft",
+    "Genderless Future"
+  ]
+}

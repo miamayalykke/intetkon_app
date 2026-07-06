@@ -1,0 +1,22 @@
+{
+  "addToCart": "Add to Cart",
+  "addToBasket": "Add to Basket",
+  "price": "Price",
+  "quantity": "Quantity",
+  "qty": "Qty",
+  "description": "Description",
+  "details": "Details",
+  "inStock": "In Stock",
+  "outOfStock": "Out of Stock",
+  "limitedEdition": "Limited Edition",
+  "newDrop": "New Drop",
+  "secureCheckout": "Secure Checkout & Worldwide Shipping",
+  "craftLabel": "Craft",
+  "craftValue": "Gender-Neutral",
+  "formatLabel": "Format",
+  "formatValue": "Layered PDF",
+  "backToAtelier": "Back to Atelier",
+  "digitalDownload": "Digital Download",
+  "physicalDrop": "Physical Drop",
+  "archived": "Archived"
+}

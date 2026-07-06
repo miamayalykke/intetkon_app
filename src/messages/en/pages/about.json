@@ -1,0 +1,57 @@
+{
+  "hero": {
+    "tag": "Our Story",
+    "title": "ABOUT",
+    "titleItalic": "INTETKØN",
+    "subtitle": "Breaking the binary in fashion through freedom of expression and long-lasting craft."
+  },
+  "mission": {
+    "heading": "Our",
+    "headingItalic": "Mission",
+    "description": "Fast fashion wasn't built for everyone or for the Earth. We started INTETKØN to offer a different path: gender-neutral design, transparent making, and open knowledge.",
+    "why": {
+      "title": "Why we started",
+      "description": "Every piece and pattern is an invitation to create clothes that fit your body, your values, and your vibe, no gender labels needed. By sharing patterns and workshops, we give you the tools to make garments you're proud to wear and repair."
+    },
+    "tags": [
+      "Gender-Neutral",
+      "Open Knowledge",
+      "Eco-Conscious"
+    ]
+  },
+  "features": [
+    {
+      "title": "Genderless Design",
+      "description": "Silhouettes and sizing that fit bodies, not boxes. Genderless from the first sketch."
+    },
+    {
+      "title": "Learning Hub",
+      "description": "Step-by-step tutorials and projector-ready files so you can sew confidently at home."
+    },
+    {
+      "title": "Circular Mindset",
+      "description": "We champion upcycling and repair, encouraging re-use long after 'new'."
+    }
+  ],
+  "cta": {
+    "tag": "Join the Sewing Revolution",
+    "headline": "REWRITE THE",
+    "headlineItalic": "Rules",
+    "description": "Pick a pattern. Grab a kit. Upcycle your closet. Let's rewrite the rules of fashion, one stitch at a time.",
+    "buttons": {
+      "patterns": "Get a pattern",
+      "workshops": "Join a Workshop"
+    }
+  },
+  "whatSetsUsApart": "What Sets Us Apart",
+  "marqueeTop": [
+    "No Gender Labels",
+    "Freedom of Expression",
+    "Sustainable Craft"
+  ],
+  "marqueeBottom": [
+    "Rewrite the Rules",
+    "One Stitch at a Time",
+    "The Future is Genderless"
+  ]
+}

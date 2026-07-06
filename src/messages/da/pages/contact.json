@@ -1,0 +1,36 @@
+{
+  "hero": {
+    "tag": "Tag kontakt",
+    "title": "KONTAKT",
+    "titleItalic": "STUDIET",
+    "subtitle": "Spørgsmål om et mønster, en skræddersyet ordre, eller vil du bare sige hej? Vores digitale atelier er altid åbent."
+  },
+  "email": {
+    "title": "E-mail henvendelser",
+    "inquiries": [
+      {
+        "label": "Kundeservice & Skræddersyet",
+        "email": "info@intetkon.com",
+        "description": "Henvendelser om størrelser, pasform eller specialbestillinger."
+      },
+      {
+        "label": "Presse & Lån",
+        "email": "info@intetkon.com",
+        "description": "Redaktionelle features, stylist-lån og pressemateriale."
+      },
+      {
+        "label": "Engros & Erhverv",
+        "email": "info@intetkon.com",
+        "description": "Samarbejde med Intetkøn om detailhandel eller partnerskaber."
+      }
+    ]
+  },
+  "studio": {
+    "label": "Fysisk Rum",
+    "heading": "STUDIET",
+    "status": "Kun åbent efter aftale",
+    "address": "Adresse: Bentzonsvej 50B, 2000 Frederiksberg, Danmark"
+  },
+  "marquee": "Kom forbi os i dag",
+  "marqueeSubtitle": "Studio Frederiksberg"
+}

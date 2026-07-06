@@ -1,0 +1,82 @@
+{
+  "hero": {
+    "tag": "Brugsbetingelser",
+    "title": "VILKÅR FOR",
+    "titleItalic": "SERVICE",
+    "effectiveDate": "Sidst opdateret: 19. oktober 2025.",
+    "subtitle": "Ved at bruge vores atelier-tjenester accepterer du følgende husets regler."
+  },
+  "operator": {
+    "label": "INTETKØN / Emilie Kallager",
+    "location": "Frederiksberg, Danmark",
+    "contact": "info@intetkon.com",
+    "operatorTitle": "Operatør",
+    "locationTitle": "Placering",
+    "contactTitle": "Kontakt"
+  },
+  "sections": {
+    "overview": {
+      "number": "01",
+      "title": "Oversigt",
+      "description": "Ved at besøge vores websted og/eller købe noget fra os deltager du i vores \"Service\" og accepterer at være bundet af disse servicevilkår (\"Vilkår\"), herunder yderligere vilkår, politikker og meddelelser, der henvises til her eller er tilgængelige via hyperlink."
+    },
+    "storeTerms": {
+      "title": "Butik vilkår",
+      "description": "Du bekræfter, at du er myndig. Du må ikke bruge vores produkter til noget uautoriseret eller ulovligt formål, herunder krænkelse af ophavsret."
+    },
+    "generalConditions": {
+      "title": "Generelle betingelser",
+      "description": "Vi forbeholder os ret til at nægte service. Dit indhold kan blive overført ukrypteret (ekskl. betalingsdata, som altid er krypteret)."
+    },
+    "accuracy": {
+      "number": "4",
+      "title": "Nøjagtighed & Aktualitet",
+      "description": "Vi er ikke ansvarlige, hvis oplysninger på dette websted ikke er nøjagtige eller aktuelle. Materiale er til generel information, og tillid er på dit eget ansvar."
+    },
+    "modifications": {
+      "number": "5 & 6",
+      "title": "Ændringer & Produkter",
+      "description": "Priserne kan ændres uden varsel. Vi forbeholder os ret til at ændre eller stoppe services. Vi har gjort vores bedste for at vise farver nøjagtigt, men skærmvisninger varierer."
+    },
+    "billing": {
+      "number": "7 & 8",
+      "title": "Fakturering & Betalinger",
+      "description": "Vi forbeholder os ret til at nægte enhver ordre. Betalinger behandles af tredjepartsudbyders som Stripe. Du accepterer at give nuværende, fuldstændig og nøjagtig indkøbsinformation for alle transaktioner."
+    },
+    "userContent": {
+      "number": "10",
+      "title": "Brugerindhold & Feedback",
+      "description": "Hvis du indsender kreative ideer eller kommentarer, kan vi redigere, kopiere og distribuere dem i ethvert medium uden forpligtelse til at betale kompensation eller svare."
+    },
+    "prohibitedUses": {
+      "number": "13",
+      "title": "Forbudt brug",
+      "description": "Det er forbudt at bruge webstedet til ulovlige formål, krænke intellektuel ejendom, overføre vira eller skrabere indhold. Overtrædelse resulterer i øjeblikkelig opsigelse."
+    },
+    "liability": {
+      "number": "14",
+      "title": "Ansvarsbegrænsning",
+      "description": "Servicen og alle produkter leveres \"som er\" og \"som tilgængelig\" uden garantier af nogen art. Under ingen omstændigheder er INTETKØN ansvarlig for nogen skade, tab, krav eller indirekte skader som følge af din brug af servicen."
+    },
+    "governingLaw": {
+      "number": "19",
+      "title": "Gældende lov",
+      "description": "Disse vilkår skal være styret af og fortolkes i overensstemmelse med lovene i Danmark."
+    },
+    "changes": {
+      "number": "20",
+      "title": "Ændringer af vilkår",
+      "description": "Vi forbeholder os ret til at opdatere eller erstatte enhver del af disse vilkår ved at poste opdateringer til vores websted."
+    }
+  },
+  "footer": {
+    "heading": "Spørgsmål om vilkårene?",
+    "description": "Send os en e-mail, og vores atelierkoncern vil kontakte dig.",
+    "email": "info@intetkon.com"
+  },
+  "marquee": [
+    "Handelsbetingelser",
+    "Et Bevidst Valg",
+    "Studiets Regler"
+  ]
+}

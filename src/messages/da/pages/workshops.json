@@ -1,0 +1,18 @@
+{
+  "tag": "Fysisk undervisning",
+  "title": "STUDIO",
+  "titleItalic": "SESSIONER",
+  "subtitle": "Fra trådning af nål til avanceret drapering. Kom med i atelieret og mestre håndværket bag kønsfri mode.",
+  "filters": {
+    "all": "Alle",
+    "beginner": "Begynder",
+    "intermediate": "Mellemliggende",
+    "advanced": "Avanceret"
+  },
+  "noUpcoming": "Ingen kommende workshops på dette niveau.",
+  "levels": {
+    "Beginner": "Begynder",
+    "Intermediate": "Mellemliggende",
+    "Advanced": "Avanceret"
+  }
+}

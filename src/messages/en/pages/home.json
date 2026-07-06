@@ -1,0 +1,74 @@
+{
+  "hero": {
+    "studio": "Atelier & Studio",
+    "taglineLine1": "Clothes should",
+    "taglineLine2": "fit you,",
+    "taglineLine3": "not the other way around.",
+    "subtitle": "Sewing, sewing patterns & workshops for those who want to create something themselves.",
+    "buttonPatterns": "Shop Patterns",
+    "buttonWorkshops": "Workshops"
+  },
+  "about": {
+    "marqueeAbout": [
+      "Creative Freedom",
+      "Inclusive Universe",
+      "Handmade Aesthetics"
+    ],
+    "builtOnPresence": "Built on Presence",
+    "intro": "A creative brand built on craftsmanship, aesthetics, and presence.",
+    "founder": "My name is Emilie, and I'm the founder of Intetkøn. Here, I create patterns, products, and workshops with room for personality, learning, and creative freedom.",
+    "quote": "Intetkøn is an inclusive universe for those who love making things by hand and want to be part of something that feels human, inspiring, and open to everyone.",
+    "cta": "Dive into Intetkøn."
+  },
+  "newsletter": {
+    "title": "Discover the latest techniques, behind-the-scenes stories, and workshop announcements straight from the atelier.",
+    "label": "Journal",
+    "heading": "Dive into Intetkøn.",
+    "marquee": [
+      "Explore What's Happening Now",
+      "Atelier Insights",
+      "Latest Creations"
+    ]
+  },
+  "products": {
+    "hangaroundBag": {
+      "label": "Hangaround Bag",
+      "description": "A simple, functional, versatile and beginner-friendly sewing pattern design for everyday use.",
+      "badge": "Available now"
+    },
+    "workshops": {
+      "label": "Sewing Workshops for Every Level",
+      "description": "Hands-on sewing workshops in our atelier, whether you have never held a needle before or already sew professionally.",
+      "badge": "Book your spot"
+    }
+  },
+  "community": {
+    "title": "Join the Community",
+    "description": "Be part of the community and become a pattern tester, whether you are just getting started or already have experience with sewing and design.",
+    "badge": "Become a pattern tester"
+  },
+  "patternTester": {
+    "title": "Become a pattern tester",
+    "description": "Help us refine our latest drops. Join a dedicated group of makers who value precision, inclusive fit, and garment craft. Shape the future of our atelier.",
+    "features": {
+      "earlyAccess": "Early Access",
+      "feedbackLoop": "Feedback Loop"
+    },
+    "button": "Apply to test",
+    "marqueeTop": [
+      "Join the Movement",
+      "Creative Freedom"
+    ],
+    "marqueeBottom": [
+      "Create",
+      "Learn",
+      "Grow",
+      "Together"
+    ]
+  },
+  "bookAtelier": {
+    "label": "Book the Atelier",
+    "description": "Bachelorette parties, birthdays, team events — get the atelier all to yourselves for a guided sewing experience. You choose the project.",
+    "badge": "Private events"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "tag": "Live Learning",
+  "title": "STUDIO",
+  "titleItalic": "SESSIONS",
+  "subtitle": "From needle threading to advanced draping. Join us in the atelier to master the craft of genderless fashion.",
+  "filters": {
+    "all": "All",
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+  },
+  "noUpcoming": "No upcoming workshops at this level.",
+  "levels": {
+    "Beginner": "Beginner",
+    "Intermediate": "Intermediate",
+    "Advanced": "Advanced"
+  }
+}

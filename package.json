@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "biome check --write .",
     "lint-ci": "biome ci .",
+    "check:i18n": "node scripts/check-messages.mjs",
     "typegen": "sanity schema extract && sanity typegen generate"
   },
   "dependencies": {
