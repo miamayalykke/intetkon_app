@@ -1,33 +1,60 @@
 'use client'
 
 import HangaroundBagImage from '@public/hangaroundBag.jpeg'
+import BookAtelierImage from '@public/hero2.jpeg'
 import JoinCommunityImage from '@public/joinCommunity.png'
 import workshopImage from '@public/workshop.jpg'
 import { Bookmark, BookOpen, Newspaper } from 'lucide-react'
+import type { StaticImageData } from 'next/image'
 import Image from 'next/image'
-import { useTranslations } from 'next-intl'
+import Link from 'next/link'
+import { useLocale, useTranslations } from 'next-intl'
+
+const HANGAROUND_PRODUCT_SLUG: Record<string, string> = {
+  en: 'walter-pennell-crescent-bag-danish',
+  da: 'walter-pennell-halvmane-taske-dansk',
+}
 
 function BlogSection() {
   const t = useTranslations()
+  const locale = useLocale()
 
-  const featuredPosts = [
-    {
-      title: t('pages.home.products.hangaroundBag.label'),
-      excerpt: t('pages.home.products.hangaroundBag.description'),
-      image: HangaroundBagImage,
-      category: 'Soon for sale!',
-    },
+  const featuredPosts: Array<{
+    title: string
+    excerpt: string
+    image: StaticImageData
+    category: string
+    href: string
+    featured?: boolean
+  }> = [
     {
       title: t('pages.home.products.workshops.label'),
       excerpt: t('pages.home.products.workshops.description'),
       image: workshopImage,
-      category: 'New dates soon',
+      category: t('pages.home.products.workshops.badge'),
+      href: `/${locale}/workshops`,
+      featured: true,
+    },
+    {
+      title: t('pages.home.products.hangaroundBag.label'),
+      excerpt: t('pages.home.products.hangaroundBag.description'),
+      image: HangaroundBagImage,
+      category: t('pages.home.products.hangaroundBag.badge'),
+      href: `/${locale}/product/${HANGAROUND_PRODUCT_SLUG[locale] ?? HANGAROUND_PRODUCT_SLUG.en}`,
+    },
+    {
+      title: t('pages.home.bookAtelier.label'),
+      excerpt: t('pages.home.bookAtelier.description'),
+      image: BookAtelierImage,
+      category: t('pages.home.bookAtelier.badge'),
+      href: `/${locale}/book-atelieret`,
     },
     {
       title: t('pages.home.community.title'),
       excerpt: t('pages.home.community.description'),
       image: JoinCommunityImage,
-      category: 'Become pattern tester',
+      category: t('pages.home.community.badge'),
+      href: `/${locale}/pattern-testing`,
     },
   ]
 
@@ -94,19 +121,22 @@ function BlogSection() {
             </div>
           </div>
 
-          {/* Right Side: 3 Featured Blog Posts */}
+          {/* Right Side: Featured cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-16">
-            {featuredPosts.map((post, idx) => (
-              <div
+            {featuredPosts.map((post) => (
+              <Link
                 key={post.title}
+                href={post.href}
                 className={`group relative flex flex-col gap-6 bg-card rounded-[2.5rem] p-6 shadow-lg border border-border transition-all hover:border-orange-200 hover:shadow-xl ${
-                  idx === 2 ? 'md:col-span-2 md:flex-row md:items-center' : ''
+                  post.featured
+                    ? 'md:col-span-2 md:flex-row md:items-center'
+                    : ''
                 }`}
               >
                 {/* Image Container */}
                 <div
                   className={`relative aspect-video overflow-hidden rounded-[1.8rem] z-10 border-4 border-white shadow-lg shrink-0 ${
-                    idx === 2 ? 'md:w-1/2' : 'w-full'
+                    post.featured ? 'md:w-1/2' : 'w-full'
                   }`}
                 >
                   <Image
@@ -132,7 +162,7 @@ function BlogSection() {
                     {post.excerpt}
                   </p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>

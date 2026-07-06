@@ -23,7 +23,9 @@
     "careers": "Karriere",
     "patterns": "Mønstre",
     "shopUniques": "Køb Unika",
-    "becomePatternTester": "Bliv Mønstertester"
+    "becomePatternTester": "Bliv Mønstertester",
+    "blog": "Blog",
+    "bookAtelier": "Book ateliéret"
   },
   "products": {
     "addToCart": "Tilføj til indkøbskurv",
@@ -72,7 +74,9 @@
       "workshops": "Workshops",
       "patterns": "Mønstre",
       "contact": "Kontakt",
-      "careers": "Karriere"
+      "careers": "Karriere",
+      "blog": "Blog",
+      "bookAtelier": "Book ateliéret"
     },
     "support": {
       "title": "Support",
@@ -206,17 +210,20 @@
       },
       "products": {
         "hangaroundBag": {
-          "label": "Snart til salg, hangaround bag",
-          "description": "Et simpelt, funktionelt, alsidigt og begyndervenlig sysymønster til hverdagsbrug."
+          "label": "Hangaround Bag",
+          "description": "Et simpelt, funktionelt, alsidigt og begyndervenligt symønster til hverdagsbrug.",
+          "badge": "Til salg nu"
         },
         "workshops": {
-          "label": "Noget smukt er på vej... Sy-workshops snart",
-          "description": "En workshop for alle, der vil begynde at sy i et trygt og kreativt miljø, uanset om du aldrig har holdt en nål før, eller allerede syr professionelt."
+          "label": "Syworkshops for Alle Niveauer",
+          "description": "Praktiske syworkshops i vores atelier, uanset om du aldrig har holdt en nål før, eller allerede syr professionelt.",
+          "badge": "Book din plads"
         }
       },
       "community": {
         "title": "Bliv en del af fællesskabet",
-        "description": "Vær med i fællesskabet og bliv mønstertester, uanset om du lige er startet eller allerede har erfaring med syning og design."
+        "description": "Vær med i fællesskabet og bliv mønstertester, uanset om du lige er startet eller allerede har erfaring med syning og design.",
+        "badge": "Bliv mønstertester"
       },
       "patternTester": {
         "title": "Bliv mønstertester",
@@ -228,6 +235,11 @@
         "button": "Ansøg om at Teste",
         "marqueeTop": ["Tilslut dig Bevægelsen", "Kreativ Frihed"],
         "marqueeBottom": ["Skab", "Lær", "Voks", "Sammen"]
+      },
+      "bookAtelier": {
+        "label": "Book Ateliéret",
+        "description": "Polterabend, fødselsdag, firma-event — få hele ateliéret for jer selv til en guidet syoplevelse. I vælger selv projektet.",
+        "badge": "Private events"
       }
     },
     "about": {
@@ -707,5 +719,49 @@
     "subtitle": "Syguides, tutorials og historier fra atelieret",
     "empty": "Ingen indlæg endnu — kig forbi snart!",
     "backToBlog": "Alle indlæg"
+  },
+  "privateEvents": {
+    "headerTag": "Private events",
+    "title": "Book",
+    "titleItalic": "ateliéret",
+    "intro": "Få ateliéret helt for jer selv — til polterabend, fødselsdag eller firma-event. En guidet syoplevelse, hvor I selv vælger projektet, og alle går hjem med noget, de selv har syet.",
+    "perkOccasions": "Polterabend · fødselsdag · firma-event",
+    "perkProject": "I vælger selv projektet",
+    "perkGroup": "Grupper på 4–6 personer",
+    "chooseDate": "Vælg en dato",
+    "noSlots": "Ingen ledige datoer lige nu — send os en forespørgsel nedenfor, så finder vi en sammen.",
+    "perPerson": "pr. person",
+    "priceTotal": "i alt",
+    "people": "personer",
+    "bookingFormTitle": "Jeres booking",
+    "name": "Navn",
+    "email": "E-mail",
+    "phone": "Telefon (valgfrit)",
+    "groupSize": "Antal personer",
+    "occasion": "Anledning",
+    "occasions": {
+      "polterabend": "Polterabend",
+      "birthday": "Fødselsdag",
+      "corporate": "Firma- / teamevent",
+      "other": "Noget andet"
+    },
+    "projectWish": "Hvad kunne I tænke jer at sy?",
+    "projectWishPlaceholder": "F.eks. mulepose, scrunchies, en enkel top — eller lad os foreslå noget",
+    "addons": "Tilvalg",
+    "add": "Tilføj",
+    "remove": "Fjern",
+    "total": "I alt",
+    "payNow": "Gå til betaling",
+    "securePayment": "Sikker betaling via Stripe",
+    "processing": "Behandler...",
+    "genericError": "Noget gik galt. Prøv igen eller kontakt os.",
+    "requestTitle": "Ønsker I en anden dato?",
+    "requestIntro": "Fortæl os, hvornår I gerne vil komme, så vender vi tilbage med ledige muligheder.",
+    "preferredDates": "Ønskede dato(er)",
+    "preferredDatesPlaceholder": "F.eks. en lørdag i september",
+    "message": "Besked (valgfrit)",
+    "requestSubmit": "Send forespørgsel",
+    "requestSuccessTitle": "Forespørgsel sendt!",
+    "requestSuccessMessage": "Tak! Vi har modtaget jeres forespørgsel og vender tilbage på mail hurtigst muligt."
   }
 }

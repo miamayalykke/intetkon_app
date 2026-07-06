@@ -98,6 +98,24 @@ const PublicFooter = () => {
                   </li>
                   <li>
                     <Link
+                      href={`/${locale}/book-atelieret`}
+                      prefetch={false}
+                      className="hover:text-orange-500"
+                    >
+                      {t('footer.sections.bookAtelier')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href={`/${locale}/blog`}
+                      prefetch={false}
+                      className="hover:text-orange-500"
+                    >
+                      {t('footer.sections.blog')}
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       href={`/${locale}/contact`}
                       prefetch={false}
                       className="hover:text-orange-500"

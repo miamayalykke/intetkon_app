@@ -10,6 +10,11 @@ import {
 } from './internationalizedTypes'
 import { orderType } from './orderType'
 import { postType } from './postType'
+import {
+  privateEventAddonType,
+  privateEventRequestType,
+  privateEventSlotType,
+} from './privateEventTypes'
 import { productType } from './productType'
 import {
   condCartContainsAll,
@@ -39,6 +44,9 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     postType,
     salesType,
     workshopType,
+    privateEventSlotType,
+    privateEventAddonType,
+    privateEventRequestType,
     s3FileItemType,
     // Promotion engine
     promotionType,

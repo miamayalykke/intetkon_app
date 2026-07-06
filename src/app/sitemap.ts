@@ -11,6 +11,7 @@ const STATIC_ROUTES = [
   '/shop',
   '/patterns',
   '/workshops',
+  '/book-atelieret',
   '/blog',
   '/about',
   '/contact',

@@ -65,38 +65,45 @@ export async function POST(req: NextRequest) {
       const order = await createOrderInSanity(session)
 
       const meta = session.metadata ?? {}
-      if (meta.workshopIds) {
-        const workshopIds = meta.workshopIds.split(',').filter(Boolean)
-        for (const workshopId of workshopIds) {
-          await backendClient
-            .patch(workshopId)
-            .inc({ currentSignUps: 1 })
-            .commit()
-        }
-      }
 
-      const workshopIds = meta.workshopIds
-        ? meta.workshopIds.split(',').filter(Boolean)
-        : []
-      const productIds = meta.productIds
-        ? meta.productIds.split(',').filter(Boolean)
-        : []
-      const locale = meta.locale ?? 'en'
-
-      if (workshopIds.length > 0 && productIds.length === 0) {
-        await sendWorkshopConfirmationEmails(session, workshopIds, locale)
+      if (meta.privateEventSlotId) {
+        // Private atelier booking: mark the slot as booked and send
+        // dedicated confirmation/notification emails
+        await handlePrivateEventBooking(session)
       } else {
-        await sendOrderConfirmationEmail(
-          session,
-          order.sanityProductIds,
-          locale,
-        )
-      }
+        if (meta.workshopIds) {
+          const workshopIds = meta.workshopIds.split(',').filter(Boolean)
+          for (const workshopId of workshopIds) {
+            await backendClient
+              .patch(workshopId)
+              .inc({ currentSignUps: 1 })
+              .commit()
+          }
+        }
 
-      try {
-        await sendAdminOrderNotification(session, order)
-      } catch (err) {
-        console.error('Error sending admin notification:', err)
+        const workshopIds = meta.workshopIds
+          ? meta.workshopIds.split(',').filter(Boolean)
+          : []
+        const productIds = meta.productIds
+          ? meta.productIds.split(',').filter(Boolean)
+          : []
+        const locale = meta.locale ?? 'en'
+
+        if (workshopIds.length > 0 && productIds.length === 0) {
+          await sendWorkshopConfirmationEmails(session, workshopIds, locale)
+        } else {
+          await sendOrderConfirmationEmail(
+            session,
+            order.sanityProductIds,
+            locale,
+          )
+        }
+
+        try {
+          await sendAdminOrderNotification(session, order)
+        } catch (err) {
+          console.error('Error sending admin notification:', err)
+        }
       }
     } catch (err) {
       console.error('Error processing order:', err)
@@ -108,6 +115,157 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ recieved: true })
+}
+
+async function handlePrivateEventBooking(session: Stripe.Checkout.Session) {
+  const meta = session.metadata ?? {}
+  const slotId = meta.privateEventSlotId
+  if (!slotId) return
+
+  const locale = meta.locale === 'da' ? 'da' : 'en'
+  const customerName = meta.customerName ?? ''
+  const customerEmail =
+    meta.customerEmail || session.customer_details?.email || ''
+  const totalDkk = session.amount_total ? session.amount_total / 100 : 0
+
+  const slot = await backendClient.fetch<{
+    date?: string
+    status?: string
+  } | null>(`*[_type == "privateEventSlot" && _id == $id][0]{ date, status }`, {
+    id: slotId,
+  })
+
+  if (slot?.status === 'booked') {
+    // Two checkouts raced for the same slot — flag loudly so it can be
+    // resolved manually (refund one of the parties)
+    console.error(
+      `DOUBLE BOOKING for private event slot ${slotId}: order ${meta.orderNumber} paid but slot was already booked`,
+    )
+  }
+
+  await backendClient
+    .patch(slotId)
+    .set({
+      status: 'booked',
+      booking: {
+        customerName,
+        customerEmail,
+        groupSize: Number(meta.privateEventGroupSize) || undefined,
+        occasion: meta.privateEventOccasion || undefined,
+        projectWish: meta.privateEventProjectWish || undefined,
+        addonsSummary: meta.privateEventAddons || undefined,
+        orderNumber: meta.orderNumber,
+        bookedAt: new Date().toISOString(),
+      },
+    })
+    .commit()
+
+  const dateLabel = slot?.date
+    ? new Date(slot.date).toLocaleString(locale === 'da' ? 'da-DK' : 'en-GB', {
+        timeZone: 'Europe/Copenhagen',
+        dateStyle: 'full',
+        timeStyle: 'short',
+      })
+    : ''
+
+  const rows = (pairs: Array<[string, string]>) =>
+    pairs
+      .filter(([, v]) => v)
+      .map(
+        ([label, value]) =>
+          `<tr><td style="padding:4px 12px 4px 0;color:#888;">${label}</td><td style="padding:4px 0;">${value}</td></tr>`,
+      )
+      .join('')
+
+  if (customerEmail) {
+    const subject =
+      locale === 'da'
+        ? `Din booking af ateliéret er bekræftet – ${dateLabel}`
+        : `Your atelier booking is confirmed – ${dateLabel}`
+    const body =
+      locale === 'da'
+        ? `<p>Hej ${customerName},</p>
+           <p>Tak for din booking! Vi glæder os til at se jer i ateliéret.</p>
+           <table style="border-collapse:collapse;">${rows([
+             ['Dato', dateLabel],
+             ['Antal personer', meta.privateEventGroupSize ?? ''],
+             ['Tilvalg', meta.privateEventAddons ?? ''],
+             ['Ordrenummer', meta.orderNumber ?? ''],
+             ['Betalt', `${totalDkk.toFixed(2)} DKK`],
+           ])}</table>
+           <p>Har I ønsker til projektet, eller ændrer jeres planer sig, så svar bare på denne mail.</p>
+           <p>Kærlig hilsen<br/>Intetkøn</p>`
+        : `<p>Hi ${customerName},</p>
+           <p>Thank you for your booking! We look forward to seeing you in the atelier.</p>
+           <table style="border-collapse:collapse;">${rows([
+             ['Date', dateLabel],
+             ['Group size', meta.privateEventGroupSize ?? ''],
+             ['Add-ons', meta.privateEventAddons ?? ''],
+             ['Order number', meta.orderNumber ?? ''],
+             ['Paid', `${totalDkk.toFixed(2)} DKK`],
+           ])}</table>
+           <p>If you have wishes for the project, or your plans change, just reply to this email.</p>
+           <p>Warm regards<br/>Intetkøn</p>`
+    try {
+      await sesv2.send(
+        new SendEmailCommand({
+          FromEmailAddress: ORDER_FROM_EMAIL,
+          Destination: { ToAddresses: [customerEmail] },
+          Content: {
+            Simple: {
+              Subject: { Data: subject },
+              Body: {
+                Html: {
+                  Data: `<div style="font-family:sans-serif;max-width:560px;">${body}</div>`,
+                },
+              },
+            },
+          },
+        }),
+      )
+    } catch (err) {
+      console.error('Error sending private event confirmation:', err)
+    }
+  }
+
+  const adminEmail = process.env.ADMIN_ORDER_EMAIL || 'info@intetkon.com'
+  try {
+    await sesv2.send(
+      new SendEmailCommand({
+        FromEmailAddress: ORDER_FROM_EMAIL,
+        Destination: { ToAddresses: [adminEmail] },
+        ReplyToAddresses: customerEmail ? [customerEmail] : undefined,
+        Content: {
+          Simple: {
+            Subject: {
+              Data: `Ny booking: Book ateliéret – ${dateLabel} (${customerName})`,
+            },
+            Body: {
+              Html: {
+                Data: `<div style="font-family:sans-serif;max-width:560px;">
+                  <h2>Ateliéret er booket!</h2>
+                  <table style="border-collapse:collapse;">${rows([
+                    ['Dato', dateLabel],
+                    ['Navn', customerName],
+                    ['Email', customerEmail],
+                    ['Antal personer', meta.privateEventGroupSize ?? ''],
+                    ['Anledning', meta.privateEventOccasion ?? ''],
+                    ['Projektønske', meta.privateEventProjectWish ?? ''],
+                    ['Tilvalg', meta.privateEventAddons ?? ''],
+                    ['Ordrenummer', meta.orderNumber ?? ''],
+                    ['Betalt', `${totalDkk.toFixed(2)} DKK`],
+                  ])}</table>
+                  <p style="color:#888;font-size:12px;">Detaljerne ligger også på slottet i Sanity under "Private Event Slot".</p>
+                </div>`,
+              },
+            },
+          },
+        },
+      }),
+    )
+  } catch (err) {
+    console.error('Error sending private event admin notification:', err)
+  }
 }
 
 async function createOrderInSanity(session: Stripe.Checkout.Session) {

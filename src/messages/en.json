@@ -23,7 +23,9 @@
     "careers": "Careers",
     "patterns": "Patterns",
     "shopUniques": "Shop Uniques",
-    "becomePatternTester": "Become Pattern Tester"
+    "becomePatternTester": "Become Pattern Tester",
+    "blog": "Blog",
+    "bookAtelier": "Book the Atelier"
   },
   "products": {
     "addToCart": "Add to Cart",
@@ -72,7 +74,9 @@
       "workshops": "Workshops",
       "patterns": "Patterns",
       "contact": "Contact",
-      "careers": "Careers"
+      "careers": "Careers",
+      "blog": "Blog",
+      "bookAtelier": "Book the Atelier"
     },
     "support": {
       "title": "Support",
@@ -202,17 +206,20 @@
       },
       "products": {
         "hangaroundBag": {
-          "label": "Soon for sale, hangaround bag",
-          "description": "A simple, functional, versatile and beginner-friendly sewing pattern design for everyday use."
+          "label": "Hangaround Bag",
+          "description": "A simple, functional, versatile and beginner-friendly sewing pattern design for everyday use.",
+          "badge": "Available now"
         },
         "workshops": {
-          "label": "Something Beautiful Is Coming… Sewing Workshops Soon",
-          "description": "A workshop for anyone who wants to start sewing in a safe and creative way, whether you have never held a needle before or already sew professionally."
+          "label": "Sewing Workshops for Every Level",
+          "description": "Hands-on sewing workshops in our atelier, whether you have never held a needle before or already sew professionally.",
+          "badge": "Book your spot"
         }
       },
       "community": {
         "title": "Join the Community",
-        "description": "Be part of the community and become a pattern tester, whether you are just getting started or already have experience with sewing and design."
+        "description": "Be part of the community and become a pattern tester, whether you are just getting started or already have experience with sewing and design.",
+        "badge": "Become a pattern tester"
       },
       "patternTester": {
         "title": "Become a pattern tester",
@@ -224,6 +231,11 @@
         "button": "Apply to test",
         "marqueeTop": ["Join the Movement", "Creative Freedom"],
         "marqueeBottom": ["Create", "Learn", "Grow", "Together"]
+      },
+      "bookAtelier": {
+        "label": "Book the Atelier",
+        "description": "Bachelorette parties, birthdays, team events — get the atelier all to yourselves for a guided sewing experience. You choose the project.",
+        "badge": "Private events"
       }
     },
     "about": {
@@ -699,5 +711,49 @@
     "subtitle": "Sewing tutorials, guides and stories from the atelier",
     "empty": "No posts yet — check back soon!",
     "backToBlog": "All posts"
+  },
+  "privateEvents": {
+    "headerTag": "Private events",
+    "title": "Book the",
+    "titleItalic": "atelier",
+    "intro": "Get the atelier all to yourselves — for a bachelorette party, birthday or team event. A guided sewing experience where you choose the project and everyone walks out with something they made themselves.",
+    "perkOccasions": "Bachelorette · birthday · team event",
+    "perkProject": "You choose the project",
+    "perkGroup": "Groups of 4–6 people",
+    "chooseDate": "Pick a date",
+    "noSlots": "No available dates right now — send us a request below and we'll find one together.",
+    "perPerson": "per person",
+    "priceTotal": "total",
+    "people": "people",
+    "bookingFormTitle": "Your booking",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone (optional)",
+    "groupSize": "Group size",
+    "occasion": "Occasion",
+    "occasions": {
+      "polterabend": "Bachelorette party",
+      "birthday": "Birthday",
+      "corporate": "Team / company event",
+      "other": "Something else"
+    },
+    "projectWish": "What would you like to make?",
+    "projectWishPlaceholder": "E.g. tote bags, scrunchies, a simple top — or let us suggest something",
+    "addons": "Add-ons",
+    "add": "Add",
+    "remove": "Remove",
+    "total": "Total",
+    "payNow": "Continue to payment",
+    "securePayment": "Secure checkout powered by Stripe",
+    "processing": "Processing...",
+    "genericError": "Something went wrong. Please try again or contact us.",
+    "requestTitle": "Wish for another date?",
+    "requestIntro": "Tell us when you'd like to come, and we'll get back to you with available options.",
+    "preferredDates": "Preferred date(s)",
+    "preferredDatesPlaceholder": "E.g. a Saturday in September",
+    "message": "Message (optional)",
+    "requestSubmit": "Send request",
+    "requestSuccessTitle": "Request sent!",
+    "requestSuccessMessage": "Thank you! We've received your request and will get back to you by email as soon as possible."
   }
 }

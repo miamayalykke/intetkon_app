@@ -20,12 +20,17 @@ export const NavMenu = (props: ComponentProps<typeof NavigationMenu>) => {
     { href: `/${locale}/patterns`, label: t('navigation.patterns') },
     { href: `/${locale}/workshops`, label: t('navigation.workshops') },
     { href: `/${locale}/shop`, label: t('navigation.shopUniques') },
+    { href: `/${locale}/book-atelieret`, label: t('navigation.bookAtelier') },
   ]
 
   const infoLinks = [
     { href: `/${locale}/about`, label: t('navigation.about') },
+    { href: `/${locale}/blog`, label: t('navigation.blog') },
     { href: `/${locale}/contact`, label: t('navigation.contact') },
-    { href: `/${locale}/pattern-testing`, label: t('navigation.becomePatternTester') },
+    {
+      href: `/${locale}/pattern-testing`,
+      label: t('navigation.becomePatternTester'),
+    },
   ]
 
   return (
