@@ -1,14 +1,22 @@
 'use client'
 
+import useBasketStore from '@store/store'
 import { Button } from '@ui/button'
 import { ArrowRight, Check, Heart, Scissors, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useLocale, useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
-import useBasketStore from '@store/store'
+import { Suspense, useEffect, useState } from 'react'
 
 function SuccessPage() {
+  return (
+    <Suspense fallback={null}>
+      <SuccessContent />
+    </Suspense>
+  )
+}
+
+function SuccessContent() {
   const t = useTranslations()
   const locale = useLocale()
   const searchParams = useSearchParams()
@@ -32,7 +40,8 @@ function SuccessPage() {
     <main className="relative w-full h-screen overflow-hidden flex flex-col justify-between">
       <div className="pt-8 text-center opacity-40">
         <div className="inline-flex items-center gap-2 px-4 py-1 rounded-full border border-border bg-card/50 text-[9px] font-black uppercase tracking-[0.3em]">
-          <Sparkles className="w-3 h-3 text-orange-500" /> {t('success.paymentVerified')}
+          <Sparkles className="w-3 h-3 text-orange-500" />{' '}
+          {t('success.paymentVerified')}
         </div>
       </div>
 

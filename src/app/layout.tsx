@@ -13,5 +13,5 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  return <ClerkProvider dynamic>{children}</ClerkProvider>
+  return <ClerkProvider>{children}</ClerkProvider>
 }

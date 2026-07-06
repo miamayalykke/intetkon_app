@@ -32,7 +32,6 @@ export const PAGES = [
   'privacy',
   'returnPolicy',
   'terms',
-  'underConstruction',
   'orders',
   'careers',
   'patternTester',
@@ -44,17 +43,26 @@ export const PAGES = [
  * object next-intl expects. The dynamic imports are statically analysable by
  * the bundler because `NAMESPACES`/`PAGES` gate the template literals.
  */
-export async function loadMessages(locale: string): Promise<AbstractIntlMessages> {
+export async function loadMessages(
+  locale: string,
+): Promise<AbstractIntlMessages> {
   const [namespaceEntries, pageEntries] = await Promise.all([
     Promise.all(
       NAMESPACES.map(
-        async (ns) => [ns, (await import(`../messages/${locale}/${ns}.json`)).default] as const,
+        async (ns) =>
+          [
+            ns,
+            (await import(`../messages/${locale}/${ns}.json`)).default,
+          ] as const,
       ),
     ),
     Promise.all(
       PAGES.map(
         async (page) =>
-          [page, (await import(`../messages/${locale}/pages/${page}.json`)).default] as const,
+          [
+            page,
+            (await import(`../messages/${locale}/pages/${page}.json`)).default,
+          ] as const,
       ),
     ),
   ])

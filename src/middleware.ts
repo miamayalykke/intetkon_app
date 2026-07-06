@@ -24,7 +24,11 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   // Skip i18n routing for API routes, studio and admin routes
-  if (pathname.startsWith('/api') || pathname.startsWith('/studio') || pathname.startsWith('/app')) {
+  if (
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/studio') ||
+    pathname.startsWith('/app')
+  ) {
     return
   }
 
@@ -39,29 +43,6 @@ export default clerkMiddleware(async (auth, req) => {
   // Extract locale from pathname
   const pathnameWithoutLocale = pathname.split('/').slice(2).join('/')
   const checkPathname = `/${pathnameWithoutLocale}`
-
-  if (
-    process.env.UNDER_CONSTRUCTION === 'true' &&
-    process.env.UNDER_CONSTRUCTION_ON_LOCALHOST !== 'false'
-  ) {
-    const { sessionClaims } = await auth()
-    const role = (sessionClaims?.metadata as { role?: string })?.role
-    const isAdmin = role === 'admin'
-
-    if (!isAdmin) {
-      const isAdminPath = ADMIN_ROUTES.some((p) => checkPathname.startsWith(p))
-      const isAllowed =
-        isAdminPath ||
-        checkPathname === '/' ||
-        checkPathname.startsWith('/contact') ||
-        checkPathname.startsWith('/about') ||
-        checkPathname.startsWith('/pattern-testing') ||
-        /\.\w+$/.test(pathname)
-      if (!isAllowed) {
-        return NextResponse.redirect(new URL('/', req.url))
-      }
-    }
-  }
 
   const isAdminRoute =
     !AUTH_ROUTES.some((p) => checkPathname.startsWith(p)) &&

@@ -2,11 +2,19 @@
 
 import { searchProductsByName } from '@sanity/lib/products/searchProductsByName'
 import ProductGrid from '@src/components/product/ProductGrid'
-import { useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
+import { Suspense, useEffect, useState } from 'react'
 
 export default function SearchPage() {
+  return (
+    <Suspense fallback={null}>
+      <SearchResults />
+    </Suspense>
+  )
+}
+
+function SearchResults() {
   const t = useTranslations()
   const searchParams = useSearchParams()
   const query = searchParams.get('query') || ''
@@ -62,7 +70,8 @@ export default function SearchPage() {
       <div className="container mx-auto px-6 pt-12">
         <header className="mb-12">
           <h1 className="text-6xl lg:text-8xl font-black tracking-tighter leading-none">
-            {t('shop.resultsFor')}: <span className="text-orange-500">{query}</span>
+            {t('shop.resultsFor')}:{' '}
+            <span className="text-orange-500">{query}</span>
           </h1>
         </header>
 
