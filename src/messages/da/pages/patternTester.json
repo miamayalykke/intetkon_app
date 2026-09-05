@@ -12,7 +12,7 @@
   "lookingFor": {
     "title": "Hvad vi leder efter",
     "items": [
-      "Mellemliggende til avancerede syningsfærdigheder",
+      "Øvede til avancerede syningsfærdigheder",
       "Evne til at give detaljeret feedback på pasform",
       "Tydelig fotografering af færdige produkter"
     ]
@@ -30,7 +30,7 @@
     "sewingLevel": "Syningsniveau",
     "selectLevel": "Vælg niveau",
     "beginner": "Begynder",
-    "intermediate": "Mellemliggende",
+    "intermediate": "Øvet",
     "advanced": "Avanceret",
     "tellUsAbout": "Fortæl os om din stil",
     "stylePlaceholder": "Fortæl os om de maskiner, du bruger, og dine yndlingsstoffer...",

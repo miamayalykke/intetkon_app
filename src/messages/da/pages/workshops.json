@@ -6,13 +6,13 @@
   "filters": {
     "all": "Alle",
     "beginner": "Begynder",
-    "intermediate": "Mellemliggende",
+    "intermediate": "Øvet",
     "advanced": "Avanceret"
   },
   "noUpcoming": "Ingen kommende workshops på dette niveau.",
   "levels": {
     "Beginner": "Begynder",
-    "Intermediate": "Mellemliggende",
+    "Intermediate": "Øvet",
     "Advanced": "Avanceret"
   }
 }
