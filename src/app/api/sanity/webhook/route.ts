@@ -16,6 +16,7 @@ import { blockContentToHtml } from '@src/lib/blockContentToHtml'
 
 import { ORDER_FROM_EMAIL, sesv2 } from '@src/lib/ses-client'
 import stripe from '@src/lib/stripe'
+import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
@@ -28,6 +29,103 @@ import OrderConfirmationEmail, {
 } from '../../../../../emails/order-confirmation'
 import WorkshopAdditionalInfoEmail from '../../../../../emails/workshop-additional-info'
 import WorkshopConfirmationEmail from '../../../../../emails/workshop-confirmation'
+
+type PurchasedItem = {
+  id: string
+  type: 'product' | 'workshop'
+  quantity: number
+  _rev: string
+  productType?: 'digital' | 'physical'
+  stock?: number
+  maxAllocation?: number
+  currentSignUps?: number
+}
+
+type PurchasedDocument = Omit<PurchasedItem, 'id' | 'type' | 'quantity'> & {
+  _id: string
+  _type: 'product' | 'workshop'
+}
+
+type CreatedOrder = Record<string, any> & {
+  wasCreated: boolean
+  sanityProductIds: Array<{ id: string; quantity: number }>
+}
+
+function orderDocumentId(sessionId: string): string {
+  return `order.${sessionId.replace(/[^a-zA-Z0-9_-]/g, '-')}`
+}
+
+async function getPurchasedItems(
+  session: Stripe.Checkout.Session,
+): Promise<PurchasedItem[]> {
+  const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+    limit: 100,
+    expand: ['data.price.product'],
+  })
+  const quantities = new Map<string, number>()
+
+  for (const lineItem of lineItems.data) {
+    const product = lineItem.price?.product
+    const metadata =
+      product && typeof product !== 'string' && !product.deleted
+        ? product.metadata
+        : undefined
+    const sanityId = metadata?.sanityId
+    if (sanityId) {
+      quantities.set(
+        sanityId,
+        (quantities.get(sanityId) ?? 0) + (lineItem.quantity ?? 1),
+      )
+    }
+  }
+
+  // Compatibility for Checkout sessions created before line items carried the
+  // Sanity ID on their Stripe Product.
+  if (quantities.size === 0) {
+    const metadata = session.metadata ?? {}
+    for (const id of (metadata.productIds ?? '').split(',').filter(Boolean)) {
+      quantities.set(id, (quantities.get(id) ?? 0) + 1)
+    }
+    for (const id of (metadata.workshopIds ?? '').split(',').filter(Boolean)) {
+      quantities.set(id, (quantities.get(id) ?? 0) + 1)
+    }
+  }
+
+  const ids = [...quantities.keys()]
+  if (ids.length === 0) return []
+
+  const docs = await backendClient.fetch<PurchasedDocument[]>(
+    `*[
+      _id in $ids &&
+      !(_id in path("drafts.**")) &&
+      _type in ["product", "workshop"]
+    ]{
+      _id,
+      _type,
+      _rev,
+      productType,
+      stock,
+      maxAllocation,
+      currentSignUps
+    }`,
+    { ids },
+  )
+
+  if (docs.length !== ids.length) {
+    throw new Error('One or more purchased items no longer exist')
+  }
+
+  return docs.map((doc) => ({
+    id: doc._id,
+    type: doc._type,
+    quantity: quantities.get(doc._id) ?? 1,
+    _rev: doc._rev,
+    productType: doc.productType,
+    stock: doc.stock,
+    maxAllocation: doc.maxAllocation,
+    currentSignUps: doc.currentSignUps,
+  }))
+}
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -62,41 +160,44 @@ export async function POST(req: NextRequest) {
     const session = event.data.object as Stripe.Checkout.Session
 
     try {
-      const order = await createOrderInSanity(session)
-
       const meta = session.metadata ?? {}
+      const purchasedItems = meta.privateEventSlotId
+        ? []
+        : await getPurchasedItems(session)
+      const order = await createOrderInSanity(session, purchasedItems)
 
       if (meta.privateEventSlotId) {
         // Private atelier booking: mark the slot as booked and send
         // dedicated confirmation/notification emails
-        await handlePrivateEventBooking(session)
+        const bookingCompleted = await handlePrivateEventBooking(session)
+        if (!bookingCompleted) {
+          return NextResponse.json({ received: true, duplicate: true })
+        }
       } else {
-        if (meta.workshopIds) {
-          const workshopIds = meta.workshopIds.split(',').filter(Boolean)
-          for (const workshopId of workshopIds) {
-            await backendClient
-              .patch(workshopId)
-              .inc({ currentSignUps: 1 })
-              .commit()
-          }
+        if (!order.wasCreated) {
+          return NextResponse.json({ received: true, duplicate: true })
         }
 
-        const workshopIds = meta.workshopIds
-          ? meta.workshopIds.split(',').filter(Boolean)
-          : []
-        const productIds = meta.productIds
-          ? meta.productIds.split(',').filter(Boolean)
-          : []
+        const workshopIds = purchasedItems
+          .filter((item) => item.type === 'workshop')
+          .map((item) => item.id)
+        const productIds = purchasedItems
+          .filter((item) => item.type === 'product')
+          .map((item) => item.id)
         const locale = meta.locale ?? 'en'
 
-        if (workshopIds.length > 0 && productIds.length === 0) {
-          await sendWorkshopConfirmationEmails(session, workshopIds, locale)
-        } else {
-          await sendOrderConfirmationEmail(
-            session,
-            order.sanityProductIds,
-            locale,
-          )
+        try {
+          if (workshopIds.length > 0 && productIds.length === 0) {
+            await sendWorkshopConfirmationEmails(session, workshopIds, locale)
+          } else {
+            await sendOrderConfirmationEmail(
+              session,
+              order.sanityProductIds,
+              locale,
+            )
+          }
+        } catch (err) {
+          console.error('Error sending customer order confirmation:', err)
         }
 
         try {
@@ -114,37 +215,98 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ recieved: true })
+  if (event.type === 'checkout.session.expired') {
+    await releasePrivateEventReservation(
+      event.data.object as Stripe.Checkout.Session,
+    )
+  }
+
+  return NextResponse.json({ received: true })
 }
 
-async function handlePrivateEventBooking(session: Stripe.Checkout.Session) {
+async function releasePrivateEventReservation(
+  session: Stripe.Checkout.Session,
+): Promise<void> {
   const meta = session.metadata ?? {}
   const slotId = meta.privateEventSlotId
-  if (!slotId) return
+  const reservationId = meta.privateEventReservationId
+  if (!slotId || !reservationId) return
+
+  const slot = await backendClient.fetch<{
+    _rev: string
+    status?: string
+    reservationId?: string
+  } | null>(
+    `*[_id == $id][0]{
+      _rev,
+      status,
+      "reservationId": reservation.id
+    }`,
+    { id: slotId },
+  )
+
+  if (slot?.status !== 'reserved' || slot.reservationId !== reservationId) {
+    return
+  }
+
+  await backendClient
+    .patch(slotId)
+    .ifRevisionId(slot._rev)
+    .set({ status: 'available' })
+    .unset(['reservation'])
+    .commit()
+  revalidatePath('/en/book-atelieret')
+  revalidatePath('/da/book-atelieret')
+}
+
+async function handlePrivateEventBooking(
+  session: Stripe.Checkout.Session,
+): Promise<boolean> {
+  const meta = session.metadata ?? {}
+  const slotId = meta.privateEventSlotId
+  if (!slotId) return false
 
   const locale = meta.locale === 'da' ? 'da' : 'en'
   const customerName = meta.customerName ?? ''
   const customerEmail =
     meta.customerEmail || session.customer_details?.email || ''
+  const reservationId = meta.privateEventReservationId
   const totalDkk = session.amount_total ? session.amount_total / 100 : 0
 
   const slot = await backendClient.fetch<{
+    _rev: string
     date?: string
     status?: string
-  } | null>(`*[_type == "privateEventSlot" && _id == $id][0]{ date, status }`, {
-    id: slotId,
-  })
+    reservationId?: string
+    bookedOrderNumber?: string
+  } | null>(
+    `*[_type == "privateEventSlot" && _id == $id][0]{
+      _rev,
+      date,
+      status,
+      "reservationId": reservation.id,
+      "bookedOrderNumber": booking.orderNumber
+    }`,
+    { id: slotId },
+  )
 
   if (slot?.status === 'booked') {
-    // Two checkouts raced for the same slot — flag loudly so it can be
-    // resolved manually (refund one of the parties)
-    console.error(
-      `DOUBLE BOOKING for private event slot ${slotId}: order ${meta.orderNumber} paid but slot was already booked`,
-    )
+    if (slot.bookedOrderNumber === meta.orderNumber) return false
+    throw new Error(`Private event slot ${slotId} is already booked`)
+  }
+
+  const isLegacyCheckout = !reservationId && slot?.status === 'available'
+  const ownsReservation =
+    reservationId &&
+    slot?.status === 'reserved' &&
+    slot.reservationId === reservationId
+  if (!slot || (!isLegacyCheckout && !ownsReservation)) {
+    throw new Error(`Private event reservation for slot ${slotId} is invalid`)
   }
 
   await backendClient
     .patch(slotId)
+    .ifRevisionId(slot._rev)
     .set({
       status: 'booked',
       booking: {
@@ -158,7 +320,10 @@ async function handlePrivateEventBooking(session: Stripe.Checkout.Session) {
         bookedAt: new Date().toISOString(),
       },
     })
+    .unset(['reservation'])
     .commit()
+  revalidatePath('/en/book-atelieret')
+  revalidatePath('/da/book-atelieret')
 
   const dateLabel = slot?.date
     ? new Date(slot.date).toLocaleString(locale === 'da' ? 'da-DK' : 'en-GB', {
@@ -266,9 +431,14 @@ async function handlePrivateEventBooking(session: Stripe.Checkout.Session) {
   } catch (err) {
     console.error('Error sending private event admin notification:', err)
   }
+
+  return true
 }
 
-async function createOrderInSanity(session: Stripe.Checkout.Session) {
+async function createOrderInSanity(
+  session: Stripe.Checkout.Session,
+  purchasedItems: PurchasedItem[],
+): Promise<CreatedOrder> {
   const {
     id,
     amount_total,
@@ -282,28 +452,51 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
   const { orderNumber, customerName, customerEmail, clerkUserId, locale } =
     metadata as Metadata & { clerkUserId?: string }
 
-  const lineItemsWithProduct = await stripe.checkout.sessions.listLineItems(id)
+  const deterministicId = orderDocumentId(id)
+  const existingOrder = await backendClient.fetch<Record<string, any> | null>(
+    `*[_id == $id][0]`,
+    { id: deterministicId },
+  )
+  if (existingOrder) {
+    return { ...existingOrder, wasCreated: false, sanityProductIds: [] }
+  }
 
-  const workshopIds =
-    (metadata?.workshopIds as string)?.split(',').filter(Boolean) ?? []
-  const productIds =
-    (metadata?.productIds as string)?.split(',').filter(Boolean) ?? []
+  const productItems = purchasedItems.filter((item) => item.type === 'product')
+  const workshopItems = purchasedItems.filter(
+    (item) => item.type === 'workshop',
+  )
 
-  const sanityProducts = productIds.map((id, index) => ({
+  for (const item of purchasedItems) {
+    if (item.type === 'workshop') {
+      const remaining = (item.maxAllocation ?? 0) - (item.currentSignUps ?? 0)
+      if (item.quantity > remaining) {
+        throw new Error(`Workshop ${item.id} no longer has enough capacity`)
+      }
+    } else if (
+      item.productType === 'physical' &&
+      item.stock != null &&
+      item.quantity > item.stock
+    ) {
+      throw new Error(`Product ${item.id} no longer has enough stock`)
+    }
+  }
+
+  const sanityProducts = productItems.map((item) => ({
     _key: crypto.randomUUID(),
     product: {
       _type: 'reference',
-      _ref: id,
+      _ref: item.id,
     },
-    quantity: lineItemsWithProduct.data[index]?.quantity || 1,
+    quantity: item.quantity,
   }))
 
-  const workshopReferences = workshopIds.map((id) => ({
+  const workshopReferences = workshopItems.map((item) => ({
     _type: 'reference' as const,
-    _ref: id,
+    _ref: item.id,
   }))
 
-  const order = await backendClient.create({
+  const order = {
+    _id: deterministicId,
     _type: 'order',
     orderNumber,
     stripeCheckoutSessionId: id,
@@ -322,28 +515,55 @@ async function createOrderInSanity(session: Stripe.Checkout.Session) {
     status: 'paid',
     orderDate: new Date().toISOString(),
     locale: locale ?? 'en',
-  })
+  }
 
-  // Increment salesCount for each product sold
-  for (const product of sanityProducts) {
-    try {
-      await backendClient
-        .patch(product.product._ref)
-        .inc({ salesCount: product.quantity })
-        .commit()
-    } catch (err) {
-      console.error(
-        `Failed to increment salesCount for product ${product.product._ref}:`,
-        err,
-      )
+  const transaction = backendClient.transaction().create(order)
+  for (const item of purchasedItems) {
+    transaction.patch(item.id, (patch) => {
+      const increments: Record<string, number> =
+        item.type === 'workshop'
+          ? { currentSignUps: item.quantity }
+          : { salesCount: item.quantity }
+      if (
+        item.type === 'product' &&
+        item.productType === 'physical' &&
+        item.stock != null
+      ) {
+        increments.stock = -item.quantity
+      }
+      return patch
+        .ifRevisionId(item._rev)
+        .setIfMissing(item.type === 'product' ? { salesCount: 0 } : {})
+        .inc(increments)
+    })
+  }
+
+  try {
+    await transaction.commit()
+  } catch (error) {
+    // A concurrent delivery can race between the existence check and create.
+    // If its deterministic order now exists, this delivery is a duplicate.
+    const concurrentlyCreated = await backendClient.fetch<Record<
+      string,
+      any
+    > | null>(`*[_id == $id][0]`, { id: deterministicId })
+    if (concurrentlyCreated) {
+      return {
+        ...concurrentlyCreated,
+        wasCreated: false,
+        sanityProductIds: [],
+      }
     }
+    throw error
   }
 
   return {
     ...order,
-    sanityProductIds: sanityProducts
-      .map((p) => ({ id: p.product._ref, quantity: p.quantity }))
-      .filter((p) => p.id),
+    wasCreated: true,
+    sanityProductIds: purchasedItems.map((item) => ({
+      id: item.id,
+      quantity: item.quantity,
+    })),
   }
 }
 

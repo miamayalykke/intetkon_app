@@ -4,6 +4,7 @@ import 'server-only'
 import { backendClient } from '@sanity/lib/backendClient'
 import stripe from '@src/lib/stripe'
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
+import { revalidatePath } from 'next/cache'
 import { generateOrderNumber } from './generateOrderNumber'
 
 export type BookPrivateEventInput = {
@@ -23,12 +24,18 @@ export type BookPrivateEventResult =
 
 type SlotDoc = {
   _id: string
+  _rev: string
   date: string
   endDate?: string
   minGroupSize: number
   maxGroupSize: number
   pricingMode: 'perPerson' | 'total'
   price: number
+}
+
+type SlotReservation = {
+  slotId: string
+  reservationId: string
 }
 
 type AddonDoc = {
@@ -39,6 +46,37 @@ type AddonDoc = {
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+async function releaseReservation(reservation: SlotReservation): Promise<void> {
+  const slot = await backendClient.fetch<{
+    _rev: string
+    status?: string
+    reservationId?: string
+  } | null>(
+    `*[_id == $slotId][0]{
+      _rev,
+      status,
+      "reservationId": reservation.id
+    }`,
+    { slotId: reservation.slotId },
+  )
+
+  if (
+    slot?.status !== 'reserved' ||
+    slot.reservationId !== reservation.reservationId
+  ) {
+    return
+  }
+
+  await backendClient
+    .patch(reservation.slotId)
+    .ifRevisionId(slot._rev)
+    .set({ status: 'available' })
+    .unset(['reservation'])
+    .commit()
+  revalidatePath('/en/book-atelieret')
+  revalidatePath('/da/book-atelieret')
+}
+
 export async function bookPrivateEvent(
   input: BookPrivateEventInput,
 ): Promise<BookPrivateEventResult> {
@@ -46,6 +84,7 @@ export async function bookPrivateEvent(
   const customerName = input.customerName?.trim()
   const customerEmail = input.customerEmail?.trim()
   const groupSize = Math.floor(Number(input.groupSize))
+  let activeReservation: SlotReservation | null = null
 
   if (!customerName || !customerEmail || !EMAIL_REGEX.test(customerEmail)) {
     return {
@@ -60,8 +99,13 @@ export async function bookPrivateEvent(
   try {
     // Re-fetch the slot server-side: it must still be available and in the future
     const slot = await backendClient.fetch<SlotDoc | null>(
-      `*[_type == "privateEventSlot" && _id == $id && status == "available" && date >= now()][0] {
-        _id, date, endDate, minGroupSize, maxGroupSize, pricingMode, price
+      `*[
+        _type == "privateEventSlot" &&
+        _id == $id &&
+        date >= now() &&
+        (status == "available" || (status == "reserved" && reservation.expiresAt < now()))
+      ][0] {
+        _id, _rev, date, endDate, minGroupSize, maxGroupSize, pricingMode, price
       }`,
       { id: input.slotId },
     )
@@ -155,6 +199,35 @@ export async function bookPrivateEvent(
     }
 
     const orderNumber = await generateOrderNumber()
+    const reservationId = crypto.randomUUID()
+    const expiresAt = new Date(Date.now() + 31 * 60 * 1000)
+
+    try {
+      await backendClient
+        .patch(slot._id)
+        .ifRevisionId(slot._rev)
+        .set({
+          status: 'reserved',
+          reservation: {
+            id: reservationId,
+            orderNumber,
+            customerEmail,
+            expiresAt: expiresAt.toISOString(),
+          },
+        })
+        .commit()
+      activeReservation = { slotId: slot._id, reservationId }
+      revalidatePath('/en/book-atelieret')
+      revalidatePath('/da/book-atelieret')
+    } catch {
+      return {
+        success: false,
+        message:
+          locale === 'da'
+            ? 'Denne dato blev netop reserveret af en anden. Vælg en anden dato.'
+            : 'This date was just reserved by someone else. Please choose another date.',
+      }
+    }
 
     const customers = await stripe.customers.list({
       email: customerEmail,
@@ -175,6 +248,7 @@ export async function bookPrivateEvent(
         clerkUserId: '',
         locale,
         privateEventSlotId: slot._id,
+        privateEventReservationId: reservationId,
         privateEventGroupSize: String(groupSize),
         privateEventOccasion: (input.occasion ?? '').slice(0, 100),
         privateEventProjectWish: (input.projectWish ?? '').slice(0, 400),
@@ -182,6 +256,7 @@ export async function bookPrivateEvent(
       },
       locale: locale === 'da' ? 'da' : 'en',
       mode: 'payment',
+      expires_at: Math.floor(expiresAt.getTime() / 1000),
       payment_method_configuration: 'pmc_1SDjXTJoZ0voIfvhegmhzz3s',
       success_url: `${baseUrl}/${locale}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${orderNumber}`,
       cancel_url: `${baseUrl}/${locale}/book-atelieret`,
@@ -189,6 +264,8 @@ export async function bookPrivateEvent(
     })
 
     if (!session.url) {
+      await releaseReservation(activeReservation)
+      activeReservation = null
       return {
         success: false,
         message:
@@ -200,6 +277,16 @@ export async function bookPrivateEvent(
 
     return { success: true, checkoutUrl: session.url }
   } catch (error) {
+    if (activeReservation) {
+      try {
+        await releaseReservation(activeReservation)
+      } catch (releaseError) {
+        console.error(
+          'Error releasing private event reservation:',
+          releaseError,
+        )
+      }
+    }
     console.error('Error booking private event:', error)
     return {
       success: false,

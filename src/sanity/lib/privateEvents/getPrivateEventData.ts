@@ -19,7 +19,11 @@ export interface PrivateEventAddon {
 }
 
 const SLOTS_QUERY = defineQuery(`
-  *[_type == "privateEventSlot" && status == "available" && date >= now()]
+  *[
+    _type == "privateEventSlot" &&
+    date >= now() &&
+    (status == "available" || (status == "reserved" && reservation.expiresAt < now()))
+  ]
     | order(date asc) {
     _id,
     date,

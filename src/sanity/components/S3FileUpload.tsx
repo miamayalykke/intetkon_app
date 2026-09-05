@@ -24,7 +24,11 @@ export function S3FileUpload(props: StringInputProps) {
             'Content-Type': 'application/json',
             ...(sanityToken ? { 'x-sanity-token': sanityToken } : {}),
           },
-          body: JSON.stringify({ filename: file.name, contentType: file.type }),
+          body: JSON.stringify({
+            filename: file.name,
+            contentType: file.type,
+            size: file.size,
+          }),
         })
         if (!res.ok) throw new Error('Failed to get upload URL')
         const { uploadUrl, key } = await res.json()

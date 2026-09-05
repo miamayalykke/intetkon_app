@@ -62,6 +62,7 @@ export const privateEventSlotType = defineType({
       options: {
         list: [
           { title: 'Available', value: 'available' },
+          { title: 'Reserved (awaiting payment)', value: 'reserved' },
           { title: 'Booked', value: 'booked' },
           { title: 'Cancelled', value: 'cancelled' },
         ],
@@ -69,6 +70,28 @@ export const privateEventSlotType = defineType({
       },
       initialValue: 'available',
       validation: (R) => R.required(),
+    }),
+    defineField({
+      name: 'reservation',
+      title: 'Checkout Reservation',
+      description: 'Temporary hold while a customer completes payment',
+      type: 'object',
+      readOnly: true,
+      hidden: ({ value }) => !value,
+      fields: [
+        defineField({ name: 'id', title: 'Reservation ID', type: 'string' }),
+        defineField({
+          name: 'orderNumber',
+          title: 'Order Number',
+          type: 'string',
+        }),
+        defineField({ name: 'customerEmail', title: 'Email', type: 'string' }),
+        defineField({
+          name: 'expiresAt',
+          title: 'Expires At',
+          type: 'datetime',
+        }),
+      ],
     }),
     defineField({
       name: 'booking',

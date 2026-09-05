@@ -239,25 +239,21 @@ export async function validatePromoCode(
         ? Math.min(doc.discountAmount, eligibleSubtotal)
         : Math.round(eligibleSubtotal * doc.discountAmount) / 100
 
-    // The pre-synced Stripe promotion code applies order-wide, so it is only
-    // usable for allItems promos. matchingItems promos get a one-off coupon
-    // with the exact amount at checkout instead.
-    let stripePromoCodeId = ''
-    if (appliesTo === 'allItems') {
-      const stripeCodes = await stripe.promotionCodes.list({
-        code,
-        limit: 1,
-      })
-      const stripePromo = stripeCodes.data[0]
+    // Checkout uses this pre-synced promotion code for every promotion type.
+    // This preserves Stripe redemption limits and product restrictions; the
+    // application-specific cart conditions have already been checked above.
+    const stripeCodes = await stripe.promotionCodes.list({
+      code,
+      limit: 1,
+    })
+    const stripePromo = stripeCodes.data[0]
 
-      if (!stripePromo?.active) {
-        return {
-          valid: false,
-          message:
-            'This code is not yet active in our payment system. Please try again shortly.',
-        }
+    if (!stripePromo?.active) {
+      return {
+        valid: false,
+        message:
+          'This code is not yet active in our payment system. Please try again shortly.',
       }
-      stripePromoCodeId = stripePromo.id
     }
 
     const suffix = appliesTo === 'matchingItems' ? ' selected items' : ''
@@ -268,7 +264,7 @@ export async function validatePromoCode(
 
     return {
       valid: true,
-      stripePromoCodeId,
+      stripePromoCodeId: stripePromo.id,
       discountAmount: doc.discountAmount,
       discountType,
       appliesTo,

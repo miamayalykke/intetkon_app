@@ -1,5 +1,5 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { backendClient } from '@sanity/lib/backendClient'
+import { isClerkAdmin } from '@src/lib/admin-auth'
 import stripe from '@src/lib/stripe'
 import { type NextRequest, NextResponse } from 'next/server'
 import type Stripe from 'stripe'
@@ -273,21 +273,10 @@ async function runSync() {
   }
 }
 
-// GET: trigger from browser while signed in to Clerk
-export async function GET() {
-  const user = await currentUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  const result = await runSync()
-  return NextResponse.json(result)
-}
-
 export async function POST(req: NextRequest) {
   void req
-  const user = await currentUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await isClerkAdmin())) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
   const result = await runSync()
   return NextResponse.json(result)

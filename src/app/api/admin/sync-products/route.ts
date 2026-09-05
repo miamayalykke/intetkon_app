@@ -1,5 +1,5 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { backendClient } from '@sanity/lib/backendClient'
+import { isClerkAdmin } from '@src/lib/admin-auth'
 import stripe from '@src/lib/stripe'
 import { type NextRequest, NextResponse } from 'next/server'
 
@@ -31,15 +31,12 @@ async function syncDocToStripe(
       try {
         await stripe.products.update(doc.stripeProductId, {
           name,
-          metadata: { sanityId: doc._id },
+          metadata: { sanityId: doc._id, sanityType: doc._type },
         })
         return { ok: true, id: doc.stripeProductId }
       } catch (updateError: any) {
         if (updateError?.code === 'resource_missing') {
-          await backendClient
-            .patch(doc._id)
-            .unset(['stripeProductId'])
-            .commit()
+          await backendClient.patch(doc._id).unset(['stripeProductId']).commit()
           doc = { ...doc, stripeProductId: undefined }
         } else {
           throw updateError
@@ -49,7 +46,7 @@ async function syncDocToStripe(
 
     const product = await stripe.products.create({
       name,
-      metadata: { sanityId: doc._id },
+      metadata: { sanityId: doc._id, sanityType: doc._type },
     })
 
     await backendClient
@@ -90,20 +87,10 @@ async function runSync() {
   }
 }
 
-export async function GET() {
-  const user = await currentUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-  const result = await runSync()
-  return NextResponse.json(result)
-}
-
 export async function POST(req: NextRequest) {
   void req
-  const user = await currentUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await isClerkAdmin())) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
   const result = await runSync()
   return NextResponse.json(result)

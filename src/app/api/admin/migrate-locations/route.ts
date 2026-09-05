@@ -1,14 +1,15 @@
-import { currentUser } from '@clerk/nextjs/server'
 import { backendClient } from '@sanity/lib/backendClient'
+import { isClerkAdmin } from '@src/lib/admin-auth'
 import { NextResponse } from 'next/server'
 
 export async function POST() {
-  const user = await currentUser()
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (!(await isClerkAdmin())) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
-  const workshops = await backendClient.fetch<{ _id: string; location?: string }[]>(
+  const workshops = await backendClient.fetch<
+    { _id: string; location?: string }[]
+  >(
     `*[_type == "workshop" && location != "studio" && location != "online"]{ _id, location }`,
   )
 

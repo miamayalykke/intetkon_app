@@ -1,10 +1,11 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { currentUser } from '@clerk/nextjs/server'
+import { isClerkAdmin } from '@src/lib/admin-auth'
 import { S3_BUCKET, s3 } from '@src/lib/s3-client'
 import { type NextRequest, NextResponse } from 'next/server'
 
 const SANITY_PROJECT_ID = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+const MAX_UPLOAD_BYTES = 250 * 1024 * 1024
 
 async function isSanityProjectAdmin(token: string): Promise<boolean> {
   try {
@@ -29,30 +30,49 @@ async function isSanityProjectAdmin(token: string): Promise<boolean> {
 }
 
 export async function POST(req: NextRequest) {
-  const user = await currentUser()
-
-  if (!user) {
+  const clerkAdmin = await isClerkAdmin()
+  if (!clerkAdmin) {
     const sanityToken = req.headers.get('x-sanity-token')
     if (!sanityToken || !(await isSanityProjectAdmin(sanityToken))) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
   }
 
-  const { filename, contentType } = await req.json()
+  const { filename, contentType, size } = await req.json()
 
-  if (!filename || !contentType) {
+  if (
+    typeof filename !== 'string' ||
+    typeof contentType !== 'string' ||
+    typeof size !== 'number' ||
+    !filename.trim() ||
+    !contentType.trim() ||
+    !Number.isSafeInteger(size) ||
+    size <= 0 ||
+    size > MAX_UPLOAD_BYTES
+  ) {
     return NextResponse.json(
-      { error: 'filename and contentType are required' },
+      { error: 'Invalid filename, content type, or file size' },
       { status: 400 },
     )
   }
 
-  const key = `digital-products/${Date.now()}-${filename.replace(/\s+/g, '-')}`
+  const safeFilename = filename
+    .trim()
+    .replace(/[^a-zA-Z0-9._-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 180)
+
+  if (!safeFilename) {
+    return NextResponse.json({ error: 'Invalid filename' }, { status: 400 })
+  }
+
+  const key = `digital-products/${Date.now()}-${safeFilename}`
 
   const command = new PutObjectCommand({
     Bucket: S3_BUCKET,
     Key: key,
     ContentType: contentType,
+    ContentLength: size,
   })
 
   const uploadUrl = await getSignedUrl(s3, command, { expiresIn: 300 })

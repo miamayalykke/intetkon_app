@@ -63,7 +63,7 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
   if (doc.stripeProductId) {
     await stripe.products.update(doc.stripeProductId, {
       name,
-      metadata: { sanityId: doc._id },
+      metadata: { sanityId: doc._id, sanityType: doc._type },
     })
     console.log('[product-sync] Updated Stripe product:', doc.stripeProductId)
     productId = doc.stripeProductId
@@ -71,7 +71,7 @@ async function syncToStripe(doc: SyncableDocument): Promise<void> {
     const product = await stripe.products.create({
       name,
       type: 'good',
-      metadata: { sanityId: doc._id },
+      metadata: { sanityId: doc._id, sanityType: doc._type },
     })
     console.log('[product-sync] Created Stripe product:', product.id)
     productId = product.id
