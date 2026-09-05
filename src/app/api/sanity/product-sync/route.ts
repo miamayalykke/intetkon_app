@@ -1,6 +1,7 @@
 import { timingSafeEqual } from 'node:crypto'
 import { backendClient } from '@sanity/lib/backendClient'
 import stripe from '@src/lib/stripe'
+import { revalidatePath } from 'next/cache'
 import { type NextRequest, NextResponse } from 'next/server'
 
 type SyncableDocument = {
@@ -123,6 +124,28 @@ async function deactivateInStripe(stripeProductId: string): Promise<void> {
   console.log('[product-sync] Deactivated Stripe product:', stripeProductId)
 }
 
+function revalidateStorefront(documentType: WebhookPayload['_type']): void {
+  if (documentType === 'workshop') {
+    revalidatePath('/en/workshops')
+    revalidatePath('/da/workshops')
+    revalidatePath('/en/workshops/[slug]', 'page')
+    revalidatePath('/da/workshops/[slug]', 'page')
+    revalidatePath('/sitemap.xml')
+  }
+
+  if (documentType === 'product') {
+    // Both storefronts use `product` documents, split by productType. Purge
+    // both lists in case an item changes between digital and physical.
+    revalidatePath('/en/shop')
+    revalidatePath('/da/shop')
+    revalidatePath('/en/patterns')
+    revalidatePath('/da/patterns')
+    revalidatePath('/en/product/[slug]', 'page')
+    revalidatePath('/da/product/[slug]', 'page')
+    revalidatePath('/sitemap.xml')
+  }
+}
+
 export async function POST(req: NextRequest) {
   if (!validateSecret(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -162,6 +185,8 @@ export async function POST(req: NextRequest) {
       console.log('[product-sync] Syncing document:', doc._id)
       await syncToStripe(doc)
     }
+
+    revalidateStorefront(payload._type)
   } catch (error) {
     console.error('[product-sync] Error syncing product to Stripe', {
       sanityId: payload._id,
