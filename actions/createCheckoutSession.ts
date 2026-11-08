@@ -4,6 +4,7 @@ import 'server-only'
 import { auth } from '@clerk/nextjs/server'
 import { backendClient } from '@sanity/lib/backendClient'
 import stripe from '@src/lib/stripe'
+import { isUnderConstruction } from '@src/lib/maintenance'
 import type Stripe from 'stripe'
 import type { CartItem } from '../store/store'
 import { type ItemForValidation, validatePromoCode } from './validatePromoCode'
@@ -62,6 +63,11 @@ export async function createCheckoutSession(
   locale = 'en',
 ) {
   try {
+    if (isUnderConstruction()) {
+      throw new Error(
+        'Checkout is temporarily unavailable while the website is under maintenance.',
+      )
+    }
     const normalizedLocale = locale === 'da' ? 'da' : 'en'
     const { userId } = await auth()
 

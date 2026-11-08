@@ -1,5 +1,6 @@
 import PublicFooter from '@src/components/footers/PublicFooter'
 import Header from '@src/components/headers/Header'
+import UnderConstruction from '@src/components/UnderConstruction'
 import { IntlProvider } from '@src/components/providers/IntlProvider'
 import { defaultLocale, locales } from '@src/i18n'
 import { loadMessages } from '@src/i18n/messages'
@@ -8,6 +9,9 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import type { Metadata } from 'next'
 import type { ReactNode } from 'react'
+import { isUnderConstruction } from '@src/lib/maintenance'
+
+export const dynamic = 'force-dynamic'
 
 interface LocaleLayoutProps {
   children: ReactNode
@@ -110,6 +114,7 @@ export default async function LocaleLayout({
 
   // Load messages for the locale
   const messages = await loadMessages(validLocale)
+  const underConstruction = isUnderConstruction()
 
   return (
     <html lang={validLocale} suppressHydrationWarning>
@@ -127,9 +132,15 @@ export default async function LocaleLayout({
         <Analytics />
         <SpeedInsights />
         <IntlProvider locale={validLocale} messages={messages}>
-          <Header locale={validLocale} />
-          <main className="pt-22 min-h-svh">{children}</main>
-          <PublicFooter />
+          {underConstruction ? (
+            <UnderConstruction locale={validLocale} />
+          ) : (
+            <>
+              <Header locale={validLocale} />
+              <main className="pt-22 min-h-svh">{children}</main>
+              <PublicFooter />
+            </>
+          )}
         </IntlProvider>
       </body>
     </html>

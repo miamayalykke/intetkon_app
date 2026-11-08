@@ -3,6 +3,7 @@
 import 'server-only'
 import { backendClient } from '@sanity/lib/backendClient'
 import stripe from '@src/lib/stripe'
+import { isUnderConstruction } from '@src/lib/maintenance'
 import { getLocalizedField } from '@src/sanity/lib/utils/getLocalizedFields'
 import { revalidatePath } from 'next/cache'
 import { generateOrderNumber } from './generateOrderNumber'
@@ -81,6 +82,15 @@ export async function bookPrivateEvent(
   input: BookPrivateEventInput,
 ): Promise<BookPrivateEventResult> {
   const locale = input.locale === 'da' ? 'da' : 'en'
+  if (isUnderConstruction()) {
+    return {
+      success: false,
+      message:
+        locale === 'da'
+          ? 'Betaling er midlertidigt lukket, mens hjemmesiden opdateres.'
+          : 'Payments are temporarily unavailable while the website is under maintenance.',
+    }
+  }
   const customerName = input.customerName?.trim()
   const customerEmail = input.customerEmail?.trim()
   const groupSize = Math.floor(Number(input.groupSize))
